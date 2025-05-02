@@ -1,0 +1,1 @@
+/usr/bin/g++ -fPIC  -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g  -shared -Wl,-soname,libpublicFunc.so -o ../../../lib/libpublicFunc.so CMakeFiles/publicFunc.dir/messagePacker.o 

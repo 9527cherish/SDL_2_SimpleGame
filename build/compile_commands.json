@@ -1,0 +1,92 @@
+[
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/src/client",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/usr/include/uuid -I/usr/include/SDL2 -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=gnu++17 -o CMakeFiles/client.dir/clientComonFunc.cpp.o -c /home/wj/Code/SDL2__Game/SimpleGame/src/client/clientComonFunc.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/src/client/clientComonFunc.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/src/client",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/usr/include/uuid -I/usr/include/SDL2 -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=gnu++17 -o CMakeFiles/client.dir/main.cpp.o -c /home/wj/Code/SDL2__Game/SimpleGame/src/client/main.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/src/client/main.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/src/client",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/usr/include/uuid -I/usr/include/SDL2 -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=gnu++17 -o CMakeFiles/client.dir/GameInterface/enemy.cpp.o -c /home/wj/Code/SDL2__Game/SimpleGame/src/client/GameInterface/enemy.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/src/client/GameInterface/enemy.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/src/client",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/usr/include/uuid -I/usr/include/SDL2 -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=gnu++17 -o CMakeFiles/client.dir/GameInterface/player.cpp.o -c /home/wj/Code/SDL2__Game/SimpleGame/src/client/GameInterface/player.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/src/client/GameInterface/player.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/src/client",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/usr/include/uuid -I/usr/include/SDL2 -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=gnu++17 -o CMakeFiles/client.dir/HttpServer/clientServer.cpp.o -c /home/wj/Code/SDL2__Game/SimpleGame/src/client/HttpServer/clientServer.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/src/client/HttpServer/clientServer.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/src/server",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=gnu++17 -o CMakeFiles/server.dir/characterManager.o -c /home/wj/Code/SDL2__Game/SimpleGame/src/server/characterManager.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/src/server/characterManager.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/src/server",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=gnu++17 -o CMakeFiles/server.dir/gameServer.o -c /home/wj/Code/SDL2__Game/SimpleGame/src/server/gameServer.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/src/server/gameServer.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/src/server",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=gnu++17 -o CMakeFiles/server.dir/gameService.o -c /home/wj/Code/SDL2__Game/SimpleGame/src/server/gameService.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/src/server/gameService.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/src/server",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=gnu++17 -o CMakeFiles/server.dir/main.o -c /home/wj/Code/SDL2__Game/SimpleGame/src/server/main.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/src/server/main.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/src/server",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=gnu++17 -o CMakeFiles/server.dir/serverComonFunc.o -c /home/wj/Code/SDL2__Game/SimpleGame/src/server/serverComonFunc.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/src/server/serverComonFunc.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/src/publicLib",
+  "command": "/usr/bin/g++  -DpublicFunc_EXPORTS -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g -fPIC   -std=gnu++17 -o CMakeFiles/publicFunc.dir/messagePacker.o -c /home/wj/Code/SDL2__Game/SimpleGame/src/publicLib/messagePacker.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/src/publicLib/messagePacker.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/thirdparty/spdlog",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=c++17 -o CMakeFiles/spdlog.dir/src/spdlog.cpp.o -c /home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/src/spdlog.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/src/spdlog.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/thirdparty/spdlog",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=c++17 -o CMakeFiles/spdlog.dir/src/stdout_sinks.cpp.o -c /home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/src/stdout_sinks.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/src/stdout_sinks.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/thirdparty/spdlog",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=c++17 -o CMakeFiles/spdlog.dir/src/color_sinks.cpp.o -c /home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/src/color_sinks.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/src/color_sinks.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/thirdparty/spdlog",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=c++17 -o CMakeFiles/spdlog.dir/src/file_sinks.cpp.o -c /home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/src/file_sinks.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/src/file_sinks.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/thirdparty/spdlog",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=c++17 -o CMakeFiles/spdlog.dir/src/async.cpp.o -c /home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/src/async.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/src/async.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/thirdparty/spdlog",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=c++17 -o CMakeFiles/spdlog.dir/src/cfg.cpp.o -c /home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/src/cfg.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/src/cfg.cpp"
+},
+{
+  "directory": "/home/wj/Code/SDL2__Game/SimpleGame/build/thirdparty/spdlog",
+  "command": "/usr/bin/g++  -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/wj/Code/SDL2__Game/SimpleGame/include -I/home/wj/Code/SDL2__Game/SimpleGame/include/client -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/GameInterface -I/home/wj/Code/SDL2__Game/SimpleGame/include/client/HttpServer -I/home/wj/Code/SDL2__Game/SimpleGame/include/server -I/home/wj/Code/SDL2__Game/SimpleGame/include/publicLib -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog -I/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/include   -Wall -Wextra -pedantic  -Wall -Wextra -pedantic -g   -std=c++17 -o CMakeFiles/spdlog.dir/src/bundled_fmtlib_format.cpp.o -c /home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/src/bundled_fmtlib_format.cpp",
+  "file": "/home/wj/Code/SDL2__Game/SimpleGame/thirdparty/spdlog/src/bundled_fmtlib_format.cpp"
+}
+]

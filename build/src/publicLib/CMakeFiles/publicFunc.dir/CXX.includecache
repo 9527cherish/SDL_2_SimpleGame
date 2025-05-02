@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/publicLib/messagePacker.hpp
+vector
+-
+cstdint
+-
+string
+-
+functional
+-
+
+/home/wj/Code/SDL2__Game/SimpleGame/src/publicLib/messagePacker.cpp
+messagePacker.hpp
+/home/wj/Code/SDL2__Game/SimpleGame/src/publicLib/messagePacker.hpp
+cstring
+-
+stdexcept
+-
+arpa/inet.h
+-
+
