@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
-
+#include <spdlog/spdlog.h>
 #include "json.hpp"
 using json = nlohmann::json;
+
 
 
 class ClientComonFunc{

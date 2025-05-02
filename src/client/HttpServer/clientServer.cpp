@@ -71,8 +71,8 @@ void ClientServer::reconnect()
 
 void ClientServer::send_message(const uint32_t msgid, const std::string &msg)
 {
-    // 减少数据的发送量
-    if(!g_player->isMove()) 
+    // 减少数据的发送量 
+    if(!g_player->isMove() && msgid == ENUM_MSG_REGISTER_UPDATE_PLAYER_REQUEST) 
         return;
 
     auto data = MessagePacker::pack(msgid, msg);
@@ -112,13 +112,13 @@ void ClientServer::dealServerData()
             uint32_t msgId;
             std::string payload;
             unpacker.unpack(recvMsg, msgId, payload);
+            json msgJson = json::parse(payload);
             switch (msgId)
             {
                 case ENUM_MSG_REGISTER_UPDATE_PLAYER_RESPONSE:
                 {
                     // 开始处理数据
                     // 判断收到的更新数据是否是当前玩家，如果是，则不处理,如果不是，在则放到敌人里
-                    json msgJson = json::parse(payload);
                     
                     if(msgJson["uuid"] == g_player->getUuid())
                     {
@@ -131,7 +131,13 @@ void ClientServer::dealServerData()
 
                     }
                     break;
-                }           
+                }
+                case ENUM_MSG_DELETE_PLAYER_RESPONSE:
+                {
+                    PlayerInfo enemy = g_player->generatePlayerInfo(msgJson);
+                    g_player->deleteEnemy(enemy);
+                    break;
+                }        
             default:
                 break;
             }

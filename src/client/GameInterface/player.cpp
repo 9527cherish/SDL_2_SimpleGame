@@ -20,7 +20,7 @@ Player::Player(int startX, int startY, int moveSpeed, SDL_Renderer* renderer) {
     speed = moveSpeed;
     frame = 0;
     m_uuid = generateUuid();
-    pictureName = "";
+    pictureName = "walk0";
 
 }
 

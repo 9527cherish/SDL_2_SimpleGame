@@ -35,9 +35,19 @@ int main() {  // int argc, char* argv[]
     SDL_Event event;
 
     while (running) {
+
+        PlayerInfo playerInfo = g_player->generatePlayerInfo();
+
+
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = false;
+                clientServer.send_message(ENUM_MSG_DELETE_PLAYER_REQUEST, g_player->generatePlayerJson(playerInfo));
+                // 程序退出时，发送退出消息
+                spdlog::info("游戏退出！");
+                // 暂停一秒，等待数据发送出去再退出
+                // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                
             }
         }
 
@@ -50,9 +60,6 @@ int main() {  // int argc, char* argv[]
         SDL_RenderClear(renderer);
         // 将player进行渲染
         g_player->render(renderer);
-
-        PlayerInfo playerInfo = g_player->generatePlayerInfo();
-
         clientServer.send_message(ENUM_MSG_REGISTER_UPDATE_PLAYER_REQUEST, g_player->generatePlayerJson(playerInfo));
 
         SDL_RenderPresent(renderer);

@@ -8,6 +8,10 @@ enum ENUM_MSG_TYPE
 {
     ENUM_MSG_REGISTER_UPDATE_PLAYER_REQUEST = 0,  // 人物注册及更新
     ENUM_MSG_REGISTER_UPDATE_PLAYER_RESPONSE = 1,    // 登录回复
+
+    ENUM_MSG_DELETE_PLAYER_REQUEST,    // 删除人物请求（某个客户端异常下线的场景）
+    ENUM_MSG_DELETE_PLAYER_RESPONSE,   // 删除人物回复
+
 };
 
 

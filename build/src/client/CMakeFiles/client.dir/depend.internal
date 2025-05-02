@@ -184,4 +184,51 @@ src/client/CMakeFiles/client.dir/main.cpp.o
  ../include/messageInfo.hpp
  ../include/publicLib/messagePacker.hpp
  ../thirdparty/json.hpp
+ ../thirdparty/spdlog/include/spdlog/common-inl.h
+ ../thirdparty/spdlog/include/spdlog/common.h
+ ../thirdparty/spdlog/include/spdlog/details/backtracer-inl.h
+ ../thirdparty/spdlog/include/spdlog/details/backtracer.h
+ ../thirdparty/spdlog/include/spdlog/details/circular_q.h
+ ../thirdparty/spdlog/include/spdlog/details/console_globals.h
+ ../thirdparty/spdlog/include/spdlog/details/fmt_helper.h
+ ../thirdparty/spdlog/include/spdlog/details/log_msg-inl.h
+ ../thirdparty/spdlog/include/spdlog/details/log_msg.h
+ ../thirdparty/spdlog/include/spdlog/details/log_msg_buffer-inl.h
+ ../thirdparty/spdlog/include/spdlog/details/log_msg_buffer.h
+ ../thirdparty/spdlog/include/spdlog/details/null_mutex.h
+ ../thirdparty/spdlog/include/spdlog/details/os-inl.h
+ ../thirdparty/spdlog/include/spdlog/details/os.h
+ ../thirdparty/spdlog/include/spdlog/details/periodic_worker-inl.h
+ ../thirdparty/spdlog/include/spdlog/details/periodic_worker.h
+ ../thirdparty/spdlog/include/spdlog/details/registry-inl.h
+ ../thirdparty/spdlog/include/spdlog/details/registry.h
+ ../thirdparty/spdlog/include/spdlog/details/synchronous_factory.h
+ ../thirdparty/spdlog/include/spdlog/details/windows_include.h
+ ../thirdparty/spdlog/include/spdlog/fmt/bundled/base.h
+ ../thirdparty/spdlog/include/spdlog/fmt/bundled/chrono.h
+ ../thirdparty/spdlog/include/spdlog/fmt/bundled/color.h
+ ../thirdparty/spdlog/include/spdlog/fmt/bundled/core.h
+ ../thirdparty/spdlog/include/spdlog/fmt/bundled/format-inl.h
+ ../thirdparty/spdlog/include/spdlog/fmt/bundled/format.h
+ ../thirdparty/spdlog/include/spdlog/fmt/bundled/ostream.h
+ ../thirdparty/spdlog/include/spdlog/fmt/bundled/ranges.h
+ ../thirdparty/spdlog/include/spdlog/fmt/bundled/xchar.h
+ ../thirdparty/spdlog/include/spdlog/fmt/fmt.h
+ ../thirdparty/spdlog/include/spdlog/fmt/xchar.h
+ ../thirdparty/spdlog/include/spdlog/formatter.h
+ ../thirdparty/spdlog/include/spdlog/logger-inl.h
+ ../thirdparty/spdlog/include/spdlog/logger.h
+ ../thirdparty/spdlog/include/spdlog/mdc.h
+ ../thirdparty/spdlog/include/spdlog/pattern_formatter-inl.h
+ ../thirdparty/spdlog/include/spdlog/pattern_formatter.h
+ ../thirdparty/spdlog/include/spdlog/sinks/ansicolor_sink-inl.h
+ ../thirdparty/spdlog/include/spdlog/sinks/ansicolor_sink.h
+ ../thirdparty/spdlog/include/spdlog/sinks/sink-inl.h
+ ../thirdparty/spdlog/include/spdlog/sinks/sink.h
+ ../thirdparty/spdlog/include/spdlog/sinks/wincolor_sink-inl.h
+ ../thirdparty/spdlog/include/spdlog/sinks/wincolor_sink.h
+ ../thirdparty/spdlog/include/spdlog/spdlog-inl.h
+ ../thirdparty/spdlog/include/spdlog/spdlog.h
+ ../thirdparty/spdlog/include/spdlog/tweakme.h
+ ../thirdparty/spdlog/include/spdlog/version.h
  /home/wj/Code/SDL2__Game/SimpleGame/src/client/main.cpp

@@ -37,6 +37,9 @@ public:
     // 处理玩家人物连接时，或者更新时发过来的消息
     void registerUpdatePlayer(const TcpConnectionPtr &conn, json js, Timestamp time);
 
+    // 处理玩家人物断开连接时，消息
+    void deletePlayer(const TcpConnectionPtr &conn, json js, Timestamp time);
+
 private:
 
     std::map<int, MsgHander> m_mapMsgHander;

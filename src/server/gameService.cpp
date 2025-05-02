@@ -8,6 +8,7 @@
 GameService::GameService()
 {
     m_mapMsgHander[ENUM_MSG_REGISTER_UPDATE_PLAYER_REQUEST] = std::bind(&GameService::registerUpdatePlayer, this, _1, _2, _3);
+    m_mapMsgHander[ENUM_MSG_DELETE_PLAYER_REQUEST] = std::bind(&GameService::deletePlayer, this, _1, _2, _3);
 }
 
 GameService &GameService::getInstance()
@@ -68,6 +69,19 @@ void GameService::registerUpdatePlayer(const TcpConnectionPtr &conn, json js, Ti
     // spdlog::info("开始广播数据:" + player.uuid);
 
     auto data = MessagePacker::pack(ENUM_MSG_REGISTER_UPDATE_PLAYER_RESPONSE, js.dump());
+    std::string sendMsg(data.data(), data.size());
+    
+    brodcastMsg(sendMsg);
+}
+
+void GameService::deletePlayer(const TcpConnectionPtr &conn, json js, Timestamp time)
+{
+    (void)conn; 
+    (void)time; 
+    PlayerInfo player = CharacterManager::getInstanse().generatePlayer(js);
+    CharacterManager::getInstanse().deletePlayer(player);
+    spdlog::info("删除人物:" + player.uuid);
+    auto data = MessagePacker::pack(ENUM_MSG_DELETE_PLAYER_RESPONSE, js.dump());
     std::string sendMsg(data.data(), data.size());
     
     brodcastMsg(sendMsg);

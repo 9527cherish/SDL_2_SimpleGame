@@ -170,8 +170,8 @@ thirdparty/spdlog/clean: thirdparty/spdlog/CMakeFiles/spdlog.dir/clean
 # Target rules for target src/client/CMakeFiles/client.dir
 
 # All Build rule for target.
-src/client/CMakeFiles/client.dir/all: thirdparty/spdlog/CMakeFiles/spdlog.dir/all
 src/client/CMakeFiles/client.dir/all: src/publicLib/CMakeFiles/publicFunc.dir/all
+src/client/CMakeFiles/client.dir/all: thirdparty/spdlog/CMakeFiles/spdlog.dir/all
 	$(MAKE) -f src/client/CMakeFiles/client.dir/build.make src/client/CMakeFiles/client.dir/depend
 	$(MAKE) -f src/client/CMakeFiles/client.dir/build.make src/client/CMakeFiles/client.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/wj/Code/SDL2__Game/SimpleGame/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target client"
@@ -198,8 +198,8 @@ src/client/CMakeFiles/client.dir/clean:
 # Target rules for target src/server/CMakeFiles/server.dir
 
 # All Build rule for target.
-src/server/CMakeFiles/server.dir/all: thirdparty/spdlog/CMakeFiles/spdlog.dir/all
 src/server/CMakeFiles/server.dir/all: src/publicLib/CMakeFiles/publicFunc.dir/all
+src/server/CMakeFiles/server.dir/all: thirdparty/spdlog/CMakeFiles/spdlog.dir/all
 	$(MAKE) -f src/server/CMakeFiles/server.dir/build.make src/server/CMakeFiles/server.dir/depend
 	$(MAKE) -f src/server/CMakeFiles/server.dir/build.make src/server/CMakeFiles/server.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/wj/Code/SDL2__Game/SimpleGame/build/CMakeFiles --progress-num=9,10,11,12,13,14 "Built target server"
