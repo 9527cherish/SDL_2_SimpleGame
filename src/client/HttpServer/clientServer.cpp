@@ -90,7 +90,7 @@ void ClientServer::dealServerData()
 {
     while(1)
     {
-                // 接收处理
+        // 接收处理
         char buffer[4096];
         ssize_t bytes = recv(sock, buffer, sizeof(buffer), 0);
         if(bytes > 0) {

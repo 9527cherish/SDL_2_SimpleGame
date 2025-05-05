@@ -13,6 +13,24 @@
 #include "json.hpp"
 using json = nlohmann::json;
 
+
+// 
+struct Camera {
+    int x = 0;      // 摄像机左上角坐标（游戏逻辑坐标系）
+    int y = 0;
+    int width = SCREEN_WIDTH;  // 摄像机宽高（等于窗口尺寸）
+    int height = SCREEN_HEIGHT;
+
+    // 更新摄像机位置，使目标点居中
+    void CenterOn(int target_x, int target_y) {
+        x = target_x - width / 2;
+        y = target_y - height / 2;
+        if (x > MAP_WIDTH - width) x = MAP_WIDTH - width;
+        if (y > MAP_HEIGHT - height) y = MAP_HEIGHT - height;
+    }
+};
+
+
 class Player {
 public:
     int x, y;
@@ -27,8 +45,9 @@ public:
 
     // 渲染敌人
     void renderEnemy(SDL_Renderer* renderer);
-    // 渲染晚间
+    // 渲染玩家
     void renderPlayer(SDL_Renderer* renderer);
+
     // 加载xml
     bool loadFromFile(const std::string& xmlPath);
     // 加载xml中的动作坐标信息
@@ -56,6 +75,13 @@ public:
 
     bool isMove();
 
+    // 设置或者获取当前相机
+    Camera getCamera();
+
+    void setCameraPos(int x, int y);
+
+    void setCameraRect( int width, int height);
+
 private:
     // XML文件路径
     std::string m_xmlPath;
@@ -77,6 +103,8 @@ private:
     std::string pictureName;
     // 标识当前是否在移动
     std::atomic<bool> bMove{false};
+    // 动态摄像机当前位置
+    Camera m_camera;
 };
 
 extern  Player* g_player;

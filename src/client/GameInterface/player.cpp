@@ -31,13 +31,39 @@ Player::~Player() {
 void Player::handleInput(const Uint8* keyState) {;
 
     bMove.store(false);
-    if (keyState[SDL_SCANCODE_W]) { y -= speed; bMove.store(true); }
-    if (keyState[SDL_SCANCODE_S]) { y += speed; bMove.store(true); }
-    if (keyState[SDL_SCANCODE_A]) { x -= speed; bMove.store(true); }
-    if (keyState[SDL_SCANCODE_D]) { x += speed; bMove.store(true); ; }
+    if (keyState[SDL_SCANCODE_W]) { 
+        y -= speed; 
+        y = (y < 0) ? 0 : ((y > MAP_HEIGHT) ? MAP_HEIGHT : y);
+        bMove.store(true); 
+    }
+    if (keyState[SDL_SCANCODE_S]) { 
+        y += speed; 
+        y = (y < 0) ? 0 : ((y > MAP_HEIGHT) ? MAP_HEIGHT : y);
+        bMove.store(true); 
+    }
+    if (keyState[SDL_SCANCODE_A]) { 
+        x -= speed; 
+        x = (x < 0) ? 0 : ((x > MAP_WIDTH) ? MAP_WIDTH : x);
+        bMove.store(true); 
+    }
+    if (keyState[SDL_SCANCODE_D]) { 
+        x += speed; 
+        x = (x < 0) ? 0 : ((x > MAP_WIDTH) ? MAP_WIDTH : x);
+        bMove.store(true);
+    }
 
     // 切换动画帧
     if (bMove.load()) frame = (frame + 1) % 8;
+
+
+    // 更新相机位置
+    m_camera.CenterOn(x, y);
+
+    // 处理地图边界（防止摄像机越界）
+    if (m_camera.x < 0) m_camera.x = 0;
+    if (m_camera.y < 0) m_camera.y = 0;
+    if (m_camera.x > MAP_WIDTH - m_camera.width) m_camera.x = MAP_WIDTH - m_camera.width;
+    if (m_camera.y > MAP_HEIGHT - m_camera.height) m_camera.y = MAP_HEIGHT - m_camera.height;
 }
 
 void Player::render(SDL_Renderer* renderer) {
@@ -53,7 +79,7 @@ void Player::renderEnemy(SDL_Renderer *renderer)
     for(auto iter : m_enemyMap)
     {
         PlayerInfo enemy = iter.second;
-        SDL_Rect dstRect = { enemy.x, enemy.y, 128, 128 }; // 渲染大小
+        SDL_Rect dstRect = { enemy.x, enemy.y, PLAYER_WIDTH, PLAYER_HEIGHT }; // 渲染大小
         SDL_Rect srcRect =  { enemy.texture.x, enemy.texture.y, 
                                 enemy.texture.width, enemy.texture.height };
         
@@ -65,9 +91,15 @@ void Player::renderPlayer(SDL_Renderer *renderer)
 {
     SDL_Rect srcRect = std::get<1>(m_classifyRect["walk"][frame]);
     pictureName = std::get<0>(m_classifyRect["walk"][frame]);
-    SDL_Rect dstRect = { x, y, 128, 128 }; // 渲染大小
+    SDL_Rect dstRect = {
+        (x - m_camera.x) - PLAYER_WIDTH / 2,
+        (y - m_camera.y) - PLAYER_HEIGHT / 2,
+        PLAYER_WIDTH,
+        PLAYER_HEIGHT
+    };
     SDL_RenderCopy(renderer, m_atlasTexture, &srcRect, &dstRect);
 }
+
 
 bool Player::loadFromFile(const std::string &xmlPath)
 {
@@ -232,4 +264,21 @@ bool Player::deleteEnemy(const PlayerInfo &enemy)
 bool Player::isMove()
 {
     return bMove.load();
+}
+
+Camera Player::getCamera()
+{
+    return m_camera;
+}
+
+void Player::setCameraPos(int x, int y)
+{
+    m_camera.x = x;
+    m_camera.y = y;
+}
+
+void Player::setCameraRect(int width, int height)
+{
+    m_camera.width = width;
+    m_camera.height = height;
 }

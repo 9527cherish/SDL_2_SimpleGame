@@ -4,8 +4,7 @@
 #include "./HttpServer/clientServer.hpp"
 #include "clientComonFunc.hpp"
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+
 
 
 void startServerDataProcess(ClientServer* clientServer){
@@ -24,6 +23,8 @@ int main() {  // int argc, char* argv[]
     SDL_Window* window = SDL_CreateWindow("SDL2 Player Animation",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    SDL_Texture* bgTexture = IMG_LoadTexture(renderer, "../images/map.png");
 
     g_player = new Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 5, renderer);
 
@@ -49,6 +50,11 @@ int main() {  // int argc, char* argv[]
                 // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                 
             }
+            else if (event.type == SDL_WINDOWEVENT){
+                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                    g_player->setCameraRect(event.window.data1, event.window.data2);
+                }
+            }
         }
 
         // 处理输入
@@ -58,15 +64,33 @@ int main() {  // int argc, char* argv[]
         // 渲染
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
+        Camera camera = g_player->getCamera();
+        SDL_Rect bg_src_rect = {
+            camera.x,                    // 裁剪背景的起始 X
+            camera.y,                    // 裁剪背景的起始 Y
+            camera.width,                // 裁剪宽度 = 摄像机宽度
+            camera.height                // 裁剪高度 = 摄像机高度
+        };
+
+        SDL_Rect bg_dest_rect = {
+            0,                          // 渲染到屏幕左上角
+            0,
+            camera.width,               // 渲染宽度 = 窗口宽度
+            camera.height               // 渲染高度 = 窗口高度
+        };
+
+        // 渲染背景
+        SDL_RenderCopy(renderer, bgTexture, &bg_src_rect, &bg_dest_rect);
         // 将player进行渲染
         g_player->render(renderer);
+
         clientServer.send_message(ENUM_MSG_REGISTER_UPDATE_PLAYER_REQUEST, g_player->generatePlayerJson(playerInfo));
 
         SDL_RenderPresent(renderer);
 
         SDL_Delay(10); // 控制动画帧速率
     }
-
+    SDL_DestroyTexture(bgTexture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     IMG_Quit();
