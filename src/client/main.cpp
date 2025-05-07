@@ -3,7 +3,7 @@
 #include "player.hpp"
 #include "./HttpServer/clientServer.hpp"
 #include "clientComonFunc.hpp"
-
+#include "chatBox.hpp"
 
 
 
@@ -32,6 +32,8 @@ int main() {  // int argc, char* argv[]
     // 开启线程，用于处理从服务端发送过来的数据
     startServerDataProcess(&clientServer);
 
+    ChatBox chat(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+
     bool running = true;
     SDL_Event event;
 
@@ -55,6 +57,8 @@ int main() {  // int argc, char* argv[]
                     g_player->setCameraRect(event.window.data1, event.window.data2);
                 }
             }
+            chat.handleEvent(&event);
+
         }
 
         // 处理输入
@@ -83,6 +87,7 @@ int main() {  // int argc, char* argv[]
         SDL_RenderCopy(renderer, bgTexture, &bg_src_rect, &bg_dest_rect);
         // 将player进行渲染
         g_player->render(renderer);
+        chat.render();
 
         clientServer.send_message(ENUM_MSG_REGISTER_UPDATE_PLAYER_REQUEST, g_player->generatePlayerJson(playerInfo));
 

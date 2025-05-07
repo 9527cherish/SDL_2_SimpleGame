@@ -28,7 +28,7 @@ Player::~Player() {
     SDL_DestroyTexture(m_atlasTexture);
 }
 
-void Player::handleInput(const Uint8* keyState) {;
+void Player::handleInput(const Uint8* keyState) {
 
     bMove.store(false);
     if (keyState[SDL_SCANCODE_W]) { 
