@@ -58,19 +58,19 @@ public:
     void initTextures(SDL_Renderer* renderer);
 
     // 生成uuid
-    std::string generateUuid(); 
+    std::string generateUuid();
+    // 获取uuid 
     std::string getUuid();
 
     // 生成palyerInfo信息
     PlayerInfo generatePlayerInfo();
     // 将playerInfo转化为json
     std::string generatePlayerJson(const PlayerInfo playerInfo);
-    
+
     PlayerInfo generatePlayerInfo(const json& js);
 
     // 增加、更新或删除敌人
     void addAndUpgradeEnemy(const PlayerInfo& enemy);
-
     bool deleteEnemy(const PlayerInfo& enemy);
 
     bool isMove();
@@ -78,9 +78,13 @@ public:
     // 设置或者获取当前相机
     Camera getCamera();
 
+    // 设置相机位置
     void setCameraPos(int x, int y);
-
+    // 设置相机大小
     void setCameraRect( int width, int height);
+
+    // 获取玩家姓名
+    std::string getName();
 
 private:
     // XML文件路径
@@ -99,6 +103,8 @@ private:
     std::unordered_map<std::string, PlayerInfo> m_enemyMap;
     // 唯一标识uuid
     std::string m_uuid;
+    // 人物名称
+    std::string m_name;
     // 当前所使用的图片名称
     std::string pictureName;
     // 标识当前是否在移动

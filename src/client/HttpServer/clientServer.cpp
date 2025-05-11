@@ -1,6 +1,7 @@
 #include "./HttpServer/clientServer.hpp"
 // #include "clientServer.h"
 #include "player.hpp"
+#include "chatBox.hpp"
 #include <spdlog/spdlog.h>
 #include "clientComonFunc.hpp"
 #include "clientServer.hpp"
@@ -44,6 +45,8 @@ void ClientServer::io_worker()
             {
                 continue;
             }
+            spdlog::info("send_msg" +send_msg);
+            spdlog::info("send_msg.size" + std::to_string(send_msg.size()));
             send(sock, send_msg.c_str(), send_msg.size(), 0);
         }
 
@@ -71,9 +74,15 @@ void ClientServer::reconnect()
 
 void ClientServer::send_message(const uint32_t msgid, const std::string &msg)
 {
-    // 减少数据的发送量 
+    // 减少数据的发送量，人物不移动不发送
     if(!g_player->isMove() && msgid == ENUM_MSG_REGISTER_UPDATE_PLAYER_REQUEST) 
         return;
+
+    if(msg.empty() && msgid == ENUM_MSG_SENDMESSAGE_REQUEST)
+        return;
+    // 将要发送的数据清空
+    else if (!msg.empty() && msgid == ENUM_MSG_SENDMESSAGE_REQUEST)
+        g_chatBox->setSendText("");
 
     auto data = MessagePacker::pack(msgid, msg);
     std::string sendMsg(data.data(), data.size());
@@ -137,7 +146,20 @@ void ClientServer::dealServerData()
                     PlayerInfo enemy = g_player->generatePlayerInfo(msgJson);
                     g_player->deleteEnemy(enemy);
                     break;
-                }        
+                }
+                case ENUM_MSG_SENDMESSAGE_RESPONSE:
+                {
+                    // 将数据塞入chatBox中
+                    if(msgJson["uuid"] == g_player->getUuid())
+                    {
+                        continue;
+                    }
+                    else{
+                        g_chatBox->addMessage(msgJson["sendMsg"]);
+                    }
+                    
+                    break;
+                }    
             default:
                 break;
             }

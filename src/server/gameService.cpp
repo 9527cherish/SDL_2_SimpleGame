@@ -7,8 +7,9 @@
 
 GameService::GameService()
 {
-    m_mapMsgHander[ENUM_MSG_REGISTER_UPDATE_PLAYER_REQUEST] = std::bind(&GameService::registerUpdatePlayer, this, _1, _2, _3);
-    m_mapMsgHander[ENUM_MSG_DELETE_PLAYER_REQUEST] = std::bind(&GameService::deletePlayer, this, _1, _2, _3);
+    m_mapMsgHander[ENUM_MSG_REGISTER_UPDATE_PLAYER_REQUEST] = std::bind(&GameService::dealRegisterUpdatePlayer, this, _1, _2, _3);
+    m_mapMsgHander[ENUM_MSG_DELETE_PLAYER_REQUEST] = std::bind(&GameService::dealDeletePlayer, this, _1, _2, _3);
+    m_mapMsgHander[ENUM_MSG_SENDMESSAGE_REQUEST] = std::bind(&GameService::dealSendMessage, this, _1, _2, _3);
 }
 
 GameService &GameService::getInstance()
@@ -60,7 +61,7 @@ void GameService::brodcastMsg(const std::string &msg)
     }
 }
 
-void GameService::registerUpdatePlayer(const TcpConnectionPtr &conn, json js, Timestamp time)
+void GameService::dealRegisterUpdatePlayer(const TcpConnectionPtr &conn, json js, Timestamp time)
 {
     (void)conn; 
     (void)time; 
@@ -74,7 +75,7 @@ void GameService::registerUpdatePlayer(const TcpConnectionPtr &conn, json js, Ti
     brodcastMsg(sendMsg);
 }
 
-void GameService::deletePlayer(const TcpConnectionPtr &conn, json js, Timestamp time)
+void GameService::dealDeletePlayer(const TcpConnectionPtr &conn, json js, Timestamp time)
 {
     (void)conn; 
     (void)time; 
@@ -84,5 +85,17 @@ void GameService::deletePlayer(const TcpConnectionPtr &conn, json js, Timestamp 
     auto data = MessagePacker::pack(ENUM_MSG_DELETE_PLAYER_RESPONSE, js.dump());
     std::string sendMsg(data.data(), data.size());
     
+    brodcastMsg(sendMsg);
+}
+
+void GameService::dealSendMessage(const TcpConnectionPtr &conn, json js, Timestamp time)
+{
+    (void)conn; 
+    (void)time;
+    auto data = MessagePacker::pack(ENUM_MSG_SENDMESSAGE_RESPONSE, js.dump());
+
+    spdlog::info("广播聊天消息:" + js.dump());
+    std::string sendMsg(data.data(), data.size());
+
     brodcastMsg(sendMsg);
 }

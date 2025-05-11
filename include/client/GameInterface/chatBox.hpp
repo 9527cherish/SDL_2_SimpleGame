@@ -4,6 +4,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <string>
 #include <vector>
+#include <mutex>
 
 const int CHAT_WIDTH = 300;
 const int CHAT_HEIGHT = 200;
@@ -35,13 +36,25 @@ public:
     // 渲染聊天框
     void render();
 
+    // 获取最新发送的消息
+    std::string generateSendMsg();
+
+    // 设置需要发送数据的值
+    void setSendText(const std::string& msg);
 
 private:
     SDL_Renderer* m_renderer;
     TTF_Font* m_font;
+
     std::vector<ChatMessage> m_messages;
+    std::mutex m_csMsg;
+    // 记录当前输入的信息
     std::string m_inputText;
+    // 记录需要发送的数据
+    std::string m_sendText;
     SDL_Rect m_chatRect;
     SDL_Rect m_inputRect;
     bool m_isActive = false;
 };
+
+extern  ChatBox* g_chatBox;

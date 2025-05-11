@@ -35,10 +35,13 @@ public:
     void brodcastMsg(const std::string &msg);
 
     // 处理玩家人物连接时，或者更新时发过来的消息
-    void registerUpdatePlayer(const TcpConnectionPtr &conn, json js, Timestamp time);
+    void dealRegisterUpdatePlayer(const TcpConnectionPtr &conn, json js, Timestamp time);
 
-    // 处理玩家人物断开连接时，消息
-    void deletePlayer(const TcpConnectionPtr &conn, json js, Timestamp time);
+    // 处理玩家人物断开连接时发送的消息
+    void dealDeletePlayer(const TcpConnectionPtr &conn, json js, Timestamp time);
+
+    // 处理玩家在公共频道发送的消息
+    void dealSendMessage(const TcpConnectionPtr &conn, json js, Timestamp time);
 
 private:
 

@@ -13,7 +13,12 @@ void startServerDataProcess(ClientServer* clientServer){
 }
 
 
-int main() {  // int argc, char* argv[]
+/**
+ *  后续重新封装main函数，太长，将一些功能进行封装
+ *  在执行程序的时候提供传入姓名的功能
+ */
+
+int main(int argc, char* argv[]) {
 
     ClientComonFunc::getInstance();
 
@@ -32,7 +37,7 @@ int main() {  // int argc, char* argv[]
     // 开启线程，用于处理从服务端发送过来的数据
     startServerDataProcess(&clientServer);
 
-    ChatBox chat(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+    g_chatBox = new ChatBox(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 
     bool running = true;
     SDL_Event event;
@@ -57,7 +62,7 @@ int main() {  // int argc, char* argv[]
                     g_player->setCameraRect(event.window.data1, event.window.data2);
                 }
             }
-            chat.handleEvent(&event);
+            g_chatBox->handleEvent(&event);
 
         }
 
@@ -87,9 +92,10 @@ int main() {  // int argc, char* argv[]
         SDL_RenderCopy(renderer, bgTexture, &bg_src_rect, &bg_dest_rect);
         // 将player进行渲染
         g_player->render(renderer);
-        chat.render();
+        g_chatBox->render();
 
         clientServer.send_message(ENUM_MSG_REGISTER_UPDATE_PLAYER_REQUEST, g_player->generatePlayerJson(playerInfo));
+        clientServer.send_message(ENUM_MSG_SENDMESSAGE_REQUEST, g_chatBox->generateSendMsg());
 
         SDL_RenderPresent(renderer);
 

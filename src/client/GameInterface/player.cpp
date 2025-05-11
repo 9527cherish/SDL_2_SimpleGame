@@ -21,6 +21,7 @@ Player::Player(int startX, int startY, int moveSpeed, SDL_Renderer* renderer) {
     frame = 0;
     m_uuid = generateUuid();
     pictureName = "walk0";
+    m_name = "";
 
 }
 
@@ -281,4 +282,9 @@ void Player::setCameraRect(int width, int height)
 {
     m_camera.width = width;
     m_camera.height = height;
+}
+
+std::string Player::getName()
+{
+    return m_name;
 }

@@ -19,6 +19,8 @@ enum ENUM_MSG_TYPE
     ENUM_MSG_DELETE_PLAYER_REQUEST,    // 删除人物请求（某个客户端异常下线的场景）
     ENUM_MSG_DELETE_PLAYER_RESPONSE,   // 删除人物回复
 
+    ENUM_MSG_SENDMESSAGE_REQUEST,  // 发送消息请求
+    ENUM_MSG_SENDMESSAGE_RESPONSE,    // 发送消息回复
 };
 
 
