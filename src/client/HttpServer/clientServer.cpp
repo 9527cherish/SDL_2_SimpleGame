@@ -155,7 +155,7 @@ void ClientServer::dealServerData()
                         continue;
                     }
                     else{
-                        g_chatBox->addMessage(msgJson["sendMsg"]);
+                        g_chatBox->addMessage(msgJson["sendMsg"], {135, 206, 235, 255});
                     }
                     
                     break;

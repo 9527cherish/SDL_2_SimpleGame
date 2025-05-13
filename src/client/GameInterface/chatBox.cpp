@@ -14,7 +14,7 @@ ChatBox::ChatBox(SDL_Renderer *renderer, int screenWidth, int screenHeight)
 
     }
     
-    m_font = TTF_OpenFont("arial.ttf", 20);
+    m_font = TTF_OpenFont("NotoSansCJK.ttf", 16);
     if (!m_font) {
         spdlog::error("加载字体失败:"  + std::string(TTF_GetError()));
     }
@@ -30,9 +30,9 @@ ChatBox::ChatBox(SDL_Renderer *renderer, int screenWidth, int screenHeight)
     // 输入框位置（聊天框底部）
     m_inputRect = {
         m_chatRect.x + CHAT_MARGIN,
-        m_chatRect.y + m_chatRect.h - 30,  // 假设输入框高度30px
+        m_chatRect.y + m_chatRect.h - 25,  // 假设输入框高度30px
         CHAT_WIDTH - 2*CHAT_MARGIN,
-        25
+        20
     };
 
     m_sendText = "";
@@ -90,7 +90,10 @@ void ChatBox::handleEvent(SDL_Event *e)
 
                 case SDLK_RETURN:     // 回车提交
                     if (!m_inputText.empty()) {
-                        addMessage(m_inputText);
+                        
+                        std::string time = ClientComonFunc::getInstance().getCurrentTime();
+                        m_inputText = time + "  " + g_player->getName() + ":" + m_inputText;
+                        addMessage(m_inputText, SDL_Color {255, 255, 255, 255});
                         m_sendText = m_inputText;
                         m_inputText.clear();
                     }
@@ -101,9 +104,10 @@ void ChatBox::handleEvent(SDL_Event *e)
     }
 }
 
-void ChatBox::addMessage(const std::string &text)
+void ChatBox::addMessage(const std::string &text, SDL_Color color)
 {
-    SDL_Surface* surface = TTF_RenderUTF8_Blended(m_font, text.c_str(), TEXT_COLOR);
+    
+    SDL_Surface* surface = TTF_RenderUTF8_Blended(m_font, text.c_str(), color);
     if (!surface) {
         SDL_Log("Failed to render text: %s", TTF_GetError());
         return;

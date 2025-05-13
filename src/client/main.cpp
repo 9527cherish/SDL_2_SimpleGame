@@ -33,6 +33,12 @@ int main(int argc, char* argv[]) {
 
     g_player = new Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 5, renderer);
 
+    if(argc > 1)
+    {
+        std::string  name = argv[1];
+        g_player->setName(name);
+    }
+
     ClientServer clientServer;
     // 开启线程，用于处理从服务端发送过来的数据
     startServerDataProcess(&clientServer);

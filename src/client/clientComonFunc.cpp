@@ -6,7 +6,7 @@
 #include "spdlog/sinks/rotating_file_sink.h"
 #include <memory>
 #include <filesystem>
-
+#include <ctime>
 
 ClientComonFunc::ClientComonFunc()
 {
@@ -50,4 +50,13 @@ void ClientComonFunc::init_logger(const std::string &log_name)
     // 日志等级与格式
     spdlog::set_level(spdlog::level::debug); // 显示全部
     spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [%s:%#] %v");
+}
+
+std::string ClientComonFunc::getCurrentTime()
+{
+    std::time_t now = std::time(nullptr);
+    char buf[20];
+    std::strftime(buf, sizeof(buf), "%H:%M:%S", std::localtime(&now));
+    std::string time = std::string(buf);
+    return time;
 }

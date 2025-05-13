@@ -85,6 +85,9 @@ public:
 
     // 获取玩家姓名
     std::string getName();
+    // 设置玩家姓名
+    void setName(const std::string& name);
+
 
 private:
     // XML文件路径

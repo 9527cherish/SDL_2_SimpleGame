@@ -31,4 +31,5 @@ include_directories(${CMAKE_SOURCE_DIR}/thirdparty/spdlog)
 #加载子目录
 
 add_subdirectory(src)
+add_subdirectory(test)
 add_subdirectory(thirdparty/spdlog)

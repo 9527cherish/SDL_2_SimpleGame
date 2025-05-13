@@ -32,7 +32,7 @@ public:
     // 处理聊天框键盘事件
     void handleEvent(SDL_Event* e);
     // 添加消息
-    void addMessage(const std::string& text);
+    void addMessage(const std::string& text, SDL_Color color);
     // 渲染聊天框
     void render();
 
