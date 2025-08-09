@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.5)
 project(SimepleGame)
 
 # 设置可执行文件的输出路径
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
+
 set(CMAKE_CXX_STANDARD 17)
 
 # Bump up warning levels appropriately for clang, gcc & msvc and build in debug mode

@@ -12,7 +12,7 @@ public:
     ~ClientComonFunc();
 
     static ClientComonFunc& getInstance();
-    // 出事化日志
+    // 初始化日志
     void init_logger(const std::string& log_name);
 
     // 增加时间戳

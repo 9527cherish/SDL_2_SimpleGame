@@ -27,7 +27,7 @@ ClientComonFunc &ClientComonFunc::getInstance()
 
 void ClientComonFunc::init_logger(const std::string &log_name)
 {
-            // 自动创建日志目录
+    // 自动创建日志目录
     std::filesystem::create_directories(logPath);
 
     // 控制台彩色输出
