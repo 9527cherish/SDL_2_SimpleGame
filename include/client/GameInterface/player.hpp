@@ -8,7 +8,6 @@
 #include <vector>
 #include <mutex>
 #include <atomic>
-#include "enemy.hpp"
 #include "messageInfo.hpp"
 #include "json.hpp"
 using json = nlohmann::json;
