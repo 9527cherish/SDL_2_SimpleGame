@@ -16,8 +16,15 @@ public:
     void init_logger(const std::string& log_name);
 
     // 增加时间戳
-
     std::string getCurrentTime();
+
+    // 禁用拷贝构造
+    ClientComonFunc(ClientComonFunc&) = delete;
+    ClientComonFunc(ClientComonFunc&&) = delete;
+
+    // 禁用赋值
+    ClientComonFunc& operator=(const ClientComonFunc&) = delete;
+    ClientComonFunc& operator=(const ClientComonFunc&&) = delete;
 
 private:
 

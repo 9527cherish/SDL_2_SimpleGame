@@ -3,19 +3,21 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 // 动画方向枚举
 enum class Direction{
+    UNKNOWN = -1,
+    DEFAULT,
     DOWN,
     LEFT,
     UP,
     RIGHT,
-    DEFAULT,
-    UNKNOWN
 };
 
 // 定义动作
 enum class CharacterAction{
+    UNKNOWN = -1,
     DEFAULT,
     STAND,
     WALK,
@@ -44,19 +46,18 @@ struct AnimationSequence {
     bool loop = true; // 是否循环
 };
 
-// 方向动画映射
-struct DirectionAnimation {
-    std::map<Direction, AnimationSequence> animations;
-};
-
-// 动作结构
+// 动作结构(包括方向)
 struct Action {
-    std::string name;
+    CharacterAction action;
     std::string imageset;
-    DirectionAnimation directionAnim;
+    Direction direction;
+
+    bool operator==(const Action& other) const {
+        return action == other.action && direction == other.direction;
+    }
 };
 
-// Sprite 数据结构  ,重新设计，不太好遍历查找
+// Sprite 结构
 struct SpriteData {
     int variants = 1;
     int variantOffset = 0;
@@ -64,8 +65,9 @@ struct SpriteData {
     std::string imageSetSrc;
     int frameWidth = 0;
     int frameHeight = 0;
-    std::vector<Action> actions;
+    std::unordered_map<Action, AnimationSequence> animations;
 };
+
 
 // 颜色组结构
 struct ColorGroup {
@@ -82,6 +84,7 @@ struct SpritePart {
 struct NPC {
     int id;                         // NPC ID
     std::vector<SpritePart> parts;  // 精灵部件列表
+    std::string name;               // 存储名字
 };
 
 struct ImageSet
@@ -96,23 +99,23 @@ struct ImageSet
     std::string file;
 };
 
-inline AnimationSequence getFrameFromSprite(const SpriteData& sprite
-            , const std::string actionName, const Direction& direction)
-{
-    if(sprite.actions.size() < 1)
-        return AnimationSequence();
+// inline AnimationSequence getFrameFromSprite(const SpriteData& sprite
+//             , const std::string actionName, const Direction& direction)
+// {
+//     if(sprite.actions.size() < 1)
+//         return AnimationSequence();
 
-    for(Action action : sprite.actions)
-    {
-        if(action.name == actionName)
-        {
-            auto iter = action.directionAnim.animations.find(direction);
-            if(iter != action.directionAnim.animations.end())
-            {
-                return iter->second;
-            }
+//     for(Action action : sprite.actions)
+//     {
+//         if(action.name == actionName)
+//         {
+//             auto iter = action.directionAnim.animations.find(direction);
+//             if(iter != action.directionAnim.animations.end())
+//             {
+//                 return iter->second;
+//             }
 
-        }
-    }
-    return AnimationSequence();
-}
+//         }
+//     }
+//     return AnimationSequence();
+// }
