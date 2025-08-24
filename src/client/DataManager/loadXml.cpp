@@ -1,5 +1,4 @@
 #include "loadXml.hpp"
-
 #include <pugixml.hpp>
 
 ImageSet LoadXml::parseImageXml(const std::string &path)
@@ -107,13 +106,12 @@ SpriteData LoadXml::parseSpriteXML(const std::string &path)
     // 解析所有 action
     for (pugi::xml_node actionNode : spriteNode.children("action")) {
         Action action;
-        action.name = actionNode.attribute("name").as_string();
+        action.action =  ActionMapper::from_string(actionNode.attribute("name").as_string());
         action.imageset = actionNode.attribute("imageset").as_string();
         
         // 解析每个方向的动画
         for (pugi::xml_node animNode : actionNode.children("animation")) {
-            std::string dirStr = animNode.attribute("direction").as_string();
-            Direction dir = stringToDirection(dirStr);
+            action.direction = DirectionMapper::from_string(animNode.attribute("direction").as_string());
             
             AnimationSequence sequence;
             
@@ -148,11 +146,8 @@ SpriteData LoadXml::parseSpriteXML(const std::string &path)
                     sequence.loop = false;
                 }
             }
-            
-            action.directionAnim.animations[dir] = sequence;
-        }
-        
-        spriteData.actions.push_back(action);
+            spriteData.animations[action] = sequence;
+        }           
     }
     
     return spriteData;
@@ -169,24 +164,17 @@ void LoadXml::printSpriteData(const SpriteData &spriteData)
         + "*"  + std::to_string(spriteData.frameHeight));
 
     spdlog::info("Actions:");
-    for (const Action& action : spriteData.actions) {
-        spdlog::info("  Action Name: "  + action.name  + " (ImageSet: " + action.imageset + ")" );
 
-        for (const auto& [dir, sequence] : action.directionAnim.animations) {
-            std::string dirStr;
-            switch (dir) {
-                case Direction::DOWN: dirStr = "DOWN"; break;
-                case Direction::LEFT: dirStr = "LEFT"; break;
-                case Direction::UP: dirStr = "UP"; break;
-                case Direction::RIGHT: dirStr = "RIGHT"; break;
-                case Direction::DEFAULT: dirStr = "DEFAULT"; break;
-                default: dirStr = "UNKNOWN"; break;
-            }
+
+    for (const auto& [action, sequence] : spriteData.animations) {
+        spdlog::info("  Action Name: "  + ActionMapper::to_string(action.action)  + " (ImageSet: " + action.imageset + ")"
+                        + "  Action Direction: "  + DirectionMapper::to_string(action.direction) );
+
             if(sequence.frames.size() < 1)
             {
                 continue;
             }
-            spdlog::info("    Direction: " + dirStr + " - Frames: " + std::to_string(sequence.frames.size()));
+            spdlog::info("    Direction: " + DirectionMapper::to_string(action.direction) + " - Frames: " + std::to_string(sequence.frames.size()));
             if(sequence.loop)
                 spdlog::info("      Loop: Yes" );
             else
@@ -200,6 +188,5 @@ void LoadXml::printSpriteData(const SpriteData &spriteData)
                          + ", delay=" +  std::to_string(frame.delay) +  "ms" );
             }
              spdlog::info("");
-        }
     }
 }

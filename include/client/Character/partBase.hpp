@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "publicStuct.hpp"
+#include "publicStruct.hpp"
 
 class PartBase
 {
@@ -11,10 +11,10 @@ public:
     PartBase(const ImageSet& image, const SpriteData& sprite);
     ~PartBase();
 
-    void update(const std::string& actionName, const Direction& direction, int deltaTime);
-    void reset(const std::string& actionName, const Direction& direction);
+    void update(const std::string& actionName, const CharaDirection& direction, int deltaTime);
+    void reset(const std::string& actionName, const CharaDirection& direction);
     void render(SDL_Renderer* renderer,const std::string& actionName, 
-                            Direction& dir, int& x, int& y);
+                            CharaDirection& dir, int& x, int& y);
 
     
     void setNeutralImage(const ImageSet& neutralImage);

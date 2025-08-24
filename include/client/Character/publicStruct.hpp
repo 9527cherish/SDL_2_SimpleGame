@@ -1,36 +1,17 @@
 #pragma once 
 
-#include <string>
 #include <vector>
-#include <map>
-#include <unordered_map>
+#include "characterDirection.hpp"
+#include "characterAction.hpp"
 
-// 动画方向枚举
-enum class Direction{
-    UNKNOWN = -1,
-    DEFAULT,
-    DOWN,
-    LEFT,
-    UP,
-    RIGHT,
-};
 
-// 定义动作
-enum class CharacterAction{
-    UNKNOWN = -1,
-    DEFAULT,
-    STAND,
-    WALK,
-    SIT,
-    DEAD,
-    ATTACK,
-    ATTACK_SWORD_STAB,
-    ATTACK_BOW,
-    ATTACK_SPEAR,
-    ATTACK_CHOP,
-    ATTACK_2HAND,
-    CAST
-};
+const int SCREEN_WIDTH = 800;  // 屏幕大小
+const int SCREEN_HEIGHT = 600;
+const int MAP_WIDTH = 1024;     // 地图大小
+const int MAP_HEIGHT = 1024;
+
+const int PLAYER_WIDTH = 64;     // 玩家大小
+const int PLAYER_HEIGHT = 64;
 
 // 动画帧结构
 struct Frame {
@@ -48,12 +29,21 @@ struct AnimationSequence {
 
 // 动作结构(包括方向)
 struct Action {
-    CharacterAction action;
+    CharaAction action;
     std::string imageset;
-    Direction direction;
+    CharaDirection direction;
 
     bool operator==(const Action& other) const {
         return action == other.action && direction == other.direction;
+    }
+
+        // 重载 < 运算符：定义两个 Action 如何比较
+    bool operator<(const Action& other) const {
+        if (action != other.action) {
+            return action < other.action;
+        }
+        // 2. id 相同则比较 name（字符串可直接用 < 比较）
+        return action < other.action;
     }
 };
 
@@ -65,7 +55,7 @@ struct SpriteData {
     std::string imageSetSrc;
     int frameWidth = 0;
     int frameHeight = 0;
-    std::unordered_map<Action, AnimationSequence> animations;
+    std::map<Action, AnimationSequence> animations;
 };
 
 

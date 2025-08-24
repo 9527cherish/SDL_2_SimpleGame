@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "publicStuct.hpp"
+#include "publicStruct.hpp"
 
 class LoadXml
 {
@@ -10,4 +10,4 @@ public:
 
     static SpriteData parseSpriteXML(const std::string& path);
     static void printSpriteData(const SpriteData& spriteData);
-}
+};

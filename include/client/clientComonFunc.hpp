@@ -5,7 +5,6 @@
 using json = nlohmann::json;
 
 
-
 class ClientComonFunc{
 public:
     ClientComonFunc();

@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 2.6)
-project(client)
+cmake_minimum_required(VERSION 3.10)
+project(client VERSION 1.0.0 LANGUAGES CXX)
 
 # Use our modified FindSDL2* modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${client_SOURCE_DIR}/cmake")
@@ -24,16 +24,18 @@ include_directories(${SDL2_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIR} ${SDL2_MIXER_I
 aux_source_directory(. SRC_LIST)
 aux_source_directory(./GameInterface GAME_LIST)
 aux_source_directory(./HttpServer HTTP_LIST)
+aux_source_directory(./DataManager DATA_LIST)
+aux_source_directory(./Character CHARA_LIST)
 
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 # 编译动态库
 # add_library(MuduoSimplify SHARED ${SRC_LIST})
-add_executable(client ${SRC_LIST} ${GAME_LIST} ${HTTP_LIST})
+add_executable(client ${SRC_LIST} ${GAME_LIST} ${HTTP_LIST} ${DATA_LIST} ${CHARA_LIST})
 
 target_link_libraries(client PRIVATE 
                 ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${SDL2_MIXER_LIBRARY}  ${SDL2_TTF_LIBRARIES} 
-                pugixml spdlog::spdlog ${UUID_LIBRARIES} publicFunc)
+                pugixml spdlog::spdlog ${UUID_LIBRARIES})
 
 # 安装规则
 # install(TARGETS client RUNTIME DESTINATION ${BIN_DIR})

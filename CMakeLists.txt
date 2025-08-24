@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 2.5)
-project(SimepleGame)
+cmake_minimum_required(VERSION 3.10)
+project(rougeGame VERSION 1.0.0 LANGUAGES CXX)
 
 # 设置可执行文件的输出路径
 
@@ -23,13 +23,14 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/include/client)
 include_directories(${CMAKE_SOURCE_DIR}/include/client/GameInterface)
 include_directories(${CMAKE_SOURCE_DIR}/include/client/HttpServer)
+include_directories(${CMAKE_SOURCE_DIR}/include/client/DataManager)
+include_directories(${CMAKE_SOURCE_DIR}/include/client/Character)
 include_directories(${CMAKE_SOURCE_DIR}/include/server)
-include_directories(${CMAKE_SOURCE_DIR}/include/publicLib)
 include_directories(${CMAKE_SOURCE_DIR}/thirdparty)
 include_directories(${CMAKE_SOURCE_DIR}/thirdparty/spdlog)
 
 #加载子目录
 
 add_subdirectory(src)
-add_subdirectory(test)
+# add_subdirectory(test)
 add_subdirectory(thirdparty/spdlog)
