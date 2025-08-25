@@ -25,13 +25,20 @@ public:
 
     void initTexture(SDL_Renderer* renderer);
 
+    void setImageSet(const ImageSet& imageSet);
+    void setSpriteData(const SpriteData& spriteData);
+
 private:
-    ImageSet m_neutralImage;
-    SpriteData m_neutralSprite;
+    ImageSet m_imageSet;
+    SpriteData m_spriteData;
     SDL_Texture* m_pTexture;
 
     int m_iFrameIndex;
 
     Frame m_Frame;
     int m_iDeltaTime;
+
+
+    std::string m_pngPath;   // 所在的图片路径
+    std::map<std::string, std::vector<std::string> > colorGroups; // 颜色组列表
 };

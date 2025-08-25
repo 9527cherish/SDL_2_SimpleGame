@@ -1,6 +1,7 @@
 #pragma once 
 
 #include <vector>
+#include <map>
 #include "characterDirection.hpp"
 #include "characterAction.hpp"
 

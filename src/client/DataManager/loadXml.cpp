@@ -1,5 +1,13 @@
 #include "loadXml.hpp"
 #include <pugixml.hpp>
+#include "partBase.hpp"
+
+
+std::string LoadXml::m_xmlPath = "../../images/tmwa/";
+std::string LoadXml::m_graphicsPath = "../../images/tmwa/graphics/sprites/";
+std::string LoadXml::m_npcXmlPath = "npcs/_include.xml";
+std::string LoadXml::m_neutralXmlPath = "graphics/sprites/model/neutral.xml";
+
 
 ImageSet LoadXml::parseImageXml(const std::string &path)
 {
@@ -8,7 +16,7 @@ ImageSet LoadXml::parseImageXml(const std::string &path)
         return ImageSet();
     }
 
-        // 获取根节点
+    // 获取根节点
     pugi::xml_node spriteNode = doc.child("sprite");
     if (!spriteNode) {
         return ImageSet();
@@ -187,6 +195,152 @@ void LoadXml::printSpriteData(const SpriteData &spriteData)
                          + ", offsetY=" + std::to_string(frame.offsetY)
                          + ", delay=" +  std::to_string(frame.delay) +  "ms" );
             }
-             spdlog::info("");
+            spdlog::info("");
+    }
+}
+
+Persona LoadXml::parsePersonaXml(const std::string& path)
+{
+    pugi::xml_document doc;
+    if (!doc.load_file(path.c_str())) {
+        return Persona();
+    }
+
+    // 获取根节点
+    pugi::xml_node npcsNode  = doc.child("npcs");
+    if (!npcsNode ) {
+        return Persona();
+    }
+
+     // 遍历所有 <npc> 节点
+    for (pugi::xml_node npcNode : npcsNode.children("npc")) {
+        Persona npc;
+        
+        // 获取 NPC ID
+        pugi::xml_attribute idAttr = npcNode.attribute("id");
+        if (!idAttr) {
+            spdlog::error("警告: NPC 缺少 id 属性，跳过");
+            continue;
+        }
+        npc.setId(idAttr.as_int());
+        
+        // 遍历所有 <sprite> 子节点
+        for (pugi::xml_node spriteNode : npcNode.children("sprite")) {
+            std::string spriteData = spriteNode.text().get();
+            
+            // 分割路径和颜色数据
+            size_t pos = spriteData.find('|');
+            if (pos == std::string::npos) {
+                spdlog::error("警告: 无效的 sprite 数据格式，跳过: " + spriteData);
+                continue;
+            }
+        
+            std::string partPath = m_graphicsPath + spriteData.substr(0, pos);
+            
+            npc.parts.push_back(part);
+        }
+    }
+    return Persona();
+}
+
+void LoadXml::parsePersonaXml(const std::string &path, Persona &persona)
+{
+    pugi::xml_document doc;
+    if (!doc.load_file(path.c_str())) {
+        return ImageSet();
+    }
+
+    // 获取根节点
+    pugi::xml_node spriteNode = doc.child("sprite");
+    if (!spriteNode) {
+        return ImageSet();
+    }
+    // 遍历所有 <npc> 节点
+    for (pugi::xml_node npcNode : npcsNode.children("npc")) {
+        Persona npc;
+        
+        // 获取 NPC ID
+        pugi::xml_attribute idAttr = npcNode.attribute("id");
+        if (!idAttr) {
+            spdlog::error("警告: NPC 缺少 id 属性，跳过");
+            continue;
+        }
+        npc.setId(idAttr.as_int());
+        
+        // 遍历所有 <sprite> 子节点
+        for (pugi::xml_node spriteNode : npcNode.children("sprite")) {
+            std::string spriteData = spriteNode.text().get();
+            
+            // 分割路径和颜色数据
+            size_t pos = spriteData.find('|');
+            if (pos == std::string::npos) {
+                spdlog::error("警告: 无效的 sprite 数据格式，跳过: " + spriteData);
+                continue;
+            }
+        
+            std::string partPath = m_graphicsPath + spriteData.substr(0, pos);
+
+            
+            npc.parts.push_back(part);
+        }
+    }
+    return Persona();
+    // bool flag = 
+    pugi::xml_node includeNode = spriteNode.child("include");
+    while(!includeNode)
+    {
+
+    }
+   
+}
+
+void LoadXml::parsePartBaseXml(const std::string &path)
+{
+    pugi::xml_document doc;
+    if (!doc.load_file(path.c_str())) {
+        return ImageSet();
+    }
+
+    // 获取根节点
+    pugi::xml_node spriteNode = doc.child("sprite");
+    if (!spriteNode) {
+        return ImageSet();
+    }
+    pugi::xml_node includeNode = spriteNode.child("include");
+
+    PartBase partBase;
+    std::string partBasePath;
+    if(includeNode)
+    {
+        partBase.setImageSet(parseImageXml(path));
+    }
+
+    while(includeNode)
+    {
+        partBasePath = includeNode.attribute("file").as_string();
+        parsePartBaseXml(partBasePath);
+    }
+    partBase.setSpriteData(parseSpriteXML(partBasePath));
+}
+
+std::vector<Persona> LoadXml::parseAllPersonaXml()
+{
+    pugi::xml_document doc;
+    std::string path = m_xmlPath + m_npcXmlPath;
+    if (!doc.load_file(path.c_str())) {
+        return;
+    }
+
+    std::vector<Persona> personaVec;
+    pugi::xml_node npcs = doc.child("npcs");
+    for (pugi::xml_node include : npcs.children("include")) 
+    {
+        const char* name = include.attribute("name").as_string();
+        if (name && name[0] != '\0') 
+        {
+            std::string npcpath = m_xmlPath + name;
+            Persona persona = parsePersonaXml(npcpath);
+
+        }
     }
 }

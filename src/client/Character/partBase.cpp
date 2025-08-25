@@ -1,3 +1,4 @@
+#include "partBase.hpp"
 // #include "partBase.hpp"
 
 // PartBase::PartBase()
@@ -43,3 +44,13 @@
 // void PartBase::initTexture(SDL_Renderer *renderer)
 // {
 // }
+
+void PartBase::setImageSet(const ImageSet &imageSet)
+{
+    m_imageSet = imageSet;
+}
+
+void PartBase::setSpriteData(const SpriteData &spriteData)
+{
+    m_spriteData = spriteData;
+}
