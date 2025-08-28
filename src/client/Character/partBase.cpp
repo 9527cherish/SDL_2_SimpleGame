@@ -50,7 +50,25 @@ void PartBase::setImageSet(const ImageSet &imageSet)
     m_imageSet = imageSet;
 }
 
+ImageSet PartBase::imageSet()
+{
+    return m_imageSet;
+}
+
 void PartBase::setSpriteData(const SpriteData &spriteData)
 {
     m_spriteData = spriteData;
+}
+
+SpriteData PartBase::spriteData()
+{
+    return m_spriteData;
+}
+
+PartBase::PartBase()
+{
+}
+
+PartBase::~PartBase()
+{
 }

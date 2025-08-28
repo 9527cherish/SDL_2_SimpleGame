@@ -7,7 +7,8 @@ class Persona
 {
 public:
     void setId(uint id);
-
+    
+    void addPartBase(const PartBase& part);
 
 private:
     uint m_id;                         // NPC ID

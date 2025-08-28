@@ -10,7 +10,7 @@ class DataManager
 {
 
 public:
-    static DataManager getInstance(); 
+    static DataManager& getInstance(); 
     DataManager();
     ~DataManager();
 

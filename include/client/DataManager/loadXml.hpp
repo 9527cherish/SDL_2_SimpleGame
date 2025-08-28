@@ -2,6 +2,7 @@
 
 #include "publicStruct.hpp"
 #include "persona.hpp"
+#include "partBase.hpp"
 
 class LoadXml
 {
@@ -12,10 +13,9 @@ public:
     static SpriteData parseSpriteXML(const std::string& path);
     static void printSpriteData(const SpriteData& spriteData);
     
-    static Persona parsePersonaXml(const std::string& path);
     static void parsePersonaXml(const std::string& path, Persona& persona);
 
-    static void parsePartBaseXml(const std::string& path);
+    static void parsePartBaseXml(const std::string& path, PartBase& part);
 
     static std::vector<Persona> parseAllPersonaXml();
 
