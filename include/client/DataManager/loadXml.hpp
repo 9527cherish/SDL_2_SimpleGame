@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "publicStruct.hpp"
+#include "characterStruct.hpp"
 #include "persona.hpp"
 #include "partBase.hpp"
 

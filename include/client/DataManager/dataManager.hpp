@@ -1,7 +1,7 @@
 #pragma once 
 
 
-#include "publicStruct.hpp"
+#include "characterStruct.hpp"
 #include "persona.hpp"
 
 // 管理所有数据

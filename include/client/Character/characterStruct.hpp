@@ -6,14 +6,6 @@
 #include "characterAction.hpp"
 
 
-const int SCREEN_WIDTH = 800;  // 屏幕大小
-const int SCREEN_HEIGHT = 600;
-const int MAP_WIDTH = 1024;     // 地图大小
-const int MAP_HEIGHT = 1024;
-
-const int PLAYER_WIDTH = 64;     // 玩家大小
-const int PLAYER_HEIGHT = 64;
-
 // 动画帧结构
 struct Frame {
     int index = 0; // 帧索引
@@ -116,23 +108,4 @@ struct ImageSet
     }
 };
 
-// inline AnimationSequence getFrameFromSprite(const SpriteData& sprite
-//             , const std::string actionName, const Direction& direction)
-// {
-//     if(sprite.actions.size() < 1)
-//         return AnimationSequence();
 
-//     for(Action action : sprite.actions)
-//     {
-//         if(action.name == actionName)
-//         {
-//             auto iter = action.directionAnim.animations.find(direction);
-//             if(iter != action.directionAnim.animations.end())
-//             {
-//                 return iter->second;
-//             }
-
-//         }
-//     }
-//     return AnimationSequence();
-// }
