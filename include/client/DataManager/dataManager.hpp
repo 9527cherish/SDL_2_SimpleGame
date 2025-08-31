@@ -17,8 +17,6 @@ public:
     // 初始化数据
     void initData();
 
-
-
     // 单例将拷贝构造和赋值构造删除
     DataManager(const DataManager&) = delete;
     DataManager(const DataManager&&) = delete;

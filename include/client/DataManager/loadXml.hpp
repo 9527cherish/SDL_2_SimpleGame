@@ -19,7 +19,7 @@ public:
 
     static std::vector<Persona> parseAllPersonaXml();
 
-private:
+public:
     static std::string m_xmlPath;
     static std::string m_graphicsPath;
     static std::string m_npcXmlPath;

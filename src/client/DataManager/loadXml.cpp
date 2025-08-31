@@ -119,6 +119,10 @@ SpriteData LoadXml::parseSpriteXML(const std::string &path)
         
         // 解析每个方向的动画
         for (pugi::xml_node animNode : actionNode.children("animation")) {
+            pugi::xml_attribute dirAttr = animNode.attribute("direction");
+            if(!dirAttr)
+                continue;
+
             action.direction = DirectionMapper::from_string(animNode.attribute("direction").as_string());
             
             AnimationSequence sequence;
@@ -232,12 +236,10 @@ void LoadXml::parsePersonaXml(const std::string &path, Persona &persona)
                 spdlog::error("警告: 无效的 sprite 数据格式，跳过: " + spriteData);
                 continue;
             }
-        
             std::string partPath = m_graphicsPath + spriteData.substr(0, pos);
             PartBase partBase;
             parsePartBaseXml(partPath, partBase);
             persona.addPartBase(partBase);
-
         }
     }
     return ;
@@ -262,12 +264,11 @@ void LoadXml::parsePartBaseXml(const std::string &path, PartBase& part)
     {
         part.setImageSet(parseImageXml(path));
         printImageXml(part.imageSet());
-    }
-
-    while(includeNode)
-    {
         partBasePath = m_graphicsPath + includeNode.attribute("file").as_string();
-        parsePartBaseXml(partBasePath, part);
+    }
+    else
+    {
+        partBasePath = path;
     }
     part.setSpriteData(parseSpriteXML(partBasePath));
     printSpriteData(part.spriteData());
@@ -276,15 +277,15 @@ void LoadXml::parsePartBaseXml(const std::string &path, PartBase& part)
 
 std::vector<Persona> LoadXml::parseAllPersonaXml()
 {
-    std::vector<Persona> personaVec;
+    std::vector<Persona> personas;
     pugi::xml_document doc;
     std::string path = m_xmlPath + m_npcXmlPath;
     if (!doc.load_file(path.c_str())) {
-        return personaVec;
+        return personas;
     }
 
-
     pugi::xml_node npcs = doc.child("npcs");
+    int count = 1;
     for (pugi::xml_node include : npcs.children("include")) 
     {
         const char* name = include.attribute("name").as_string();
@@ -293,9 +294,9 @@ std::vector<Persona> LoadXml::parseAllPersonaXml()
             std::string npcpath = m_xmlPath + name;
             Persona persona;
             parsePersonaXml(npcpath, persona);
-            personaVec.emplace_back(persona);
-
+            personas.emplace_back(persona);
+            spdlog::info("第" + std::to_string(count) +  "个角色");
         }
     }
-    return personaVec;
+    return personas;
 }

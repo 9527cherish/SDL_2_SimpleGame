@@ -11,18 +11,18 @@ public:
     PartBase(const ImageSet& image, const SpriteData& sprite);
     ~PartBase();
 
-    void update(const std::string& actionName, const CharaDirection& direction, int deltaTime);
-    void reset(const std::string& actionName, const CharaDirection& direction);
+    // 更新数据
+    void update(const CharaAction& actionName, const CharaDirection& direction, int deltaTime);
+    // 重置数据
+    void reset(const CharaAction& actionName, const CharaDirection& direction);
+    // 渲染数据
     void render(SDL_Renderer* renderer,const std::string& actionName, 
                             CharaDirection& dir, int& x, int& y);
 
-    
-    void setNeutralImage(const ImageSet& neutralImage);
-    void setNeutralSprite(const SpriteData& neutralSprite);
     void setTexture(SDL_Texture* pTexture);
-
-    void printTextureInfo(SDL_Texture* texture);
-
+    // 打印Texture信息
+    // void printTextureInfo(SDL_Texture* texture);
+    // 初始化Texture
     void initTexture(SDL_Renderer* renderer);
 
     void setImageSet(const ImageSet& imageSet);

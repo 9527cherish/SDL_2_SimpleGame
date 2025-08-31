@@ -34,8 +34,24 @@ struct Action {
     std::string imageset;
     CharaDirection direction;
 
+    Action()
+    {
+        action = CharaAction::DEFAULT;
+        direction = CharaDirection::DEFAULT;
+    }
+
+    Action(const CharaAction& action_, const CharaDirection& direction_)
+    {
+        action = action_;
+        direction = direction_;
+    }
+
     bool operator==(const Action& other) const {
         return action == other.action && direction == other.direction;
+    }
+
+    bool operator!=(const Action& other) const {
+        return action != other.action ||  direction != other.direction;
     }
 
         // 重载 < 运算符：定义两个 Action 如何比较
@@ -57,6 +73,11 @@ struct SpriteData {
     int frameWidth = 0;
     int frameHeight = 0;
     std::map<Action, AnimationSequence> animations;
+
+    SpriteData()
+    {
+        imageSetName = imageSetSrc = "";
+    }
 };
 
 
@@ -88,6 +109,11 @@ struct ImageSet
     int frameWidth = 0;
     int frameHeight = 0;
     std::string file;
+
+    ImageSet()
+    {
+        imageSetName = imageSetPath = file = "";
+    }
 };
 
 // inline AnimationSequence getFrameFromSprite(const SpriteData& sprite
