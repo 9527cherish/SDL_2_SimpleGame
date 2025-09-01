@@ -1,10 +1,11 @@
 #include "gameInterface.hpp"
+#include "interfaceStruct.hpp"
 
-GameInterface::gameInterface()
+GameInterface::GameInterface()
 {
 }
 
-GameInterface::~gameInterface()
+GameInterface::~GameInterface()
 {
 }
 

@@ -296,6 +296,7 @@ std::vector<Persona> LoadXml::parseAllPersonaXml()
             parsePersonaXml(npcpath, persona);
             personas.emplace_back(persona);
             spdlog::info("第" + std::to_string(count) +  "个角色");
+            count++;
         }
     }
     return personas;

@@ -2,8 +2,12 @@
 #pragma once 
 
 
-const int SCREEN_WIDTH = 800;  // 屏幕大小
-const int SCREEN_HEIGHT = 600;
+
+#define GAME_NAME "SDL_2 rogue"
+
+
+const int SCREEN_WIDTH = 1000;  // 屏幕大小
+const int SCREEN_HEIGHT = 800;
 const int MAP_WIDTH = 1024;     // 地图大小
 const int MAP_HEIGHT = 1024;
 

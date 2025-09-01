@@ -5,15 +5,16 @@
 class GameInterface
 {
 public:
-    gameInterface();
-    ~gameInterface();
+    GameInterface();
+    ~GameInterface();
 
     virtual void initScene() = 0;
     virtual void handleEvent() = 0;
 
-    bool isPointInRect(const int& x,const  int& y, const  SDL_Rect& rect);
+    virtual bool isPointInRect(const int& x,const  int& y, const  SDL_Rect& rect);
 
-private:
-    
-},
+// 使用  protected,子类可以访问
+protected:
+
+};
 
