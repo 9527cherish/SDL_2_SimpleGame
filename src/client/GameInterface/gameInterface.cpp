@@ -1,5 +1,5 @@
 #include "gameInterface.hpp"
-#include "interfaceStruct.hpp"
+#include "sceneStruct.hpp"
 
 GameInterface::GameInterface()
 {

@@ -1,12 +1,13 @@
 #pragma once 
+
+
 #include "gameInterface.hpp"
 
-
-
-class MainInterface : public GameInterface
+class MainScene : public GameInterface
 {
 public:
-    void initScene() override;
+    void renderScene() override;
+    void handleEvent() override;
 
 
     // 绘制左右箭头

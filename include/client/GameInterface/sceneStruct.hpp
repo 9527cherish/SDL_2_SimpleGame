@@ -2,6 +2,10 @@
 #pragma once 
 
 
+#include <vector>
+#include <map>
+#include <string>
+
 
 #define GAME_NAME "SDL_2 rogue"
 

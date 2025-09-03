@@ -1,8 +1,13 @@
 #pragma once 
 
-#include "interfaceStruct.hpp"
+#include "sceneStruct.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+
+#include "mainScene.hpp"
+#include "settingScene.hpp"
+#include "gameScene.hpp"
+#include "gameInterface.hpp"
 
 class InterfaceManager
 {
@@ -11,11 +16,16 @@ public:
     InterfaceManager();
     ~InterfaceManager();
     static InterfaceManager& getInstance();
-
+    //初始化窗口
     bool initWindow();
+
+    // 关闭窗口
     void closeWindow();
+    
+    GameInterface* currentScene(const Scene& scene);
+    Scene currentScene();
 
-
+    // 获取渲染器
     SDL_Renderer* renderer() const;
 
     // 刪除左值和右值  拷貝构造和赋值
@@ -25,7 +35,15 @@ public:
     InterfaceManager&& operator=(InterfaceManager) = delete;
 
 private:
+    // 当前所在场景
     Scene m_currentScene;
-    SDL_Window* window;
-    SDL_Renderer* renderer;
+    // 渲染
+    SDL_Window* m_window;
+    SDL_Renderer* m_renderer;
+    // 不同场景
+    MainScene* m_mainScene;
+    SettingScene* m_settingScene;
+    GameScene* m_gameScene;
+
+    std::map<Scene, GameInterface*> m_mapScene;
 };
