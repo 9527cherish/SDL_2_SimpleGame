@@ -18,13 +18,15 @@ public:
     static InterfaceManager& getInstance();
     //初始化窗口
     bool initWindow();
-
     // 关闭窗口
     void closeWindow();
-    
-    GameInterface* currentScene(const Scene& scene);
-    Scene currentScene();
+    //执行程序
+    void start();
 
+    //处理事件
+    void handleEvent();
+
+    Scene currentScene();
     // 获取渲染器
     SDL_Renderer* renderer() const;
 
@@ -44,6 +46,4 @@ private:
     MainScene* m_mainScene;
     SettingScene* m_settingScene;
     GameScene* m_gameScene;
-
-    std::map<Scene, GameInterface*> m_mapScene;
 };

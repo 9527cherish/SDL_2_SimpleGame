@@ -10,9 +10,6 @@ InterfaceManager::InterfaceManager()
     , m_settingScene(new SettingScene())
     , m_gameScene(new GameScene())
 {
-    m_mapScene[Scene::MAIN_MENU] =  m_mainScene;
-    m_mapScene[Scene::SETTINGS] = m_settingScene;
-    m_mapScene[Scene::GAME_SCENE] = m_gameScene;
 
     m_currentScene = Scene::MAIN_MENU;
 }
@@ -89,9 +86,51 @@ void InterfaceManager::closeWindow()
     SDL_Quit();
 }
 
-GameInterface *InterfaceManager::currentScene(const Scene &scene)
+void InterfaceManager::start()
 {
-    return m_mapScene[scene];
+    initWindow();
+
+    bool quit = false;
+    SDL_Event e;
+
+    while (!quit) {
+        // 处理事件
+        while (SDL_PollEvent(&e) != 0) {
+            if (e.type == SDL_QUIT) {
+                quit = true;
+            }
+        }
+        handleEvent();
+        SDL_Delay(30); // 约30FPS
+            // 更新屏幕
+        SDL_RenderPresent(m_renderer);
+    }
+    closeWindow();
+}
+
+void InterfaceManager::handleEvent()
+{
+    switch (m_currentScene)
+    {
+    case Scene::MAIN_MENU:
+        m_mainScene->initButton();
+        m_mainScene->renderScene();
+        m_mainScene->handleEvent();
+        break;
+        
+    case Scene::GAME_SCENE:
+        m_gameScene->renderScene();
+        m_gameScene->handleEvent();
+        break;
+
+    case Scene::SETTINGS:
+        m_settingScene->renderScene();
+        m_settingScene->handleEvent();
+        break;
+    
+    default:
+        break;
+    }
 }
 
 Scene InterfaceManager::currentScene()
