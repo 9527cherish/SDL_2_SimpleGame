@@ -100,7 +100,7 @@ void InterfaceManager::start()
                 quit = true;
             }
         }
-        handleEvent();
+        handleEvent(e);
         SDL_Delay(30); // 约30FPS
             // 更新屏幕
         SDL_RenderPresent(m_renderer);
@@ -108,24 +108,24 @@ void InterfaceManager::start()
     closeWindow();
 }
 
-void InterfaceManager::handleEvent()
+void InterfaceManager::handleEvent(const SDL_Event &e)
 {
     switch (m_currentScene)
     {
     case Scene::MAIN_MENU:
         m_mainScene->initButton();
         m_mainScene->renderScene();
-        m_mainScene->handleEvent();
+        m_mainScene->handleEvent(e);
         break;
         
     case Scene::GAME_SCENE:
         m_gameScene->renderScene();
-        m_gameScene->handleEvent();
+        m_gameScene->handleEvent(e);
         break;
 
     case Scene::SETTINGS:
         m_settingScene->renderScene();
-        m_settingScene->handleEvent();
+        m_settingScene->handleEvent(e);
         break;
     
     default:

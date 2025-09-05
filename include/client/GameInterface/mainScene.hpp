@@ -10,27 +10,26 @@ class MainScene : public GameInterface
 public:
     MainScene();
     void renderScene() override;
-    void handleEvent() override;
+    void handleEvent(const SDL_Event &e) override;
 
     void initButton();
-
 
     // 绘制左右箭头
     void drawLeftArrow(SDL_Renderer* renderer, const int& x, const int& y, const int& width, const int& height);
     void drawRightArrow(SDL_Renderer* renderer, const int& x, const int& y, const int& width, const int& height);
 private:
     // 主菜单按钮
-    std::unique_ptr<Button> startButton;
-    std::unique_ptr<Button> settingsButton;
-    std::unique_ptr<Button> exitButton;
+    std::unique_ptr<Button> m_pStartButton;
+    std::unique_ptr<Button> m_pSettingsButton;
+    std::unique_ptr<Button> m_pExitButton;
 
         // 设置菜单元素
-    std::unique_ptr<Button> backButton;
-    std::unique_ptr<Button> saveButton;
+    std::unique_ptr<Button> m_pBackButton;
+    std::unique_ptr<Button> m_pSaveButton;
     
-    TTF_Font* titleFont;
-    TTF_Font* buttonFont;
-    TTF_Font* labelFont;
+    TTF_Font* m_pTitleFont;
+    TTF_Font* m_pButtonFont;
+    TTF_Font* m_pLabelFont;
 
 };
 

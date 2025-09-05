@@ -11,7 +11,7 @@ public:
     virtual ~GameInterface();
 
     virtual void renderScene() = 0;
-    virtual void handleEvent() = 0;
+    virtual void handleEvent(const SDL_Event &e) = 0;
 
     virtual bool isPointInRect(const int& x,const  int& y, const  SDL_Rect& rect);
 

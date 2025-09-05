@@ -4,6 +4,6 @@ void GameScene::renderScene()
 {
 }
 
-void GameScene::handleEvent()
+void GameScene::handleEvent(const SDL_Event &e)
 {
 }

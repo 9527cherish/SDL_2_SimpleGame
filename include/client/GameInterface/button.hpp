@@ -16,7 +16,6 @@ enum class ButtonState {
 };
 
 
-
 class Button
 {
 
@@ -32,17 +31,19 @@ public:
     void setText(const std::string& t);
 
 private:
-    SDL_Rect rect;
-    std::string text;
-    TTF_Font* font;
-    SDL_Color normalColor;
-    SDL_Color hoverColor;
-    SDL_Color pressedColor;
-    SDL_Color textColor;
-    ButtonState state;
-    bool visible;
-    SDL_Texture* textTexture;
-    SDL_Renderer* renderer;
+    SDL_Renderer* m_pRenderer;
+    TTF_Font* m_pFont;
+    std::string m_text;
+    SDL_Rect m_rect;
+
+    SDL_Color m_normalColor;
+    SDL_Color m_hoverColor;
+    SDL_Color m_pressedColor;
+    SDL_Color m_textColor;
+    ButtonState m_state;
+    bool m_visible;
+    SDL_Texture* m_pTextTexture;
+
 
     void updateTextTexture();
 };

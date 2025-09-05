@@ -18,19 +18,19 @@ MainScene::MainScene()
         spdlog::error("TTF_Init 初始化失败:" + std::string(TTF_GetError()));
     }
 
-    titleFont = TTF_OpenFont("NotoSansCJK.ttf", 16);
-    if (!titleFont) {
-        spdlog::error("加载字体失败:"  + std::string(TTF_GetError()));
+    m_pTitleFont = TTF_OpenFont("SourceHanSansCN-Regular.otf", 16);
+    if (!m_pTitleFont) {
+        spdlog::error("MainScene Title加载字体失败:"  + std::string(TTF_GetError()));
     }
 
-    buttonFont = TTF_OpenFont("NotoSansCJK.ttf", 16);
-    if (!buttonFont) {
-        spdlog::error("加载字体失败:"  + std::string(TTF_GetError()));
+    m_pButtonFont = TTF_OpenFont("SourceHanSansCN-Regular.otf", 16);
+    if (!m_pButtonFont) {
+        spdlog::error("MainScene Button加载字体失败:"  + std::string(TTF_GetError()));
     }
 
-    labelFont = TTF_OpenFont("NotoSansCJK.ttf", 16);
-    if (!labelFont) {
-        spdlog::error("加载字体失败:"  + std::string(TTF_GetError()));
+    m_pLabelFont = TTF_OpenFont("SourceHanSansCN-Regular.otf", 16);
+    if (!m_pLabelFont) {
+        spdlog::error("MainScene Label加载字体失败:"  + std::string(TTF_GetError()));
     }
 }
 
@@ -66,12 +66,12 @@ void MainScene::renderScene()
                 
     // 渲染主菜单按钮
 
-    startButton->renderButton();
-    settingsButton->renderButton();
-    exitButton->renderButton();
+    m_pStartButton->renderButton();
+    m_pSettingsButton->renderButton();
+    m_pExitButton->renderButton();
     
     // 渲染底部信息
-    SDL_Surface* infoSurface = TTF_RenderText_Blended(labelFont, "按ESC键退出 | 版本 1.0.0", SDL_Color{100, 100, 100, 122});
+    SDL_Surface* infoSurface = TTF_RenderUTF8_Blended(m_pLabelFont, "按ESC键退出 | 版本 1.0.0", SDL_Color{100, 100, 100, 122});
     if (infoSurface) {
         SDL_Texture* infoTexture = SDL_CreateTextureFromSurface(renderer, infoSurface);
         SDL_Rect infoRect = {
@@ -88,9 +88,11 @@ void MainScene::renderScene()
 
 }
 
-void MainScene::handleEvent()
+void MainScene::handleEvent(const SDL_Event &e)
 {
-
+    m_pStartButton->handleEvent(e);  
+    m_pSettingsButton->handleEvent(e);
+    m_pExitButton->handleEvent(e);
 }
 
 void MainScene::initButton()
@@ -102,8 +104,8 @@ void MainScene::initButton()
     int buttonY = SCREEN_HEIGHT / 2 - 80;
     int buttonSpacing = 80;
     
-    startButton = std::make_unique<Button>(
-        renderer, buttonFont, "开始游戏",
+    m_pStartButton = std::make_unique<Button>(
+        renderer, m_pButtonFont, "开始游戏",
         (SCREEN_WIDTH - buttonWidth) / 2, buttonY,
         buttonWidth, buttonHeight,
         SDL_Color{108, 92, 231, 200},    // 正常颜色
@@ -113,8 +115,8 @@ void MainScene::initButton()
     );
 
     buttonY += buttonSpacing;
-    settingsButton = std::make_unique<Button>(
-        renderer, buttonFont, "游戏设置",
+    m_pSettingsButton = std::make_unique<Button>(
+        renderer, m_pButtonFont, "游戏设置",
         (SCREEN_WIDTH - buttonWidth) / 2, buttonY,
         buttonWidth, buttonHeight,
         SDL_Color{45, 52, 54, 200},      // 正常颜色
@@ -124,8 +126,8 @@ void MainScene::initButton()
     );
 
     buttonY += buttonSpacing;
-    exitButton = std::make_unique<Button>(
-        renderer, buttonFont, "退出游戏",
+    m_pExitButton = std::make_unique<Button>(
+        renderer, m_pButtonFont, "退出游戏",
         (SCREEN_WIDTH - buttonWidth) / 2, buttonY,
         buttonWidth, buttonHeight,
         SDL_Color{45, 52, 54, 200},      // 正常颜色
@@ -135,8 +137,8 @@ void MainScene::initButton()
     );
 
     // 初始化设置菜单元素
-    backButton = std::make_unique<Button>(
-        renderer, buttonFont, "返回",
+    m_pBackButton = std::make_unique<Button>(
+        renderer, m_pButtonFont, "返回",
         50, 50,
         120, 50,
         SDL_Color{45, 52, 54, 200},      // 正常颜色
@@ -144,10 +146,10 @@ void MainScene::initButton()
         SDL_Color{30, 35, 36, 255},      // 按下颜色
         SDL_Color{255, 255, 255}         // 文本颜色
     );
-    backButton->setVisible(false);
+    m_pBackButton->setVisible(false);
 
-    saveButton = std::make_unique<Button>(
-        renderer, buttonFont, "保存设置",
+    m_pSaveButton = std::make_unique<Button>(
+        renderer, m_pButtonFont, "保存设置",
         SCREEN_WIDTH - 170, 50,
         120, 50,
         SDL_Color{108, 92, 231, 200},    // 正常颜色
@@ -155,7 +157,7 @@ void MainScene::initButton()
         SDL_Color{85, 72, 189, 255},     // 按下颜色
         SDL_Color{255, 255, 255}         // 文本颜色
     );
-    saveButton->setVisible(false);
+    m_pSaveButton->setVisible(false);
 }
 
 void MainScene::drawLeftArrow(SDL_Renderer *renderer, const int& x, const int& y, const int& width, const int& height)

@@ -2,83 +2,92 @@
 
 Button::Button(SDL_Renderer *renderer, TTF_Font *font, const std::string &text, int x, int y
                 , int w, int h, SDL_Color normal, SDL_Color hover, SDL_Color pressed, SDL_Color textColor)
-                : renderer(renderer), font(font), text(text) 
-                , rect({x, y, w, h})
-                , normalColor(normal), hoverColor(hover), pressedColor(pressed), textColor(textColor)
-                , state(ButtonState::NORMAL), visible(true), textTexture(nullptr)
+                : m_pRenderer(renderer), m_pFont(font), m_text(text) 
+                , m_rect({x, y, w, h})
+                , m_normalColor(normal), m_hoverColor(hover), m_pressedColor(pressed), m_textColor(textColor)
+                , m_state(ButtonState::NORMAL), m_visible(true), m_pTextTexture(nullptr)
                 
 {
+    if (TTF_Init() == -1) {
+        spdlog::error("TTF_Init 初始化失败:" + std::string(TTF_GetError()));
+    }
+
+    m_pFont = TTF_OpenFont("SourceHanSansCN-Regular.otf", 16);
+    if (!m_pFont) {
+        spdlog::error("Button 加载字体失败:"  + std::string(TTF_GetError()));
+    }
+
     updateTextTexture();
 }
 
 Button::~Button()
 {
-    if (textTexture){
-        SDL_DestroyTexture(textTexture);
+    if (m_pTextTexture){
+        SDL_DestroyTexture(m_pTextTexture);
      }
 }
 
 void Button::renderButton()
 {
-    if (!visible) return;
+    if (!m_visible) return;
 
     // 绘制按钮背景
     SDL_Color currentColor;
-    switch (state) {
-        case ButtonState::NORMAL: currentColor = normalColor; break;
-        case ButtonState::HOVER: currentColor = hoverColor; break;
-        case ButtonState::PRESSED: currentColor = pressedColor; break;
+    switch (m_state) {
+        case ButtonState::NORMAL: currentColor = m_normalColor; break;
+        case ButtonState::HOVER: currentColor = m_hoverColor; break;
+        case ButtonState::PRESSED: currentColor = m_pressedColor; break;
     }
 
-    SDL_SetRenderDrawColor(renderer, currentColor.r, currentColor.g, currentColor.b, currentColor.a);
-    SDL_RenderFillRect(renderer, &rect);
+    SDL_SetRenderDrawColor(m_pRenderer, currentColor.r, currentColor.g, currentColor.b, currentColor.a);
+    SDL_RenderFillRect(m_pRenderer, &m_rect);
 
     // 绘制按钮边框
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 200);
-    SDL_RenderDrawRect(renderer, &rect);
+    SDL_SetRenderDrawColor(m_pRenderer, 255, 255, 255, 200);
+    SDL_RenderDrawRect(m_pRenderer, &m_rect);
 
     // 绘制文本
-    if (textTexture) {
+    if (m_pTextTexture) {
         int textW, textH;
-        SDL_QueryTexture(textTexture, nullptr, nullptr, &textW, &textH);
+        SDL_QueryTexture(m_pTextTexture, nullptr, nullptr, &textW, &textH);
         SDL_Rect textRect = {
-            rect.x + (rect.w - textW) / 2,
-            rect.y + (rect.h - textH) / 2,
+            m_rect.x + (m_rect.w - textW) / 2,
+            m_rect.y + (m_rect.h - textH) / 2,
             textW, textH
         };
-        SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
+        SDL_RenderCopy(m_pRenderer, m_pTextTexture, nullptr, &textRect);
     }
 }
 
 bool Button::handleEvent(const SDL_Event &e)
 {
-    if (!visible) return false;
+    if (!m_visible) return false;
 
     int x, y;
     SDL_GetMouseState(&x, &y);
 
-    bool inside = (x >= rect.x && x < rect.x + rect.w &&
-                    y >= rect.y && y < rect.y + rect.h);
+    bool inside = (x >= m_rect.x && x < m_rect.x + m_rect.w &&
+                    y >= m_rect.y && y < m_rect.y + m_rect.h);
 
     if (!inside) {
-        state = ButtonState::NORMAL;
+        m_state = ButtonState::NORMAL;
         return false;
     }
 
     switch (e.type) {
         case SDL_MOUSEMOTION:
-            if (state != ButtonState::PRESSED) {
-                state = ButtonState::HOVER;
+            if (m_state != ButtonState::PRESSED) {
+                m_state = ButtonState::HOVER;
             }
             break;
         case SDL_MOUSEBUTTONDOWN:
             if (e.button.button == SDL_BUTTON_LEFT) {
-                state = ButtonState::PRESSED;
+                m_state = ButtonState::PRESSED;
             }
             break;
         case SDL_MOUSEBUTTONUP:
-            if (e.button.button == SDL_BUTTON_LEFT && state == ButtonState::PRESSED) {
-                state = ButtonState::HOVER;
+            if (e.button.button == SDL_BUTTON_LEFT && m_state == ButtonState::PRESSED) {
+                m_state = ButtonState::HOVER;
                 return true; // 按钮被点击
             }
             break;
@@ -88,32 +97,32 @@ bool Button::handleEvent(const SDL_Event &e)
 
 void Button::setVisible(bool v)
 {
-    visible = v;
+    m_visible = v;
 }
 
 bool Button::isVisible() const
 {
-    return visible;
+    return m_visible;
 }
 
 void Button::setText(const std::string &t)
 {
-    text = t; 
+    m_text = t; 
     updateTextTexture();  
 }
 
 void Button::updateTextTexture()
 {
-    if (textTexture) {
-        SDL_DestroyTexture(textTexture);
+    if (m_pTextTexture) {
+        SDL_DestroyTexture(m_pTextTexture);
     }
 
-    SDL_Surface* textSurface = TTF_RenderText_Blended(font, text.c_str(), textColor);
+    SDL_Surface* textSurface = TTF_RenderUTF8_Blended(m_pFont, m_text.c_str(), m_textColor);
     if (!textSurface) {
-        // std::cerr << "无法创建文本表面: " << TTF_GetError() << std::endl;
+        spdlog::error("无法创建文本表面: " + std::string(TTF_GetError()));
         return;
     }
 
-    textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+    m_pTextTexture = SDL_CreateTextureFromSurface(m_pRenderer, textSurface);
     SDL_FreeSurface(textSurface);
 }

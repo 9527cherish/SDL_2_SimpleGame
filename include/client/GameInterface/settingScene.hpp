@@ -6,5 +6,5 @@ class SettingScene : public GameInterface
 {
 public:
     void renderScene() override;
-    void handleEvent() override;
+    void handleEvent(const SDL_Event &e) override;
 };

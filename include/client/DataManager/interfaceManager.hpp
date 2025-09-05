@@ -24,7 +24,7 @@ public:
     void start();
 
     //处理事件
-    void handleEvent();
+    void handleEvent(const SDL_Event &e);
 
     Scene currentScene();
     // 获取渲染器
