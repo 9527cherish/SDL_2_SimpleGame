@@ -4,35 +4,19 @@
 
 
 InterfaceManager::InterfaceManager()
-    : m_window(nullptr)
-    , m_renderer(nullptr)
-    , m_mainScene(new MainScene())
-    , m_settingScene(new SettingScene())
-    , m_gameScene(new GameScene())
+    : m_pWindow(nullptr)
+    , m_pRenderer(nullptr)
+    , m_pMainScene(std::make_unique<MainScene> ())
+    , m_pSettingScene(std::make_unique<SettingScene>())
+    , m_pGameScene(std::make_unique<GameScene>())
 {
-
     m_currentScene = Scene::MAIN_MENU;
+    initWindow();
 }
 
 InterfaceManager::~InterfaceManager()
 {
-    if(nullptr != m_mainScene)
-    {
-        delete m_mainScene;
-        m_mainScene = nullptr;
-    }
-
-    if(nullptr != m_settingScene)
-    {
-        delete m_settingScene;
-        m_settingScene = nullptr;
-    }
-
-    if(nullptr != m_gameScene)
-    {
-        delete m_gameScene;
-        m_gameScene = nullptr;
-    }
+    closeWindow();
 }
 
 InterfaceManager &InterfaceManager::getInstance()
@@ -55,20 +39,20 @@ bool InterfaceManager::initWindow()
         return false;
     }
 
-    m_window = SDL_CreateWindow(GAME_NAME,
+    m_pWindow = SDL_CreateWindow(GAME_NAME,
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 
-    if (!m_window) {
+    if (!m_pWindow) {
         spdlog::error( "无法创建窗口: " + std::string(SDL_GetError()) );
         IMG_Quit();
         SDL_Quit();
         return false;
     }
-    m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
+    m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, SDL_RENDERER_ACCELERATED);
 
-    if (!m_renderer) {
+    if (!m_pRenderer) {
         spdlog::error( "无法创建渲染器: " + std::string(SDL_GetError()) );
-        SDL_DestroyWindow(m_window);
+        SDL_DestroyWindow(m_pWindow);
         IMG_Quit();
         SDL_Quit();
         return false;
@@ -80,16 +64,14 @@ bool InterfaceManager::initWindow()
 void InterfaceManager::closeWindow()
 {
         // 清理资源
-    SDL_DestroyRenderer(m_renderer);
-    SDL_DestroyWindow(m_window);
+    SDL_DestroyRenderer(m_pRenderer);
+    SDL_DestroyWindow(m_pWindow);
     IMG_Quit();
     SDL_Quit();
 }
 
 void InterfaceManager::start()
 {
-    initWindow();
-
     bool quit = false;
     SDL_Event e;
 
@@ -103,9 +85,8 @@ void InterfaceManager::start()
         handleEvent(e);
         SDL_Delay(30); // 约30FPS
             // 更新屏幕
-        SDL_RenderPresent(m_renderer);
+        SDL_RenderPresent(m_pRenderer);
     }
-    closeWindow();
 }
 
 void InterfaceManager::handleEvent(const SDL_Event &e)
@@ -113,19 +94,19 @@ void InterfaceManager::handleEvent(const SDL_Event &e)
     switch (m_currentScene)
     {
     case Scene::MAIN_MENU:
-        m_mainScene->initButton();
-        m_mainScene->renderScene();
-        m_mainScene->handleEvent(e);
+        m_pMainScene->init();
+        m_pMainScene->renderScene();
+        m_pMainScene->handleEvent(e);
         break;
         
     case Scene::GAME_SCENE:
-        m_gameScene->renderScene();
-        m_gameScene->handleEvent(e);
+        m_pGameScene->renderScene();
+        m_pGameScene->handleEvent(e);
         break;
 
     case Scene::SETTINGS:
-        m_settingScene->renderScene();
-        m_settingScene->handleEvent(e);
+        m_pSettingScene->renderScene();
+        m_pSettingScene->handleEvent(e);
         break;
     
     default:
@@ -140,5 +121,5 @@ Scene InterfaceManager::currentScene()
 
 SDL_Renderer *InterfaceManager::renderer() const
 {
-    return m_renderer;
+    return m_pRenderer;
 }

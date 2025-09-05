@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(client VERSION 1.0.0 LANGUAGES CXX)
+project(rougeClient VERSION 1.0.0 LANGUAGES CXX)
 
 # Use our modified FindSDL2* modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${client_SOURCE_DIR}/cmake")
@@ -31,9 +31,9 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 # 编译动态库
 # add_library(MuduoSimplify SHARED ${SRC_LIST})
-add_executable(client ${SRC_LIST} ${GAME_LIST} ${HTTP_LIST} ${DATA_LIST} ${CHARA_LIST})
+add_executable(rougeClient ${SRC_LIST} ${GAME_LIST} ${HTTP_LIST} ${DATA_LIST} ${CHARA_LIST})
 
-target_link_libraries(client PRIVATE 
+target_link_libraries(rougeClient PRIVATE 
                 ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${SDL2_MIXER_LIBRARY}  ${SDL2_TTF_LIBRARIES} 
                 pugixml spdlog::spdlog ${UUID_LIBRARIES})
 

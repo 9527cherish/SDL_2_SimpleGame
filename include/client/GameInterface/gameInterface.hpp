@@ -10,6 +10,9 @@ public:
     // 析构函数声明称虚函数，否则析构的时候只会调用基类的析构函数，派生类的无法调用
     virtual ~GameInterface();
 
+    void init();
+
+    virtual void initScene() = 0;
     virtual void renderScene() = 0;
     virtual void handleEvent(const SDL_Event &e) = 0;
 
@@ -17,6 +20,7 @@ public:
 
 // 使用  protected,子类可以访问
 protected:
+    bool m_binit;
 
 };
 

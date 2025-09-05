@@ -2,11 +2,21 @@
 #include "sceneStruct.hpp"
 
 GameInterface::GameInterface()
+    : m_binit(false)
 {
 }
 
 GameInterface::~GameInterface()
 {
+}
+
+void GameInterface::init()
+{
+    if(m_binit)
+        return;
+
+    initScene();
+    m_binit = true;
 }
 
 bool GameInterface::isPointInRect(const int &x, const int &y, const SDL_Rect &rect)

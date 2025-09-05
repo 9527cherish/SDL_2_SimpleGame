@@ -40,10 +40,10 @@ private:
     // 当前所在场景
     Scene m_currentScene;
     // 渲染
-    SDL_Window* m_window;
-    SDL_Renderer* m_renderer;
+    SDL_Window* m_pWindow;
+    SDL_Renderer* m_pRenderer;
     // 不同场景
-    MainScene* m_mainScene;
-    SettingScene* m_settingScene;
-    GameScene* m_gameScene;
+    std::unique_ptr<MainScene> m_pMainScene;
+    std::unique_ptr<SettingScene> m_pSettingScene;
+    std::unique_ptr<GameScene> m_pGameScene;
 };

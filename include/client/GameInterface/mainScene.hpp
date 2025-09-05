@@ -11,6 +11,7 @@ public:
     MainScene();
     void renderScene() override;
     void handleEvent(const SDL_Event &e) override;
+    void initScene() override;
 
     void initButton();
 
@@ -30,6 +31,8 @@ private:
     TTF_Font* m_pTitleFont;
     TTF_Font* m_pButtonFont;
     TTF_Font* m_pLabelFont;
+
+    SDL_Renderer* m_pRenderer;
 
 };
 
