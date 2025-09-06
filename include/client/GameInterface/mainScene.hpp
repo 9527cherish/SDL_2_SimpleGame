@@ -9,11 +9,17 @@ class MainScene : public GameInterface
 {
 public:
     MainScene();
-    void renderScene() override;
+    
     void handleEvent(const SDL_Event &e) override;
-    void initScene() override;
 
+    // 初始化所有控件
     void initButton();
+    void initScene() override;
+    
+    // 渲染控件
+    void renderScene() override;
+    void renderButton();
+    void renderArrow();
 
     // 绘制左右箭头
     void drawLeftArrow(SDL_Renderer* renderer, const int& x, const int& y, const int& width, const int& height);

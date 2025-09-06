@@ -12,7 +12,7 @@ Button::Button(SDL_Renderer *renderer, TTF_Font *font, const std::string &text, 
         spdlog::error("TTF_Init 初始化失败:" + std::string(TTF_GetError()));
     }
 
-    m_pFont = TTF_OpenFont("SourceHanSansCN-Regular.otf", 16);
+    m_pFont = TTF_OpenFont("SourceHanSansCN-Regular.otf", 32);
     if (!m_pFont) {
         spdlog::error("Button 加载字体失败:"  + std::string(TTF_GetError()));
     }
