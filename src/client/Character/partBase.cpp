@@ -70,10 +70,10 @@ void PartBase::reset(const CharaAction &actionName, const CharaDirection &direct
     }
 }
 
-void PartBase::render(SDL_Renderer *renderer, const std::string &actionName, CharaDirection &dir, int &x, int &y)
+void PartBase::render(SDL_Renderer *renderer, const CharaAction &actionName, CharaDirection &dir, int &x, int &y)
 {
     if(nullptr == m_pTexture)
-    return;
+        return;
 
     int cols, rows;
     cols = rows = 0;

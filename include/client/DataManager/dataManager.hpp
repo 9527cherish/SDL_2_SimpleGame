@@ -17,10 +17,11 @@ public:
     // 初始化数据
     void initData();
 
+    
+    bool getPersonas(std::vector<Persona>& persons);
     // 单例将拷贝构造和赋值构造删除
     DataManager(const DataManager&) = delete;
     DataManager(const DataManager&&) = delete;
-
     DataManager& operator=(const DataManager&) = delete;
     DataManager& operator=(const DataManager&&) = delete;
 

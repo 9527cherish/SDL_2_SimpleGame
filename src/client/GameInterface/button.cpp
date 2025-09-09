@@ -5,14 +5,14 @@ Button::Button(SDL_Renderer *renderer, TTF_Font *font, const std::string &text, 
                 : m_pRenderer(renderer), m_pFont(font), m_text(text) 
                 , m_rect({x, y, w, h})
                 , m_normalColor(normal), m_hoverColor(hover), m_pressedColor(pressed), m_textColor(textColor)
-                , m_state(ButtonState::NORMAL), m_visible(true), m_pTextTexture(nullptr)
+                , m_state(ButtonState::NORMAL), m_visible(true), m_pTextTexture(nullptr), m_bRenderBorder(true)
                 
 {
     if (TTF_Init() == -1) {
         spdlog::error("TTF_Init 初始化失败:" + std::string(TTF_GetError()));
     }
 
-    m_pFont = TTF_OpenFont("SourceHanSansCN-Regular.otf", 32);
+    m_pFont = TTF_OpenFont("SourceHanSansCN-Regular.otf", 24);
     if (!m_pFont) {
         spdlog::error("Button 加载字体失败:"  + std::string(TTF_GetError()));
     }
@@ -43,8 +43,11 @@ void Button::renderButton()
     SDL_RenderFillRect(m_pRenderer, &m_rect);
 
     // 绘制按钮边框
-    SDL_SetRenderDrawColor(m_pRenderer, 255, 255, 255, 200);
-    SDL_RenderDrawRect(m_pRenderer, &m_rect);
+    if(m_bRenderBorder)
+    {
+        SDL_SetRenderDrawColor(m_pRenderer, 255, 255, 255, 200);
+        SDL_RenderDrawRect(m_pRenderer, &m_rect);
+    }
 
     // 绘制文本
     if (m_pTextTexture) {
@@ -109,6 +112,21 @@ void Button::setText(const std::string &t)
 {
     m_text = t; 
     updateTextTexture();  
+}
+
+void Button::setTexture(SDL_Texture *texture)
+{
+    m_pTextTexture = texture;
+}
+
+void Button::setFont(TTF_Font *font)
+{
+    m_pFont = font;
+}
+
+void Button::setBorder(bool flag)
+{
+    m_bRenderBorder = flag;
 }
 
 void Button::updateTextTexture()

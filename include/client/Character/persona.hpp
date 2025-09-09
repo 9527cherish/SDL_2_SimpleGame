@@ -7,7 +7,7 @@ class Persona
 {
 public:
     void setId(uint id);
-    
+    void renderSpritePart(SDL_Renderer* renderer, int& x, int& y);
     void addPartBase(const PartBase& part);
 
 private:

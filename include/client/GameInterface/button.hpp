@@ -29,6 +29,9 @@ public:
     void setVisible(bool v);
     bool isVisible() const;
     void setText(const std::string& t);
+    void setTexture(SDL_Texture* texture);
+    void setFont(TTF_Font* font);
+    void setBorder(bool flag);
 
 private:
     SDL_Renderer* m_pRenderer;
@@ -44,6 +47,7 @@ private:
     bool m_visible;
     SDL_Texture* m_pTextTexture;
 
+    bool m_bRenderBorder;
 
     void updateTextTexture();
 };

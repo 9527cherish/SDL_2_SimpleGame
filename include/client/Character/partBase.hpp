@@ -16,7 +16,7 @@ public:
     // 重置数据
     void reset(const CharaAction& actionName, const CharaDirection& direction);
     // 渲染数据
-    void render(SDL_Renderer* renderer,const std::string& actionName, 
+    void render(SDL_Renderer* renderer,const CharaAction& actionName, 
                             CharaDirection& dir, int& x, int& y);
 
     void setTexture(SDL_Texture* pTexture);

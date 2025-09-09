@@ -12,7 +12,7 @@
 
 
 const int SCREEN_WIDTH = 1000;  // 屏幕大小
-const int SCREEN_HEIGHT = 800;
+const int SCREEN_HEIGHT = 700;
 const int MAP_WIDTH = 1024;     // 地图大小
 const int MAP_HEIGHT = 1024;
 
