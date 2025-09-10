@@ -38,7 +38,7 @@ MainScene::MainScene()
 void MainScene::renderScene()
 {
    renderButton();
-//    renderPersona();
+   renderPersona();
 }
 
 void MainScene::handleEvent(const SDL_Event &e)
@@ -153,15 +153,20 @@ void MainScene::renderButton()
 void MainScene::renderPersona()
 {
     std::vector<Persona> personas;
-    if(!DataManager::getInstance().getPersonas(personas))
-        return;
+    DataManager::getInstance().getData(personas);
 
-    for(int i = 0; i < 1; i++)
+    int x = 400;
+    int y = 300;
+
+    for(int i = 0; i < 5; i++)
     {
-        Persona persona = personas[0];
-        int x = 400;
-        int y = 300;
-        persona.renderSpritePart(m_pRenderer, x, y);
+        for(int j = 0; j < 2; j++)
+        {
+            x = 80*i + 400;
+            y = 80*j + 300;
+            Persona persona = personas[j*5+i];
+            persona.renderer(m_pRenderer, x, y);
+        }
     }
 }
 

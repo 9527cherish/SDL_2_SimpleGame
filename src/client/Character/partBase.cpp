@@ -52,12 +52,12 @@ void PartBase::update(const CharaAction &actionName, const CharaDirection &direc
         m_iDeltaTime = 0;
     }
 
-    spdlog::info("file" + m_imageSet.file
-                + "  action:" +  ActionMapper::to_string(actionName) 
-                + "  direction:" + DirectionMapper::to_string(direction)
-                + "  deltaTime:"  + std::to_string(deltaTime)
-                + "  delay:" + std::to_string(m_Frame.delay)
-                + "  index:" + std::to_string(m_Frame.index));
+    // spdlog::info("file" + m_imageSet.file
+    //             + "  action:" +  ActionMapper::to_string(actionName) 
+    //             + "  direction:" + DirectionMapper::to_string(direction)
+    //             + "  deltaTime:"  + std::to_string(deltaTime)
+    //             + "  delay:" + std::to_string(m_Frame.delay)
+    //             + "  index:" + std::to_string(m_Frame.index));
 }
 
 void PartBase::reset(const CharaAction &actionName, const CharaDirection &direction)
@@ -78,19 +78,31 @@ void PartBase::render(SDL_Renderer *renderer, const CharaAction &actionName, Cha
     int cols, rows;
     cols = rows = 0;
     SDL_QueryTexture(m_pTexture, NULL, NULL, &cols, &rows);
-    cols /= m_imageSet.frameWidth;
-    rows /= m_imageSet.frameHeight;
+
+    int frameWidth, frameHeight;
+
+    if(!m_imageSet.imageSetPath.empty()){
+        frameWidth = m_imageSet.frameWidth;
+        frameHeight = m_imageSet.frameHeight;
+    }
+    else{
+        frameWidth = m_spriteData.frameWidth;
+        frameHeight = m_spriteData.frameHeight;
+    }
+
+    cols /= frameWidth;
+    rows /= frameHeight;
     
     // int frame_x = (m_Frame.index % cols) * m_neutralImage.frameWidth;
     // int frame_y = (m_Frame.index % rows) * m_neutralImage.frameHeight;
-    int frame_x = (m_Frame.index % cols) * m_imageSet.frameWidth;
-    int frame_y = (m_Frame.index / cols) * m_imageSet.frameWidth;
+    int frame_x = (m_Frame.index % cols) * frameWidth;
+    int frame_y = (m_Frame.index / cols) * frameWidth;
 
     // 源矩形和目标矩形
-    SDL_Rect src_rect = {frame_x, frame_y, m_imageSet.frameWidth, m_imageSet.frameHeight};
-    SDL_Rect dest_rect = {x + (64-m_imageSet.frameWidth)/2 + m_Frame.offsetX 
-                        , y + (64-m_imageSet.frameWidth)/2 + m_Frame.offsetY/2 
-                        , m_imageSet.frameWidth, m_imageSet.frameHeight};
+    SDL_Rect src_rect = {frame_x, frame_y, frameWidth, frameHeight};
+    SDL_Rect dest_rect = {x + (64-frameWidth)/2 + m_Frame.offsetX 
+                        , y + (64-frameWidth)/2 + m_Frame.offsetY/2 
+                        , frameWidth, frameHeight};
     // 渲染
     SDL_RenderCopy(renderer, m_pTexture, &src_rect, &dest_rect);
     // spdlog::info("file" + m_neutralImage.file

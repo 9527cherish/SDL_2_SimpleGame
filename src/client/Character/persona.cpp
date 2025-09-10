@@ -6,15 +6,25 @@ void Persona::setId(uint id)
     m_id = id;
 }
 
-void Persona::renderSpritePart(SDL_Renderer *renderer, int &x, int &y)
+void Persona::renderer(SDL_Renderer *renderer, int &x, int &y)
 {
     CharaAction currentAction = CharaAction::STAND;
     CharaDirection currentDir = CharaDirection::DOWN;
+
+    update(currentAction, currentDir, 60);
 
     for(PartBase& partSprite : m_spriteParts)
     {
         partSprite.initTexture(renderer);
         partSprite.render(renderer, currentAction, currentDir, x, y);
+    }
+}
+
+void Persona::update(const CharaAction &actionName, const CharaDirection &direction, int deltaTime)
+{
+    for(PartBase& partSprite : m_spriteParts)
+    {
+        partSprite.update(actionName, direction, deltaTime);
     }
 }
 

@@ -1,6 +1,7 @@
 #include "dataManager.hpp"
 #include "loadXml.hpp"
 
+
 DataManager& DataManager::getInstance()
 {
     static DataManager instance;
@@ -8,6 +9,7 @@ DataManager& DataManager::getInstance()
 }
 
 DataManager::DataManager()
+    : m_bLoadData(false)
 {
 
 }
@@ -18,14 +20,21 @@ DataManager::~DataManager()
 
 void DataManager::initData()
 {
-    m_personas = LoadXml::parseAllPersonaXml();
+    m_loadData = std::async(std::launch::async, &LoadXml::parseAllPersonaXml);
 }
 
-bool DataManager::getPersonas(std::vector<Persona> &persons)
+void DataManager::getData(std::vector<Persona> &personas)
 {
-    if(m_personas.empty())
-        return false;
+    if(!m_bLoadData){
+        getDataFromFuture();
+    }
+    personas = m_personas;
+}
 
-    persons = m_personas;
-    return true;
+void DataManager::getDataFromFuture()
+{
+    if(!m_bLoadData){
+        m_personas =  m_loadData.get();
+        m_bLoadData = true;
+    }
 }
