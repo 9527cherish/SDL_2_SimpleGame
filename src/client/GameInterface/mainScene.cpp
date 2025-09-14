@@ -138,6 +138,8 @@ void MainScene::initButton()
         SDL_Color{108, 92, 231, 255}          // 文本颜色
     );
     m_pRightArrow->setBorder(false);
+
+    
 }
 
 void MainScene::renderButton()
@@ -152,7 +154,7 @@ void MainScene::renderButton()
 
 void MainScene::renderPersona()
 {
-    std::vector<Persona> personas;
+    std::vector<std::shared_ptr<Persona>> personas;
     DataManager::getInstance().getData(personas);
 
     int x = 400;
@@ -164,8 +166,8 @@ void MainScene::renderPersona()
         {
             x = 80*i + 400;
             y = 80*j + 300;
-            Persona persona = personas[j*5+i];
-            persona.renderer(m_pRenderer, x, y);
+            std::shared_ptr<Persona> persona = personas[j*5+i];
+            persona->renderer(m_pRenderer, x, y);
         }
     }
 }

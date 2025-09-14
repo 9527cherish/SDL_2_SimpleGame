@@ -203,7 +203,7 @@ void LoadXml::printSpriteData(const SpriteData &spriteData)
     }
 }
 
-void LoadXml::parsePersonaXml(const std::string &path, Persona &persona)
+void LoadXml::parsePersonaXml(const std::string &path, std::shared_ptr<Persona> persona)
 {
     pugi::xml_document doc;
     if (!doc.load_file(path.c_str())) {
@@ -224,7 +224,7 @@ void LoadXml::parsePersonaXml(const std::string &path, Persona &persona)
             spdlog::error("警告: NPC 缺少 id 属性，跳过");
             continue;
         }
-        persona.setId(idAttr.as_int());
+        persona->setId(idAttr.as_int());
         
         // 遍历所有 <sprite> 子节点
         for (pugi::xml_node spriteNode : npcNode.children("sprite")) {
@@ -239,7 +239,7 @@ void LoadXml::parsePersonaXml(const std::string &path, Persona &persona)
             std::string partPath = m_graphicsPath + spriteData.substr(0, pos);
             PartBase partBase;
             parsePartBaseXml(partPath, partBase);
-            persona.addPartBase(partBase);
+            persona->addPartBase(partBase);
         }
     }
     return ;
@@ -275,9 +275,9 @@ void LoadXml::parsePartBaseXml(const std::string &path, PartBase& part)
     return;
 }
 
-std::vector<Persona> LoadXml::parseAllPersonaXml()
+std::vector<std::shared_ptr<Persona>> LoadXml::parseAllPersonaXml()
 {
-    std::vector<Persona> personas;
+    std::vector<std::shared_ptr<Persona>> personas;
     pugi::xml_document doc;
     std::string path = m_xmlPath + m_npcXmlPath;
     if (!doc.load_file(path.c_str())) {
@@ -292,7 +292,7 @@ std::vector<Persona> LoadXml::parseAllPersonaXml()
         if (name && name[0] != '\0') 
         {
             std::string npcpath = m_xmlPath + name;
-            Persona persona;
+            std::shared_ptr<Persona> persona = std::make_shared<Persona>();
             parsePersonaXml(npcpath, persona);
             personas.emplace_back(persona);
             spdlog::info("第" + std::to_string(count) +  "个角色");

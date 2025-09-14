@@ -23,7 +23,8 @@ void DataManager::initData()
     m_loadData = std::async(std::launch::async, &LoadXml::parseAllPersonaXml);
 }
 
-void DataManager::getData(std::vector<Persona> &personas)
+void DataManager::getData(std::vector<std::shared_ptr<Persona>>& personas)
+
 {
     if(!m_bLoadData){
         getDataFromFuture();

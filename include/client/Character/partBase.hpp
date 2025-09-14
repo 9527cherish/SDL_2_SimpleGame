@@ -36,6 +36,8 @@ private:
     SpriteData m_spriteData;
     SDL_Texture* m_pTexture;
 
+    bool m_initTexture;
+
     int m_iFrameIndex;
     Frame m_Frame;
     int m_iDeltaTime;

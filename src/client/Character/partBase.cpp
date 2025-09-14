@@ -2,12 +2,14 @@
 #include "loadXml.hpp"
 
 PartBase::PartBase()
+    : m_initTexture(false)
 {
 }
 
 PartBase::PartBase(const ImageSet &image, const SpriteData &sprite)
-    :m_imageSet(image)
-    ,m_spriteData(sprite)
+    : m_imageSet(image)
+    , m_spriteData(sprite)
+    , m_initTexture(false)
 {
 }
 
@@ -122,6 +124,9 @@ void PartBase::setTexture(SDL_Texture *pTexture)
 
 void PartBase::initTexture(SDL_Renderer *renderer)
 {
+    if(m_initTexture)
+        return;
+
     std::string pngPath;
     if(!m_imageSet.imageSetPath.empty())
         pngPath = LoadXml::m_xmlPath + m_imageSet.imageSetPath;
@@ -149,6 +154,10 @@ void PartBase::initTexture(SDL_Renderer *renderer)
 
     m_pTexture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
+    m_initTexture = true;
+
+    // spdlog::info(pngPath);
+
 }
 
 void PartBase::setImageSet(const ImageSet &imageSet)

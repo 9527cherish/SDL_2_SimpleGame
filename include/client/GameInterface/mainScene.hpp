@@ -4,6 +4,7 @@
 #include "gameInterface.hpp"
 #include "button.hpp"
 #include <memory>
+#include <vector>
 
 class MainScene : public GameInterface
 {
@@ -27,11 +28,11 @@ private:
     std::unique_ptr<Button> m_pStartButton;
     std::unique_ptr<Button> m_pSettingsButton;
     std::unique_ptr<Button> m_pExitButton;
-
+    // 翻页按钮
     std::unique_ptr<Button> m_pLeftArrow;
     std::unique_ptr<Button> m_pRightArrow;
 
-        // 设置菜单元素
+    // 设置菜单元素
     std::unique_ptr<Button> m_pBackButton;
     std::unique_ptr<Button> m_pSaveButton;
     
@@ -40,6 +41,11 @@ private:
     TTF_Font* m_pLabelFont;
 
     SDL_Renderer* m_pRenderer;
+
+    // 人物形象展示
+    std::vector<std::unique_ptr<Button>> m_personasList;
+
+    // std::shared_ptr<Persona> m_pCurrentPerson;
 
 };
 

@@ -4,7 +4,7 @@
 #include "characterStruct.hpp"
 #include "persona.hpp"
 #include <future>
-
+#include <memory>
 
 // 管理所有数据
 
@@ -18,7 +18,7 @@ public:
 
     // 初始化数据
     void initData();
-    void getData(std::vector<Persona>& personas);
+    void getData(std::vector<std::shared_ptr<Persona>>& personas);
 
     
     // bool getPersonas(std::vector<Persona>& persons);
@@ -30,8 +30,8 @@ public:
 
 private:
     void getDataFromFuture();
-    std::vector<Persona> m_personas;
+    std::vector<std::shared_ptr<Persona>> m_personas;
     bool  m_bLoadData;
-    std::future<std::vector<Persona>> m_loadData;
+    std::future<std::vector<std::shared_ptr<Persona>>> m_loadData;
 
 };

@@ -13,11 +13,11 @@ public:
     static SpriteData parseSpriteXML(const std::string& path);
     static void printSpriteData(const SpriteData& spriteData);
     
-    static void parsePersonaXml(const std::string& path, Persona& persona);
+    static void parsePersonaXml(const std::string& path, std::shared_ptr<Persona> persona);
 
     static void parsePartBaseXml(const std::string& path, PartBase& part);
 
-    static std::vector<Persona> parseAllPersonaXml();
+    static std::vector<std::shared_ptr<Persona>> parseAllPersonaXml();
 
 public:
     static std::string m_xmlPath;
