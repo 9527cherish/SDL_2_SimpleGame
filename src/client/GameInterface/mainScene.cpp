@@ -6,14 +6,10 @@
 #include "interfaceManager.hpp"
 #include "dataManager.hpp"
 
-// 翻页按钮尺寸和位置
-const int BUTTON_WIDTH = 50;
-const int BUTTON_HEIGHT = 50;
-const int BUTTON_Y = SCREEN_HEIGHT - 70;
-const int LEFT_BUTTON_X = (SCREEN_WIDTH / 3) - 70;  // 左侧按钮X坐标
-const int RIGHT_BUTTON_X = (SCREEN_WIDTH / 2) + 20; // 右侧按钮X坐标
 
 MainScene::MainScene()
+    : m_page(0)
+    , m_number(-1)
 {
     if (TTF_Init() == -1) {
         spdlog::error("TTF_Init 初始化失败:" + std::string(TTF_GetError()));
@@ -37,8 +33,18 @@ MainScene::MainScene()
 
 void MainScene::renderScene()
 {
-   renderButton();
-   renderPersona();
+    if(nullptr == m_pRenderer)
+        return;
+
+    SDL_SetRenderDrawColor(m_pRenderer, 0, 0, 0, 255);
+    SDL_RenderClear(m_pRenderer);
+    renderButton();
+    renderPersonas();
+
+    if(-1 != m_number)
+    {
+        renderCurrentPerson();
+    }
 }
 
 void MainScene::handleEvent(const SDL_Event &e)
@@ -48,6 +54,22 @@ void MainScene::handleEvent(const SDL_Event &e)
     m_pExitButton->handleEvent(e);
     m_pLeftArrow->handleEvent(e);
     m_pRightArrow->handleEvent(e);
+
+    for(const auto& [key, value] : m_personasMap)
+    {
+        if(value->handleEvent(e))
+        {
+            m_number = key;
+            std::vector<std::shared_ptr<Persona>> personas;
+            DataManager::getInstance().setCurrentPerson(m_page*10 + m_number);
+        }   
+    }
+    if(-1 != m_number)
+    {
+        std::shared_ptr<Persona> persona = DataManager::getInstance().currentPersona();
+        if(nullptr != persona)
+
+    }
 }
 
 void MainScene::initButton()
@@ -119,7 +141,7 @@ void MainScene::initButton()
 
     m_pLeftArrow = std::make_unique<Button>(
         m_pRenderer, m_pButtonFont, "<",
-        int(SCREEN_WIDTH/3*2-100), SCREEN_HEIGHT - 150,
+        int(SCREEN_WIDTH/3*2-100), SCREEN_HEIGHT - 100,
         60, 60,
         SDL_Color{45, 52, 54, 200},      // 正常颜色
         SDL_Color{45, 52, 54, 255},      // 悬停颜色
@@ -130,7 +152,7 @@ void MainScene::initButton()
 
     m_pRightArrow = std::make_unique<Button>(
         m_pRenderer, m_pButtonFont, ">",
-        int(SCREEN_WIDTH/3*2 + 100), SCREEN_HEIGHT - 150,
+        int(SCREEN_WIDTH/3*2 + 100), SCREEN_HEIGHT - 100,
         60, 60,
         SDL_Color{45, 52, 54, 200},      // 正常颜色
         SDL_Color{45, 52, 54, 255},      // 悬停颜色
@@ -139,7 +161,28 @@ void MainScene::initButton()
     );
     m_pRightArrow->setBorder(false);
 
-    
+    // 初始化人物界面
+    {
+        int x, y;
+        for(int i = 0; i < 5; i++)
+        {
+            for(int j = 0; j < 2; j++)
+            {
+                x = 100*i + 432;
+                y = 100*j + 332;
+
+                m_personasMap[j*5+i] = std::make_unique<Button>(
+                    m_pRenderer, m_pButtonFont, "",
+                    x, y, 100, 100, 
+                    SDL_Color{45, 52, 54, 200},      // 正常颜色
+                    SDL_Color{45, 52, 54, 255},      // 悬停颜色
+                    SDL_Color{30, 35, 36, 255},      // 按下颜色
+                    SDL_Color{108, 92, 231, 255}          // 文本颜色
+                );
+                // m_personasMap[j*5+i]->setBorder(false);
+            }
+        }
+    }
 }
 
 void MainScene::renderButton()
@@ -150,25 +193,40 @@ void MainScene::renderButton()
     m_pExitButton->renderButton();
     m_pLeftArrow->renderButton();
     m_pRightArrow->renderButton();
+
+    for(const auto& [key, value] : m_personasMap)
+    {
+        value->renderButton();
+    }
 }
 
-void MainScene::renderPersona()
+void MainScene::renderPersonas()
 {
     std::vector<std::shared_ptr<Persona>> personas;
     DataManager::getInstance().getData(personas);
 
-    int x = 400;
-    int y = 300;
-
+    int x, y;
     for(int i = 0; i < 5; i++)
     {
         for(int j = 0; j < 2; j++)
         {
-            x = 80*i + 400;
-            y = 80*j + 300;
+            x = 100*i + 450;
+            y = 100*j + 350;
             std::shared_ptr<Persona> persona = personas[j*5+i];
             persona->renderer(m_pRenderer, x, y);
         }
+    }
+}
+
+void MainScene::renderCurrentPerson()
+{
+    std::shared_ptr<Persona> persona = DataManager::getInstance().currentPersona();
+
+    if(nullptr != persona)
+    {
+        int x = 600;
+        int y = 200;
+        persona->renderer(m_pRenderer, x, y);
     }
 }
 

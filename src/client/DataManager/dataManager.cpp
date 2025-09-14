@@ -32,6 +32,21 @@ void DataManager::getData(std::vector<std::shared_ptr<Persona>>& personas)
     personas = m_personas;
 }
 
+void DataManager::setCurrentPerson(std::shared_ptr<Persona> persona)
+{
+    m_pCurrentPerson = persona;
+}
+
+void DataManager::setCurrentPerson(int number)
+{
+    m_pCurrentPerson = m_personas[number];
+}
+
+std::shared_ptr<Persona> DataManager::currentPersona()
+{
+    return m_pCurrentPerson;
+}
+
 void DataManager::getDataFromFuture()
 {
     if(!m_bLoadData){

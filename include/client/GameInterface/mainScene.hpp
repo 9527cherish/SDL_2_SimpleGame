@@ -6,6 +6,8 @@
 #include <memory>
 #include <vector>
 
+class Persona;
+
 class MainScene : public GameInterface
 {
 public:
@@ -20,7 +22,8 @@ public:
     // 渲染控件
     void renderScene() override;
     void renderButton();
-    void renderPersona();
+    void renderPersonas();
+    void renderCurrentPerson();
 
     
 private:
@@ -43,9 +46,13 @@ private:
     SDL_Renderer* m_pRenderer;
 
     // 人物形象展示
-    std::vector<std::unique_ptr<Button>> m_personasList;
+    std::map<uint, std::unique_ptr<Button>> m_personasMap;
 
-    // std::shared_ptr<Persona> m_pCurrentPerson;
+    // 当前第几页
+    int m_page;
+    // 第几个人物
+    int m_number;
+
 
 };
 
