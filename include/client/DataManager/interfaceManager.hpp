@@ -12,8 +12,6 @@
 class InterfaceManager
 {
 public:
-
-    InterfaceManager();
     ~InterfaceManager();
     static InterfaceManager& getInstance();
     //初始化窗口
@@ -30,12 +28,6 @@ public:
     // 获取渲染器
     SDL_Renderer* renderer() const;
 
-    // 刪除左值和右值  拷貝构造和赋值
-    InterfaceManager(const InterfaceManager&) = delete;
-    InterfaceManager(const InterfaceManager&&) = delete;
-    InterfaceManager& operator=(const InterfaceManager&) = delete;
-    InterfaceManager&& operator=(InterfaceManager) = delete;
-
 private:
     // 当前所在场景
     Scene m_currentScene;
@@ -46,4 +38,14 @@ private:
     std::unique_ptr<MainScene> m_pMainScene;
     std::unique_ptr<SettingScene> m_pSettingScene;
     std::unique_ptr<GameScene> m_pGameScene;
+
+
+
+    InterfaceManager();
+    // 刪除左值和右值  拷貝构造和赋值
+    InterfaceManager(const InterfaceManager&) = delete;
+    InterfaceManager(const InterfaceManager&&) = delete;
+    InterfaceManager& operator=(const InterfaceManager&) = delete;
+    InterfaceManager& operator=(InterfaceManager&&) = delete;
+
 };

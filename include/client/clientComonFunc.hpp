@@ -7,7 +7,7 @@ using json = nlohmann::json;
 
 class ClientComonFunc{
 public:
-    ClientComonFunc();
+
     ~ClientComonFunc();
 
     static ClientComonFunc& getInstance();
@@ -17,6 +17,14 @@ public:
     // 增加时间戳
     std::string getCurrentTime();
 
+
+private:
+
+    std::string logPath;
+    std::string logName;
+
+    
+    ClientComonFunc();
     // 禁用拷贝构造
     ClientComonFunc(ClientComonFunc&) = delete;
     ClientComonFunc(ClientComonFunc&&) = delete;
@@ -25,8 +33,4 @@ public:
     ClientComonFunc& operator=(const ClientComonFunc&) = delete;
     ClientComonFunc& operator=(const ClientComonFunc&&) = delete;
 
-private:
-
-    std::string logPath;
-    std::string logName;
 };

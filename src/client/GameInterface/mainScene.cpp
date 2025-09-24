@@ -68,6 +68,9 @@ void MainScene::handleEvent(const SDL_Event &e)
     {
         std::shared_ptr<Persona> persona = DataManager::getInstance().currentPersona();
         if(nullptr != persona)
+        {
+            persona->renderer(m_pRenderer, 450, 250);
+        }
 
     }
 }
