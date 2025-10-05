@@ -18,6 +18,7 @@ public:
     // 初始化所有控件
     void initButton();
     void initScene() override;
+    void initPersonas();
     
     // 渲染控件
     void renderScene() override;
@@ -48,6 +49,8 @@ private:
     // 人物形象展示
     std::map<uint, std::unique_ptr<Button>> m_personasMap;
 
+    // 最大几页
+    int m_maxPage;
     // 当前第几页
     int m_page;
     // 第几个人物

@@ -261,10 +261,11 @@ void LoadXml::parsePartBaseXml(const std::string &path, PartBase& part)
 
     std::string partBasePath;
     if(includeNode)
-    {
+    {   
         part.setImageSet(parseImageXml(path));
         printImageXml(part.imageSet());
         partBasePath = m_graphicsPath + includeNode.attribute("file").as_string();
+        parsePartBaseXmlEx(partBasePath, part);
     }
     else
     {
@@ -272,6 +273,28 @@ void LoadXml::parsePartBaseXml(const std::string &path, PartBase& part)
     }
     part.setSpriteData(parseSpriteXML(partBasePath));
     printSpriteData(part.spriteData());
+    return;
+}
+
+void LoadXml::parsePartBaseXmlEx(std::string &path, PartBase &part)
+{
+    pugi::xml_document doc;
+    if (!doc.load_file(path.c_str())) {
+        return;
+    }
+
+    // 获取根节点
+    pugi::xml_node spriteNode = doc.child("sprite");
+    if (!spriteNode) {
+        return;
+    }
+    pugi::xml_node includeNode = spriteNode.child("include");
+
+    if(includeNode)
+    {   
+        path = m_graphicsPath + includeNode.attribute("file").as_string();
+        parsePartBaseXmlEx(path, part);
+    }
     return;
 }
 

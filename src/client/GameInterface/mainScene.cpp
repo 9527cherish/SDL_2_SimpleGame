@@ -52,16 +52,35 @@ void MainScene::handleEvent(const SDL_Event &e)
     m_pStartButton->handleEvent(e);  
     m_pSettingsButton->handleEvent(e);
     m_pExitButton->handleEvent(e);
-    m_pLeftArrow->handleEvent(e);
-    m_pRightArrow->handleEvent(e);
 
+    // 左翻页按钮
+    if(m_pLeftArrow->handleEvent(e))
+    {
+        if(m_page > 0)
+            m_page--;
+        else
+            m_page = m_maxPage - 1;
+    }
+    
+    // 右翻页按钮
+    if(m_pRightArrow->handleEvent(e))
+    {
+        if(m_page < m_maxPage - 1)
+            m_page++;
+        else
+            m_page = 0;
+    }
+
+    // 人物选择按钮
     for(const auto& [key, value] : m_personasMap)
     {
         if(value->handleEvent(e))
         {
             m_number = key;
-            std::vector<std::shared_ptr<Persona>> personas;
             DataManager::getInstance().setCurrentPerson(m_page*10 + m_number);
+            spdlog::info("--------------------------------------------------");
+            spdlog::info("选择人物: " + std::to_string(m_page*10 + m_number));
+            DataManager::getInstance().currentPersona()->printPersonaInfo();
         }   
     }
     if(-1 != m_number)
@@ -69,7 +88,7 @@ void MainScene::handleEvent(const SDL_Event &e)
         std::shared_ptr<Persona> persona = DataManager::getInstance().currentPersona();
         if(nullptr != persona)
         {
-            persona->renderer(m_pRenderer, 450, 250);
+            // persona->renderer(m_pRenderer, 450, 250);
         }
 
     }
@@ -208,6 +227,7 @@ void MainScene::renderPersonas()
     std::vector<std::shared_ptr<Persona>> personas;
     DataManager::getInstance().getData(personas);
 
+
     int x, y;
     for(int i = 0; i < 5; i++)
     {
@@ -215,7 +235,10 @@ void MainScene::renderPersonas()
         {
             x = 100*i + 450;
             y = 100*j + 350;
-            std::shared_ptr<Persona> persona = personas[j*5+i];
+            int currentIndex = m_page*10 + j*5 + i;
+            if(currentIndex < 0 || currentIndex >= int(personas.size()))
+                continue;
+            std::shared_ptr<Persona> persona = personas[m_page*10 + j*5 + i];
             persona->renderer(m_pRenderer, x, y);
         }
     }
@@ -239,4 +262,12 @@ void MainScene::initScene()
         m_pRenderer = InterfaceManager::getInstance().renderer();
 
     initButton();
+    initPersonas();
+}
+
+void MainScene::initPersonas()
+{
+    std::vector<std::shared_ptr<Persona>> personas;
+    DataManager::getInstance().getData(personas);
+    m_maxPage = personas.size() / 10 + (personas.size() % 10 == 0 ? 0 : 1);
 }

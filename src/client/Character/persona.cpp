@@ -1,12 +1,13 @@
 #include "persona.hpp"
 #include "characterStruct.hpp"
+#include "loadXml.hpp"
 
 void Persona::setId(uint id)
 {
     m_id = id;
 }
 
-void Persona::renderer(SDL_Renderer *renderer, int &x, int &y)
+void Persona::renderer(SDL_Renderer *renderer, int x, int y)
 {
     CharaAction currentAction = CharaAction::STAND;
     CharaDirection currentDir = CharaDirection::DOWN;
@@ -31,4 +32,13 @@ void Persona::update(const CharaAction &actionName, const CharaDirection &direct
 void Persona::addPartBase(const PartBase &part)
 {
     m_spriteParts.emplace_back(part);
+}
+
+void Persona::printPersonaInfo()
+{
+    for(PartBase& partSprite : m_spriteParts)
+    {
+        LoadXml::printImageXml(partSprite.imageSet());
+        LoadXml::printSpriteData(partSprite.spriteData());
+    }
 }

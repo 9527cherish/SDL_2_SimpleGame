@@ -74,7 +74,7 @@ void InterfaceManager::start()
 {
     bool quit = false;
     SDL_Event e;
-
+    
     while (!quit) {
         // 处理事件
         while (SDL_PollEvent(&e) != 0) {

@@ -16,6 +16,7 @@ public:
     static void parsePersonaXml(const std::string& path, std::shared_ptr<Persona> persona);
 
     static void parsePartBaseXml(const std::string& path, PartBase& part);
+    static void parsePartBaseXmlEx(std::string& path, PartBase& part);
 
     static std::vector<std::shared_ptr<Persona>> parseAllPersonaXml();
 

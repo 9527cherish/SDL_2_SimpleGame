@@ -39,8 +39,6 @@ private:
     std::unique_ptr<SettingScene> m_pSettingScene;
     std::unique_ptr<GameScene> m_pGameScene;
 
-
-
     InterfaceManager();
     // 刪除左值和右值  拷貝构造和赋值
     InterfaceManager(const InterfaceManager&) = delete;
