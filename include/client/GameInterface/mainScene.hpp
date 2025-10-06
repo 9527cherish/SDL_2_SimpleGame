@@ -47,7 +47,7 @@ private:
     SDL_Renderer* m_pRenderer;
 
     // 人物形象展示
-    std::map<uint, std::unique_ptr<Button>> m_personasMap;
+    std::map<uint, std::unique_ptr<Button>> m_personasButtonMap;
 
     // 最大几页
     int m_maxPage;

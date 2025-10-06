@@ -24,7 +24,6 @@ void DataManager::initData()
 }
 
 void DataManager::getData(std::vector<std::shared_ptr<Persona>>& personas)
-
 {
     if(!m_bLoadData){
         getDataFromFuture();

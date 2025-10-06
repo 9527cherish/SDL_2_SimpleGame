@@ -1,5 +1,4 @@
 #include "mainScene.hpp"
-
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "sceneStruct.hpp"
@@ -72,7 +71,7 @@ void MainScene::handleEvent(const SDL_Event &e)
     }
 
     // 人物选择按钮
-    for(const auto& [key, value] : m_personasMap)
+    for(const auto& [key, value] : m_personasButtonMap)
     {
         if(value->handleEvent(e))
         {
@@ -83,12 +82,15 @@ void MainScene::handleEvent(const SDL_Event &e)
             DataManager::getInstance().currentPersona()->printPersonaInfo();
         }   
     }
+
     if(-1 != m_number)
     {
         std::shared_ptr<Persona> persona = DataManager::getInstance().currentPersona();
         if(nullptr != persona)
         {
-            // persona->renderer(m_pRenderer, 450, 250);
+            Uint32 lastFrameTime = SDL_GetTicks();
+            Uint32 deltaTime; 
+            persona->handleEvent(e, lastFrameTime, deltaTime, false);
         }
 
     }
@@ -193,7 +195,7 @@ void MainScene::initButton()
                 x = 100*i + 432;
                 y = 100*j + 332;
 
-                m_personasMap[j*5+i] = std::make_unique<Button>(
+                m_personasButtonMap[j*5+i] = std::make_unique<Button>(
                     m_pRenderer, m_pButtonFont, "",
                     x, y, 100, 100, 
                     SDL_Color{45, 52, 54, 200},      // 正常颜色
@@ -201,7 +203,7 @@ void MainScene::initButton()
                     SDL_Color{30, 35, 36, 255},      // 按下颜色
                     SDL_Color{108, 92, 231, 255}          // 文本颜色
                 );
-                // m_personasMap[j*5+i]->setBorder(false);
+                // m_personasButtonMap[j*5+i]->setBorder(false);
             }
         }
     }
@@ -216,7 +218,7 @@ void MainScene::renderButton()
     m_pLeftArrow->renderButton();
     m_pRightArrow->renderButton();
 
-    for(const auto& [key, value] : m_personasMap)
+    for(const auto& [key, value] : m_personasButtonMap)
     {
         value->renderButton();
     }
@@ -226,7 +228,6 @@ void MainScene::renderPersonas()
 {
     std::vector<std::shared_ptr<Persona>> personas;
     DataManager::getInstance().getData(personas);
-
 
     int x, y;
     for(int i = 0; i < 5; i++)
@@ -252,7 +253,7 @@ void MainScene::renderCurrentPerson()
     {
         int x = 600;
         int y = 200;
-        persona->renderer(m_pRenderer, x, y);
+        persona->rendererCurPersona(m_pRenderer, x, y);
     }
 }
 

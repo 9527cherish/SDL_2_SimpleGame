@@ -174,9 +174,7 @@ void LoadXml::printSpriteData(const SpriteData &spriteData)
     spdlog::info("Source: " +  spriteData.imageSetSrc);
     spdlog::info("Frame Size: " + std::to_string(spriteData.frameWidth) 
         + "*"  + std::to_string(spriteData.frameHeight));
-
     spdlog::info("Actions:");
-
 
     for (const auto& [action, sequence] : spriteData.animations) {
         spdlog::info("  Action Name: "  + ActionMapper::to_string(action.action)  + " (ImageSet: " + action.imageset + ")"
@@ -263,7 +261,7 @@ void LoadXml::parsePartBaseXml(const std::string &path, PartBase& part)
     if(includeNode)
     {   
         part.setImageSet(parseImageXml(path));
-        printImageXml(part.imageSet());
+        // printImageXml(part.imageSet());
         partBasePath = m_graphicsPath + includeNode.attribute("file").as_string();
         parsePartBaseXmlEx(partBasePath, part);
     }
@@ -272,7 +270,7 @@ void LoadXml::parsePartBaseXml(const std::string &path, PartBase& part)
         partBasePath = path;
     }
     part.setSpriteData(parseSpriteXML(partBasePath));
-    printSpriteData(part.spriteData());
+    // printSpriteData(part.spriteData());
     return;
 }
 

@@ -3,6 +3,7 @@
 
 PartBase::PartBase()
     : m_initTexture(false)
+    , m_iDeltaTime(0)
 {
 }
 
@@ -10,6 +11,7 @@ PartBase::PartBase(const ImageSet &image, const SpriteData &sprite)
     : m_imageSet(image)
     , m_spriteData(sprite)
     , m_initTexture(false)
+    , m_iDeltaTime(0)
 {
 }
 
@@ -111,6 +113,12 @@ void PartBase::render(SDL_Renderer *renderer, const CharaAction &actionName, Cha
     //             + "  x:" + std::to_string(x)
     //             + "  y:" + std::to_string(y));
 }
+
+bool PartBase::handleEvent(const SDL_Event &e, const CharaAction &actionName, const CharaDirection &direction)
+{
+    return false;
+}
+
 
 void PartBase::setTexture(SDL_Texture *pTexture)
 {

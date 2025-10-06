@@ -95,8 +95,8 @@ void InterfaceManager::handleEvent(const SDL_Event &e)
     {
     case Scene::MAIN_MENU:
         m_pMainScene->init();
-        m_pMainScene->renderScene();
         m_pMainScene->handleEvent(e);
+        m_pMainScene->renderScene();
         break;
         
     case Scene::GAME_SCENE:

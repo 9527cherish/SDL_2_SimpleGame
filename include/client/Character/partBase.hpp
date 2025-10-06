@@ -18,10 +18,11 @@ public:
     // 渲染数据
     void render(SDL_Renderer* renderer,const CharaAction& actionName, 
                             CharaDirection& dir, int& x, int& y);
+    // 处理事件
+    bool handleEvent(const SDL_Event& e, const CharaAction& actionName, const CharaDirection& direction);
 
     void setTexture(SDL_Texture* pTexture);
-    // 打印Texture信息
-    // void printTextureInfo(SDL_Texture* texture);
+
     // 初始化Texture
     void initTexture(SDL_Renderer* renderer);
 
