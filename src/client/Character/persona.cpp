@@ -2,6 +2,16 @@
 #include "characterStruct.hpp"
 #include "loadXml.hpp"
 
+Persona::Persona(const Persona &persona)
+{
+    m_id = persona.m_id;
+    m_spriteParts = persona.m_spriteParts; // std::vector has its own copy constructor
+    m_x = persona.m_x;
+    m_y = persona.m_y;
+    m_actionName = persona.m_actionName;
+    m_direction = persona.m_direction;
+}
+
 void Persona::setId(uint id)
 {
     m_id = id;
@@ -25,6 +35,15 @@ void Persona::rendererCurPersona(SDL_Renderer *renderer, int x, int y)
     {
         partSprite.initTexture(renderer);
         partSprite.render(renderer, m_actionName, m_direction, x, y);
+    }
+}
+
+void Persona::rendererCurPersona(SDL_Renderer *renderer)
+{
+    for(PartBase& partSprite : m_spriteParts)
+    {
+        partSprite.initTexture(renderer);
+        partSprite.render(renderer, m_actionName, m_direction, m_x, m_y);
     }
 }
 
@@ -53,9 +72,6 @@ void Persona::printPersonaInfo()
 
 bool Persona::handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& deltaTime, bool move)
 {
-    Uint32 currentTime = SDL_GetTicks();
-    deltaTime = currentTime - lastFrameTime;
-    lastFrameTime = currentTime;
     if(e.type == SDL_KEYDOWN) {
         switch (e.key.keysym.sym) {
             case SDLK_w:
@@ -116,9 +132,12 @@ bool Persona::handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& del
         if ((e.key.keysym.sym == SDLK_w || e.key.keysym.sym == SDLK_s || 
                 e.key.keysym.sym == SDLK_a || e.key.keysym.sym == SDLK_d) && 
             m_actionName == CharaAction::WALK) {
-            m_actionName = CharaAction::STAND;
+                m_actionName = CharaAction::STAND;
         }
     }
+    Uint32 currentTime = SDL_GetTicks();
+    deltaTime = currentTime - lastFrameTime;
+    lastFrameTime = currentTime;
     update(m_actionName, m_direction, deltaTime);
     return true;
 }

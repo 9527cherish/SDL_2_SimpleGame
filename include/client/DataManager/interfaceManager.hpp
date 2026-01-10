@@ -25,9 +25,9 @@ public:
     void handleEvent(const SDL_Event &e);
 
     Scene currentScene();
+    void  setCurrentScene(const Scene& scene);
     // 获取渲染器
     SDL_Renderer* renderer() const;
-
 private:
     // 当前所在场景
     Scene m_currentScene;

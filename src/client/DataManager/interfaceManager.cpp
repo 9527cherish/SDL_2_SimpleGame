@@ -81,8 +81,8 @@ void InterfaceManager::start()
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
+            handleEvent(e);
         }
-        handleEvent(e);
         SDL_Delay(30); // 约30FPS
             // 更新屏幕
         SDL_RenderPresent(m_pRenderer);
@@ -100,6 +100,7 @@ void InterfaceManager::handleEvent(const SDL_Event &e)
         break;
         
     case Scene::GAME_SCENE:
+        m_pGameScene->initScene();
         m_pGameScene->renderScene();
         m_pGameScene->handleEvent(e);
         break;
@@ -117,6 +118,11 @@ void InterfaceManager::handleEvent(const SDL_Event &e)
 Scene InterfaceManager::currentScene()
 {
     return m_currentScene;
+}
+
+void InterfaceManager::setCurrentScene(const Scene &scene)
+{
+    m_currentScene = scene;
 }
 
 SDL_Renderer *InterfaceManager::renderer() const

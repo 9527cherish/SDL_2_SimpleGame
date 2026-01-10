@@ -13,7 +13,11 @@ class MainScene : public GameInterface
 public:
     MainScene();
     
+    // 处理事件
     void handleEvent(const SDL_Event &e) override;
+    void handleStartEvent(const SDL_Event &e);
+    void handleSettingEvent(const SDL_Event &e); 
+
 
     // 初始化所有控件
     void initButton();

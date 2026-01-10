@@ -1,14 +1,19 @@
 #pragma once 
 #include "partBase.hpp"
-
+#include "sceneStruct.hpp"
 
 
 class Persona
 {
 public:
+    Persona() = default;
+    // 自定义拷贝构造，实现深拷贝
+    Persona(const Persona& persona);
+
     void setId(uint id);
     void renderer(SDL_Renderer* renderer, int x, int y);
     void rendererCurPersona(SDL_Renderer* renderer, int x, int y);
+    void rendererCurPersona(SDL_Renderer* renderer);
     void update(const CharaAction& actionName, const CharaDirection& direction, int deltaTime);
     void addPartBase(const PartBase& part);
     void printPersonaInfo();
@@ -18,8 +23,8 @@ private:
     uint m_id;                         // NPC ID
     std::vector<PartBase> m_spriteParts;  // 精灵部件列表
 
-    int m_x = 0;                     // 角色的X坐标
-    int m_y = 0;                     // 角色的Y坐标
+    int m_x = SCREEN_WIDTH/2;                     // 角色的X坐标
+    int m_y = SCREEN_HEIGHT/2;                     // 角色的Y坐标
     CharaAction m_actionName;
     CharaDirection m_direction;
 };

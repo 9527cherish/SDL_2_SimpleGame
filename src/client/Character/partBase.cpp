@@ -4,6 +4,7 @@
 PartBase::PartBase()
     : m_initTexture(false)
     , m_iDeltaTime(0)
+    , m_iFrameIndex(0)
 {
 }
 
@@ -12,6 +13,7 @@ PartBase::PartBase(const ImageSet &image, const SpriteData &sprite)
     , m_spriteData(sprite)
     , m_initTexture(false)
     , m_iDeltaTime(0)
+    , m_iFrameIndex(0)
 {
 }
 
@@ -56,12 +58,12 @@ void PartBase::update(const CharaAction &actionName, const CharaDirection &direc
         m_iDeltaTime = 0;
     }
 
-    // spdlog::info("file" + m_imageSet.file
-    //             + "  action:" +  ActionMapper::to_string(actionName) 
-    //             + "  direction:" + DirectionMapper::to_string(direction)
-    //             + "  deltaTime:"  + std::to_string(deltaTime)
-    //             + "  delay:" + std::to_string(m_Frame.delay)
-    //             + "  index:" + std::to_string(m_Frame.index));
+    spdlog::info("file" + m_imageSet.file
+                + "  action:" +  ActionMapper::to_string(actionName) 
+                + "  direction:" + DirectionMapper::to_string(direction)
+                + "  deltaTime:"  + std::to_string(deltaTime)
+                + "  delay:" + std::to_string(m_Frame.delay)
+                + "  index:" + std::to_string(m_Frame.index));
 }
 
 void PartBase::reset(const CharaAction &actionName, const CharaDirection &direction)

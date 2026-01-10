@@ -38,7 +38,8 @@ void DataManager::setCurrentPerson(std::shared_ptr<Persona> persona)
 
 void DataManager::setCurrentPerson(int number)
 {
-    m_pCurrentPerson = m_personas[number];
+    // 此处应该生成一份拷贝，拷贝CurrentPerson， 否则会影响从前的m_personas数据
+    m_pCurrentPerson =  std::make_shared<Persona>(*(m_personas[number]));
 }
 
 std::shared_ptr<Persona> DataManager::currentPersona()

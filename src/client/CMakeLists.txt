@@ -26,12 +26,13 @@ aux_source_directory(./GameInterface GAME_LIST)
 aux_source_directory(./HttpServer HTTP_LIST)
 aux_source_directory(./DataManager DATA_LIST)
 aux_source_directory(./Character CHARA_LIST)
+aux_source_directory(./BasicControls BASIC_LIST)
 
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 # 编译动态库
 # add_library(MuduoSimplify SHARED ${SRC_LIST})
-add_executable(rougeClient ${SRC_LIST} ${GAME_LIST} ${HTTP_LIST} ${DATA_LIST} ${CHARA_LIST})
+add_executable(rougeClient ${SRC_LIST} ${GAME_LIST} ${HTTP_LIST} ${DATA_LIST} ${CHARA_LIST} ${BASIC_LIST})
 
 target_link_libraries(rougeClient PRIVATE 
                 ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${SDL2_MIXER_LIBRARY}  ${SDL2_TTF_LIBRARIES} 

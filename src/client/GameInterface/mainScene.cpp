@@ -48,8 +48,8 @@ void MainScene::renderScene()
 
 void MainScene::handleEvent(const SDL_Event &e)
 {
-    m_pStartButton->handleEvent(e);  
-    m_pSettingsButton->handleEvent(e);
+    handleStartEvent(e);
+    handleSettingEvent(e);
     m_pExitButton->handleEvent(e);
 
     // 左翻页按钮
@@ -94,6 +94,22 @@ void MainScene::handleEvent(const SDL_Event &e)
         }
 
     }
+}
+
+void MainScene::handleStartEvent(const SDL_Event &e)
+{
+    if(!m_pStartButton->handleEvent(e))
+        return;
+
+    InterfaceManager::getInstance().setCurrentScene(Scene::GAME_SCENE);
+}
+
+void MainScene::handleSettingEvent(const SDL_Event &e)
+{
+    if(!m_pSettingsButton->handleEvent(e))
+        return;
+
+    InterfaceManager::getInstance().setCurrentScene(Scene::SETTINGS);
 }
 
 void MainScene::initButton()
