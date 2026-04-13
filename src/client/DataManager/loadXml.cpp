@@ -145,11 +145,15 @@ SpriteData LoadXml::parseSpriteXML(const std::string &path)
                     int start = frameNode.attribute("start").as_int();
                     int end = frameNode.attribute("end").as_int();
                     int delay = frameNode.attribute("delay").as_int();
+                    int offsetX = frameNode.attribute("offsetX").as_int(0);
+                    int offsetY = frameNode.attribute("offsetY").as_int(0);
                     
                     for (int i = start; i <= end; i++) {
                         Frame frame;
                         frame.index = i;
                         frame.delay = delay;
+                        frame.offsetX = offsetX;
+                        frame.offsetY = offsetY;
                         sequence.frames.push_back(frame);
                     }
                 }
@@ -241,6 +245,9 @@ void LoadXml::parsePersonaXml(const std::string &path, std::shared_ptr<Persona> 
             std::string partPath = m_graphicsPath + spritePath;
             PartBase partBase;
             parsePartBaseXml(partPath, partBase);
+            if (spriteNode.attribute("variant")) {
+                partBase.setVariant(spriteNode.attribute("variant").as_int());
+            }
             persona->addPartBase(partBase);
         }
     }

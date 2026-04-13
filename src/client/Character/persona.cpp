@@ -1,6 +1,7 @@
 #include "persona.hpp"
 #include "characterStruct.hpp"
 #include "loadXml.hpp"
+#include <algorithm>
 
 Persona::Persona(const Persona &persona)
 {
@@ -22,10 +23,14 @@ void Persona::renderer(SDL_Renderer *renderer, int x, int y)
     CharaAction currentAction = CharaAction::STAND;
     CharaDirection currentDir = CharaDirection::DOWN; 
 
+    SDL_Rect bounds = previewBounds(currentAction, currentDir);
+    int drawX = x - bounds.x - bounds.w / 2;
+    int drawY = y - bounds.y - bounds.h / 2;
+
     for(PartBase& partSprite : m_spriteParts)
     {
         partSprite.initTexture(renderer);
-        partSprite.render(renderer, currentAction, currentDir, x, y);
+        partSprite.render(renderer, currentAction, currentDir, drawX, drawY);
     }
 }
 
@@ -152,4 +157,32 @@ bool Persona::handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& del
     lastFrameTime = currentTime;
     update(m_actionName, m_direction, deltaTime);
     return true;
+}
+
+SDL_Rect Persona::previewBounds(const CharaAction& actionName, const CharaDirection& direction) const
+{
+    bool initialized = false;
+    SDL_Rect bounds{0, 0, 64, 64};
+
+    for (const PartBase& partSprite : m_spriteParts)
+    {
+        SDL_Rect rect = partSprite.renderRect(actionName, direction, 0, 0);
+        if (!initialized)
+        {
+            bounds = rect;
+            initialized = true;
+            continue;
+        }
+
+        const int left = std::min(bounds.x, rect.x);
+        const int top = std::min(bounds.y, rect.y);
+        const int right = std::max(bounds.x + bounds.w, rect.x + rect.w);
+        const int bottom = std::max(bounds.y + bounds.h, rect.y + rect.h);
+        bounds.x = left;
+        bounds.y = top;
+        bounds.w = right - left;
+        bounds.h = bottom - top;
+    }
+
+    return bounds;
 }

@@ -20,11 +20,14 @@ public:
     bool handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& deltaTime, bool move = true);
 
 private:
-    uint m_id;                         // NPC ID
+    SDL_Rect previewBounds(const CharaAction& actionName, const CharaDirection& direction) const;
+
+    uint m_id = 0;                         // NPC ID
     std::vector<PartBase> m_spriteParts;  // 精灵部件列表
 
     int m_x = SCREEN_WIDTH/2;                     // 角色的X坐标
     int m_y = SCREEN_HEIGHT/2;                     // 角色的Y坐标
-    CharaAction m_actionName;
-    CharaDirection m_direction;
+    // 人物在未收到输入前也要有稳定的初始状态，否则预览界面会使用未定义动作/方向取帧。
+    CharaAction m_actionName = CharaAction::STAND;
+    CharaDirection m_direction = CharaDirection::DOWN;
 };

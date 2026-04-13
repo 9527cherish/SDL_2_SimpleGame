@@ -257,13 +257,17 @@ void MainScene::renderPersonas()
     std::vector<std::shared_ptr<Persona>> personas;
     DataManager::getInstance().getData(personas);
 
+    constexpr int kCellSize = 100;
+    constexpr int kVisualCenterXOffset = -6;
+    constexpr int kVisualCenterYOffset = -20;
+
     int x, y;
     for(int i = 0; i < 5; i++)
     {
         for(int j = 0; j < 2; j++)
         {
-            x = 100*i + 450;
-            y = 100*j + 350;
+            x = 100*i + 450 + kCellSize / 2 + kVisualCenterXOffset;
+            y = 100*j + 350 + kCellSize / 2 + kVisualCenterYOffset;
             int currentIndex = m_page*10 + j*5 + i;
             if(currentIndex < 0 || currentIndex >= int(personas.size()))
                 continue;

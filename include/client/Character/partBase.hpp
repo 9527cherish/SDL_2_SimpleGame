@@ -18,6 +18,7 @@ public:
     // 渲染数据
     void render(SDL_Renderer* renderer,const CharaAction& actionName, 
                             CharaDirection& dir, int& x, int& y);
+    SDL_Rect renderRect(const CharaAction& actionName, const CharaDirection& dir, int x, int y) const;
     // 处理事件
     bool handleEvent(const SDL_Event& e, const CharaAction& actionName, const CharaDirection& direction);
 
@@ -28,9 +29,14 @@ public:
 
     void setImageSet(const ImageSet& imageSet);
     ImageSet imageSet();
+    const ImageSet& imageSet() const;
 
     void setSpriteData(const SpriteData& spriteData);
     SpriteData spriteData();
+    const SpriteData& spriteData() const;
+
+    void setVariant(int variant);
+    int variant() const;
 
 private:
     ImageSet m_imageSet;
@@ -42,6 +48,7 @@ private:
     int m_iFrameIndex;
     Frame m_Frame;
     int m_iDeltaTime;
+    int m_variant = -1;
 
     std::string m_pngPath;   // 所在的图片路径
     std::map<std::string, std::vector<std::string> > colorGroups; // 颜色组列表
