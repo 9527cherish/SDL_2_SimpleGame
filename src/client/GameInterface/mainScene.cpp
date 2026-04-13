@@ -101,6 +101,18 @@ void MainScene::handleStartEvent(const SDL_Event &e)
     if(!m_pStartButton->handleEvent(e))
         return;
 
+    if(nullptr == DataManager::getInstance().currentPersona())
+    {
+        std::vector<std::shared_ptr<Persona>> personas;
+        DataManager::getInstance().getData(personas);
+        if(!personas.empty())
+        {
+            DataManager::getInstance().setCurrentPerson(0);
+            m_number = 0;
+            m_page = 0;
+        }
+    }
+
     InterfaceManager::getInstance().setCurrentScene(Scene::GAME_SCENE);
 }
 

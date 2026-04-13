@@ -75,6 +75,8 @@ bool Persona::handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& del
     if(e.type == SDL_KEYDOWN) {
         switch (e.key.keysym.sym) {
             case SDLK_w:
+            case SDLK_UP:
+            case SDLK_KP_8:
                 m_direction = CharaDirection::UP;
                 m_actionName = CharaAction::WALK;
                 if(move)
@@ -82,6 +84,8 @@ bool Persona::handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& del
 
                 break;
             case SDLK_s:
+            case SDLK_DOWN:
+            case SDLK_KP_2:
                 m_direction = CharaDirection::DOWN;
                 m_actionName = CharaAction::WALK;
                 if(move)
@@ -89,6 +93,8 @@ bool Persona::handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& del
 
                 break;
             case SDLK_a:
+            case SDLK_LEFT:
+            case SDLK_KP_4:
                 m_direction = CharaDirection::LEFT;
                 m_actionName = CharaAction::WALK;
                 if(move)
@@ -96,6 +102,8 @@ bool Persona::handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& del
 
                 break;
             case SDLK_d:
+            case SDLK_RIGHT:
+            case SDLK_KP_6:
                 m_direction = CharaDirection::RIGHT;
                 m_actionName = CharaAction::WALK;
                 if(move)
@@ -130,7 +138,11 @@ bool Persona::handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& del
     else if (e.type == SDL_KEYUP) {
         // 当移动键释放时，回到站立状态
         if ((e.key.keysym.sym == SDLK_w || e.key.keysym.sym == SDLK_s || 
-                e.key.keysym.sym == SDLK_a || e.key.keysym.sym == SDLK_d) && 
+                e.key.keysym.sym == SDLK_a || e.key.keysym.sym == SDLK_d ||
+                e.key.keysym.sym == SDLK_UP || e.key.keysym.sym == SDLK_DOWN ||
+                e.key.keysym.sym == SDLK_LEFT || e.key.keysym.sym == SDLK_RIGHT ||
+                e.key.keysym.sym == SDLK_KP_8 || e.key.keysym.sym == SDLK_KP_2 ||
+                e.key.keysym.sym == SDLK_KP_4 || e.key.keysym.sym == SDLK_KP_6) &&
             m_actionName == CharaAction::WALK) {
                 m_actionName = CharaAction::STAND;
         }

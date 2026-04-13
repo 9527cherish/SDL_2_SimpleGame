@@ -120,10 +120,9 @@ SpriteData LoadXml::parseSpriteXML(const std::string &path)
         // 解析每个方向的动画
         for (pugi::xml_node animNode : actionNode.children("animation")) {
             pugi::xml_attribute dirAttr = animNode.attribute("direction");
-            if(!dirAttr)
-                continue;
-
-            action.direction = DirectionMapper::from_string(animNode.attribute("direction").as_string());
+            action.direction = dirAttr
+                ? DirectionMapper::from_string(dirAttr.as_string())
+                : CharaDirection::DEFAULT;
             
             AnimationSequence sequence;
             
@@ -228,13 +227,18 @@ void LoadXml::parsePersonaXml(const std::string &path, std::shared_ptr<Persona> 
         for (pugi::xml_node spriteNode : npcNode.children("sprite")) {
             std::string spriteData = spriteNode.text().get();
             
-            // 分割路径和颜色数据
+            // sprite 可能是 "path|palette"，也可能只有 "path"
             size_t pos = spriteData.find('|');
-            if (pos == std::string::npos) {
-                spdlog::error("警告: 无效的 sprite 数据格式，跳过: " + spriteData);
+            std::string spritePath = (pos == std::string::npos)
+                ? spriteData
+                : spriteData.substr(0, pos);
+
+            if (spritePath.empty()) {
+                spdlog::error("警告: 空的 sprite 路径，跳过");
                 continue;
             }
-            std::string partPath = m_graphicsPath + spriteData.substr(0, pos);
+
+            std::string partPath = m_graphicsPath + spritePath;
             PartBase partBase;
             parsePartBaseXml(partPath, partBase);
             persona->addPartBase(partBase);

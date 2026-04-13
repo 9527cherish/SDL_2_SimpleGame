@@ -51,8 +51,7 @@ struct Action {
         if (action != other.action) {
             return action < other.action;
         }
-        // 2. id 相同则比较 name（字符串可直接用 < 比较）
-        return action < other.action;
+        return direction < other.direction;
     }
 };
 
@@ -107,5 +106,4 @@ struct ImageSet
         imageSetName = imageSetPath = file = "";
     }
 };
-
 

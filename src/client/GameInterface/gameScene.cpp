@@ -15,7 +15,7 @@ void GameScene::renderCurrentPerson()
 {
     std::shared_ptr<Persona> persona = DataManager::getInstance().currentPersona();
 
-    if(nullptr == persona && nullptr == m_pRenderer)
+    if(nullptr == persona || nullptr == m_pRenderer)
     {
         return;
     }
