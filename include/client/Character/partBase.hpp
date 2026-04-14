@@ -23,6 +23,8 @@ public:
     // 渲染数据
     void render(SDL_Renderer* renderer,const CharaAction& actionName, 
                             CharaDirection& dir, int& x, int& y);
+    void renderScaled(SDL_Renderer* renderer, const CharaAction& actionName,
+                            CharaDirection& dir, int& x, int& y, float scale);
     SDL_Rect renderRect(const CharaAction& actionName, const CharaDirection& dir, int x, int y) const;
     // 处理事件
     bool handleEvent(const SDL_Event& e, const CharaAction& actionName, const CharaDirection& direction);

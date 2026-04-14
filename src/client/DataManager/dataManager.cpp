@@ -33,6 +33,7 @@ void DataManager::getData(std::vector<std::shared_ptr<Persona>>& personas)
 
 void DataManager::setCurrentPerson(std::shared_ptr<Persona> persona)
 {
+    // 在这儿应该生成一份拷贝，拷贝CurrentPerson， 否则会影响从前的m_personas数据
     m_pCurrentPerson = persona;
 }
 

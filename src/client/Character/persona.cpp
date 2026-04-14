@@ -43,6 +43,19 @@ void Persona::rendererCurPersona(SDL_Renderer *renderer, int x, int y)
     }
 }
 
+void Persona::rendererCurPersonaScaled(SDL_Renderer *renderer, int x, int y, float scale)
+{
+    SDL_Rect bounds = previewBounds(m_actionName, m_direction);
+    int drawX = static_cast<int>(x - (bounds.x + bounds.w / 2.0f) * scale);
+    int drawY = static_cast<int>(y - (bounds.y + bounds.h / 2.0f) * scale);
+
+    for(PartBase& partSprite : m_spriteParts)
+    {
+        partSprite.initTexture(renderer);
+        partSprite.renderScaled(renderer, m_actionName, m_direction, drawX, drawY, scale);
+    }
+}
+
 void Persona::rendererCurPersona(SDL_Renderer *renderer)
 {
     for(PartBase& partSprite : m_spriteParts)

@@ -44,6 +44,17 @@ void MainScene::renderScene()
     {   
         renderCurrentPerson();
     }
+    else
+    {
+        std::vector<std::shared_ptr<Persona>> personas;
+        DataManager::getInstance().getData(personas);
+        if(!personas.empty())
+        {
+            DataManager::getInstance().setCurrentPerson(0);
+            m_number = 0;
+            m_page = 0;
+        }
+    }
 }
 
 void MainScene::handleEvent(const SDL_Event &e)
@@ -285,7 +296,7 @@ void MainScene::renderCurrentPerson()
     {
         int x = 600;
         int y = 200;
-        persona->rendererCurPersona(m_pRenderer, x, y);
+        persona->rendererCurPersonaScaled(m_pRenderer, x, y, 1.5f);
     }
 }
 

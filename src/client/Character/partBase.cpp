@@ -254,6 +254,55 @@ void PartBase::render(SDL_Renderer *renderer, const CharaAction &actionName, Cha
     //             + "  y:" + std::to_string(y));
 }
 
+void PartBase::renderScaled(SDL_Renderer* renderer, const CharaAction& actionName,
+                            CharaDirection& dir, int& x, int& y, float scale)
+{
+    if (nullptr == m_pTexture) {
+        return;
+    }
+
+    int cols = 0;
+    int rows = 0;
+    SDL_QueryTexture(m_pTexture, NULL, NULL, &cols, &rows);
+
+    int frameWidth = 0;
+    int frameHeight = 0;
+    if (!m_imageSet.imageSetPath.empty()) {
+        frameWidth = m_imageSet.frameWidth;
+        frameHeight = m_imageSet.frameHeight;
+    } else {
+        frameWidth = m_spriteData.frameWidth;
+        frameHeight = m_spriteData.frameHeight;
+    }
+
+    cols /= frameWidth;
+    rows /= frameHeight;
+
+    const AnimationSequence* animationSequence = findAnimationSequence(m_spriteData, actionName, dir);
+    Frame renderFrame = m_Frame;
+    if (animationSequence != nullptr && !animationSequence->frames.empty()) {
+        int renderIndex = m_iFrameIndex;
+        if (renderIndex < 0 || renderIndex >= static_cast<int>(animationSequence->frames.size())) {
+            renderIndex = 0;
+        }
+        renderFrame = animationSequence->frames[renderIndex];
+    }
+
+    const int resolvedFrameIndex = resolveFrameIndex(*this, renderFrame);
+    int frame_x = (resolvedFrameIndex % cols) * frameWidth;
+    int frame_y = (resolvedFrameIndex / cols) * frameHeight;
+
+    SDL_Rect src_rect = {frame_x, frame_y, frameWidth, frameHeight};
+    SDL_Rect dest_rect = renderRect(actionName, dir, x, y);
+
+    dest_rect.x = static_cast<int>(x + (dest_rect.x - x) * scale);
+    dest_rect.y = static_cast<int>(y + (dest_rect.y - y) * scale);
+    dest_rect.w = static_cast<int>(dest_rect.w * scale);
+    dest_rect.h = static_cast<int>(dest_rect.h * scale);
+
+    SDL_RenderCopy(renderer, m_pTexture, &src_rect, &dest_rect);
+}
+
 SDL_Rect PartBase::renderRect(const CharaAction& actionName, const CharaDirection& dir, int x, int y) const
 {
     const AnimationSequence* animationSequence = findAnimationSequence(m_spriteData, actionName, dir);

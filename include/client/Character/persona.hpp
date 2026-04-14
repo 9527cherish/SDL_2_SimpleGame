@@ -13,6 +13,7 @@ public:
     void setId(uint id);
     void renderer(SDL_Renderer* renderer, int x, int y);
     void rendererCurPersona(SDL_Renderer* renderer, int x, int y);
+    void rendererCurPersonaScaled(SDL_Renderer* renderer, int x, int y, float scale);
     void rendererCurPersona(SDL_Renderer* renderer);
     void update(const CharaAction& actionName, const CharaDirection& direction, int deltaTime);
     void addPartBase(const PartBase& part);
