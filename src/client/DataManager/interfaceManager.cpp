@@ -12,6 +12,7 @@ InterfaceManager::InterfaceManager()
     , m_pCursor(std::make_unique<Cursor>())
 {
     m_currentScene = Scene::MAIN_MENU;
+    spdlog::info("InterfaceManager 初始化，当前场景: MAIN_MENU");
     initWindow();
     m_pCursor->initCursor();
 }
@@ -30,6 +31,7 @@ InterfaceManager &InterfaceManager::getInstance()
 
 bool InterfaceManager::initWindow()
 {
+    spdlog::info("初始化窗口与渲染器");
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         spdlog::error("SDL初始化失败: " + std::string(SDL_GetError()));
         return false;
@@ -66,6 +68,7 @@ bool InterfaceManager::initWindow()
         return false;
     }
 
+    spdlog::info("窗口与渲染器初始化成功");
     return true;
 }
 
@@ -80,6 +83,7 @@ void InterfaceManager::closeWindow()
 
 void InterfaceManager::start()
 {
+    spdlog::info("进入主循环");
     bool quit = false;
     SDL_Event e;
     
@@ -152,6 +156,7 @@ Scene InterfaceManager::currentScene()
 
 void InterfaceManager::setCurrentScene(const Scene &scene)
 {
+    spdlog::info("切换场景到: {}", static_cast<int>(scene));
     m_currentScene = scene;
 }
 

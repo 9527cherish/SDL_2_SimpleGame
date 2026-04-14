@@ -50,6 +50,7 @@ void MainScene::renderScene()
         DataManager::getInstance().getData(personas);
         if(!personas.empty())
         {
+            spdlog::info("主菜单默认选择第一个人物");
             DataManager::getInstance().setCurrentPerson(0);
             m_number = 0;
             m_page = 0;
@@ -90,7 +91,9 @@ void MainScene::handleEvent(const SDL_Event &e)
             DataManager::getInstance().setCurrentPerson(m_page*10 + m_number);
             spdlog::info("--------------------------------------------------");
             spdlog::info("选择人物: " + std::to_string(m_page*10 + m_number));
-            DataManager::getInstance().currentPersona()->printPersonaInfo();
+            
+            // 打印太频繁，注释掉打印
+            // DataManager::getInstance().currentPersona()->printPersonaInfo();
         }   
     }
 

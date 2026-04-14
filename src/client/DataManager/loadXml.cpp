@@ -87,12 +87,14 @@ SpriteData LoadXml::parseSpriteXML(const std::string &path)
 {
     pugi::xml_document doc;
     if (!doc.load_file(path.c_str())) {
+        spdlog::error("解析Sprite失败，无法读取文件: {}", path);
         return SpriteData();
     }
 
         // 获取根节点
     pugi::xml_node spriteNode = doc.child("sprite");
     if (!spriteNode) {
+        spdlog::error("解析Sprite失败，缺少 <sprite> 根节点: {}", path);
         return SpriteData();
     }
     
@@ -208,12 +210,14 @@ void LoadXml::parsePersonaXml(const std::string &path, std::shared_ptr<Persona> 
 {
     pugi::xml_document doc;
     if (!doc.load_file(path.c_str())) {
+        spdlog::error("解析NPC失败，无法读取文件: {}", path);
         return;
     }
 
     // 获取根节点
     pugi::xml_node npcsNode = doc.child("npcs");
     if (!npcsNode) {
+        spdlog::error("解析NPC失败，缺少 <npcs> 根节点: {}", path);
         return;
     }
     // 遍历所有 <npc> 节点

@@ -11,6 +11,10 @@ public:
     ~ClientComonFunc();
 
     static ClientComonFunc& getInstance();
+    // 崩溃弹窗
+    static void showCrashDialog(const char* title, const char* message);
+    // 安装崩溃处理器
+    static void installCrashHandlers();
     // 初始化日志
     void init_logger(const std::string& log_name);
 
