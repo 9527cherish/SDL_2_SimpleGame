@@ -14,11 +14,14 @@ public:
     void renderer(SDL_Renderer* renderer, int x, int y);
     void rendererCurPersona(SDL_Renderer* renderer, int x, int y);
     void rendererCurPersonaScaled(SDL_Renderer* renderer, int x, int y, float scale);
+    void rendererCurPersonaScaled(SDL_Renderer* renderer, float scale);
     void rendererCurPersona(SDL_Renderer* renderer);
     void update(const CharaAction& actionName, const CharaDirection& direction, int deltaTime);
     void addPartBase(const PartBase& part);
     void printPersonaInfo();
     bool handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& deltaTime, bool move = true);
+    // 更新人物状态
+    void tick(Uint32 deltaTime);
 
 private:
     SDL_Rect previewBounds(const CharaAction& actionName, const CharaDirection& direction) const;

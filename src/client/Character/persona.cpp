@@ -56,6 +56,11 @@ void Persona::rendererCurPersonaScaled(SDL_Renderer *renderer, int x, int y, flo
     }
 }
 
+void Persona::rendererCurPersonaScaled(SDL_Renderer *renderer, float scale)
+{
+    rendererCurPersonaScaled(renderer, m_x, m_y, scale);
+}
+
 void Persona::rendererCurPersona(SDL_Renderer *renderer)
 {
     for(PartBase& partSprite : m_spriteParts)
@@ -165,10 +170,8 @@ bool Persona::handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& del
                 m_actionName = CharaAction::STAND;
         }
     }
-    Uint32 currentTime = SDL_GetTicks();
-    deltaTime = currentTime - lastFrameTime;
-    lastFrameTime = currentTime;
-    update(m_actionName, m_direction, deltaTime);
+    (void)lastFrameTime;
+    (void)deltaTime;
     return true;
 }
 
@@ -198,4 +201,9 @@ SDL_Rect Persona::previewBounds(const CharaAction& actionName, const CharaDirect
     }
 
     return bounds;
+}
+
+void Persona::tick(Uint32 deltaTime)
+{
+    update(m_actionName, m_direction, deltaTime);
 }

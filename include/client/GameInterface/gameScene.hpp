@@ -13,4 +13,5 @@ public:
     void initScene() override;
 private:
     SDL_Renderer* m_pRenderer;
+    Uint32 m_lastFrameTime = 0;
 };

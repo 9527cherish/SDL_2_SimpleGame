@@ -15,22 +15,22 @@ namespace {
 void signalHandler(int signum) {
     switch (signum) {
         case SIGSEGV:
-            ClientComonFunc::showCrashDialog("崩溃", "程序发生了内存访问错误 (SIGSEGV)。");
+            ClientComonFunc::showCrashDialog("崩溃", "程序发生了内存访问错误 (SIGSEGV)");
             break;
         case SIGABRT:
-            ClientComonFunc::showCrashDialog("崩溃", "程序异常终止 (SIGABRT)。");
+            ClientComonFunc::showCrashDialog("崩溃", "程序异常终止 (SIGABRT)");
             break;
         case SIGFPE:
-            ClientComonFunc::showCrashDialog("崩溃", "程序发生了算术错误 (SIGFPE)。");
+            ClientComonFunc::showCrashDialog("崩溃", "程序发生了算术错误 (SIGFPE)");
             break;
         case SIGILL:
-            ClientComonFunc::showCrashDialog("崩溃", "程序发生了非法指令 (SIGILL)。");
+            ClientComonFunc::showCrashDialog("崩溃", "程序发生了非法指令 (SIGILL)");
             break;
         case SIGBUS:
-            ClientComonFunc::showCrashDialog("崩溃", "程序发生了总线错误 (SIGBUS)。");
+            ClientComonFunc::showCrashDialog("崩溃", "程序发生了总线错误 (SIGBUS)");
             break;
         default:
-            ClientComonFunc::showCrashDialog("崩溃", "程序发生了未知错误。");
+            ClientComonFunc::showCrashDialog("崩溃", "程序发生了未知错误");
             break;
     }
     std::_Exit(1);
