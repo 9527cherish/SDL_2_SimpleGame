@@ -9,6 +9,11 @@ class PartBase
 public:
     PartBase();
     PartBase(const ImageSet& image, const SpriteData& sprite);
+    // PartBase 会被 Persona 深拷贝；这里需要显式定义资源语义，避免 SDL_Texture 被浅拷贝后重复释放。
+    PartBase(const PartBase& other);
+    PartBase& operator=(const PartBase& other);
+    PartBase(PartBase&& other) noexcept;
+    PartBase& operator=(PartBase&& other) noexcept;
     ~PartBase();
 
     // 更新数据

@@ -41,7 +41,7 @@ void MainScene::renderScene()
     renderPersonas();
 
     if(-1 != m_number)
-    {
+    {   
         renderCurrentPerson();
     }
 }
@@ -266,7 +266,7 @@ void MainScene::renderPersonas()
     {
         for(int j = 0; j < 2; j++)
         {
-            x = 100*i + 450 + kCellSize / 2 + kVisualCenterXOffset;
+            x = 100*i + 450 + kCellSize / 2 + kVisualCenterXOffset - 8;
             y = 100*j + 350 + kCellSize / 2 + kVisualCenterYOffset;
             int currentIndex = m_page*10 + j*5 + i;
             if(currentIndex < 0 || currentIndex >= int(personas.size()))

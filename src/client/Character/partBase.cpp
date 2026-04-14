@@ -53,10 +53,94 @@ PartBase::PartBase()
 PartBase::PartBase(const ImageSet &image, const SpriteData &sprite)
     : m_imageSet(image)
     , m_spriteData(sprite)
+    , m_pTexture(nullptr)
     , m_initTexture(false)
-    , m_iDeltaTime(0)
     , m_iFrameIndex(0)
+    , m_iDeltaTime(0)
 {
+}
+
+PartBase::PartBase(const PartBase& other)
+    : m_imageSet(other.m_imageSet)
+    , m_spriteData(other.m_spriteData)
+    // 纹理属于 SDL 运行时资源，拷贝对象时不共享底层指针，后续按需重新加载。
+    , m_pTexture(nullptr)
+    , m_initTexture(false)
+    , m_iFrameIndex(other.m_iFrameIndex)
+    , m_Frame(other.m_Frame)
+    , m_iDeltaTime(other.m_iDeltaTime)
+    , m_variant(other.m_variant)
+    , m_pngPath(other.m_pngPath)
+    , colorGroups(other.colorGroups)
+{
+}
+
+PartBase& PartBase::operator=(const PartBase& other)
+{
+    if (this == &other) {
+        return *this;
+    }
+
+    if (m_pTexture != nullptr) {
+        SDL_DestroyTexture(m_pTexture);
+    }
+
+    m_imageSet = other.m_imageSet;
+    m_spriteData = other.m_spriteData;
+    // 赋值后当前对象重新回到“未加载纹理”状态，避免两个 PartBase 持有同一 SDL_Texture。
+    m_pTexture = nullptr;
+    m_initTexture = false;
+    m_iFrameIndex = other.m_iFrameIndex;
+    m_Frame = other.m_Frame;
+    m_iDeltaTime = other.m_iDeltaTime;
+    m_variant = other.m_variant;
+    m_pngPath = other.m_pngPath;
+    colorGroups = other.colorGroups;
+    return *this;
+}
+
+PartBase::PartBase(PartBase&& other) noexcept
+    : m_imageSet(std::move(other.m_imageSet))
+    , m_spriteData(std::move(other.m_spriteData))
+    , m_pTexture(other.m_pTexture)
+    , m_initTexture(other.m_initTexture)
+    , m_iFrameIndex(other.m_iFrameIndex)
+    , m_Frame(other.m_Frame)
+    , m_iDeltaTime(other.m_iDeltaTime)
+    , m_variant(other.m_variant)
+    , m_pngPath(std::move(other.m_pngPath))
+    , colorGroups(std::move(other.colorGroups))
+{
+    // 移动语义转移纹理所有权，源对象必须清空指针，避免析构时二次释放。
+    other.m_pTexture = nullptr;
+    other.m_initTexture = false;
+}
+
+PartBase& PartBase::operator=(PartBase&& other) noexcept
+{
+    if (this == &other) {
+        return *this;
+    }
+
+    if (m_pTexture != nullptr) {
+        SDL_DestroyTexture(m_pTexture);
+    }
+
+    m_imageSet = std::move(other.m_imageSet);
+    m_spriteData = std::move(other.m_spriteData);
+    m_pTexture = other.m_pTexture;
+    m_initTexture = other.m_initTexture;
+    m_iFrameIndex = other.m_iFrameIndex;
+    m_Frame = other.m_Frame;
+    m_iDeltaTime = other.m_iDeltaTime;
+    m_variant = other.m_variant;
+    m_pngPath = std::move(other.m_pngPath);
+    colorGroups = std::move(other.colorGroups);
+
+    // 目标对象接管纹理后，源对象放弃所有权。
+    other.m_pTexture = nullptr;
+    other.m_initTexture = false;
+    return *this;
 }
 
 PartBase::~PartBase()
