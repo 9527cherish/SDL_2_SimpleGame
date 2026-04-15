@@ -46,6 +46,7 @@ bool NetClient::enterGame()
 
     DataManager::getInstance().clearRemotePersonas();
     m_enteredGame = true;
+    // 先拉一份当前在线玩家快照，再发送自己的最新状态，后进入的客户端也能看到已有角色。
     sendMessage(ENUM_MSG_SYNC_PLAYERS_REQUEST, json{{"uuid", m_localUuid}});
     syncCurrentPlayer();
     return true;
@@ -147,6 +148,7 @@ void NetClient::receiveLoop()
         size_t pos = pendingMessage.find('\n');
         while (pos != std::string::npos)
         {
+            // 客户端与服务端之间使用按行分隔的 JSON 包，便于流式收发和拆包。
             std::string line = pendingMessage.substr(0, pos);
             pendingMessage.erase(0, pos + 1);
 
@@ -233,6 +235,7 @@ PlayerInfo NetClient::buildCurrentPlayerInfo()
     playerInfo.uuid = m_localUuid;
     playerInfo.personaId = DataManager::getInstance().currentPersonaIndex();
     playerInfo.name = "player_" + m_localUuid.substr(0, 8);
+    // 网络层同步的是人物模板编号 + 位置 + 动作状态，远端据此重建并驱动对应 Persona。
     playerInfo.x = persona->x();
     playerInfo.y = persona->y();
     playerInfo.action = ActionMapper::to_string(persona->action());

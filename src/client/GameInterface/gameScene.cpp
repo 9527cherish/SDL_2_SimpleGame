@@ -33,7 +33,10 @@ void GameScene::renderScene()
     int cameraX = SCREEN_WIDTH / 2;
     int cameraY = SCREEN_HEIGHT / 2;
     if (persona != nullptr) {
-        persona->tick(deltaTime);
+        // 本地角色的逐帧更新同时作为联机同步触发点：位置或动作变了才发消息。
+        if (persona->tick(deltaTime)) {
+            NetClient::getInstance().syncCurrentPlayer();
+        }
         cameraX = persona->x();
         cameraY = persona->y();
     }
@@ -71,6 +74,7 @@ void GameScene::renderBackground(int cameraX, int cameraY)
 
     const int maxX = std::max(0, m_iBackgroundWidth - SCREEN_WIDTH);
     const int maxY = std::max(0, m_iBackgroundHeight - SCREEN_HEIGHT);
+    // 相机中心跟随本机角色，但背景裁剪范围不能越过底图边界。
     const int sourceX = std::clamp(cameraX - SCREEN_WIDTH / 2, 0, maxX);
     const int sourceY = std::clamp(cameraY - SCREEN_HEIGHT / 2, 0, maxY);
 
@@ -93,6 +97,7 @@ void GameScene::renderRemotePersons(int cameraX, int cameraY, Uint32 deltaTime)
         }
 
         remotePersona->tick(deltaTime);
+        // 远端角色按“世界坐标 - 相机坐标”换算到屏幕坐标，本机角色因此始终停在中心。
         const int screenX = SCREEN_WIDTH / 2 + (remotePersona->x() - cameraX);
         const int screenY = SCREEN_HEIGHT / 2 + (remotePersona->y() - cameraY);
         remotePersona->rendererCurPersonaScaled(m_pRenderer, screenX, screenY, 1.5f);
