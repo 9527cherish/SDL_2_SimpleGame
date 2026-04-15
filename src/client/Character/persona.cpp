@@ -25,9 +25,19 @@ Persona::Persona(const Persona &persona)
     m_moveSpeed = persona.m_moveSpeed;
 }
 
+uint Persona::id() const
+{
+    return m_id;
+}
+
 void Persona::setId(uint id)
 {
     m_id = id;
+}
+
+const std::vector<PartBase>& Persona::spriteParts() const
+{
+    return m_spriteParts;
 }
 
 void Persona::renderer(SDL_Renderer *renderer, int x, int y)
@@ -60,19 +70,6 @@ void Persona::rendererCurPersonaScaled(SDL_Renderer *renderer, int x, int y, flo
     SDL_Rect bounds = previewBounds(m_actionName, m_direction);
     int drawX = static_cast<int>(x - (bounds.x + bounds.w / 2.0f) * scale);
     int drawY = static_cast<int>(y - (bounds.y + bounds.h / 2.0f) * scale);
-
-    for(PartBase& partSprite : m_spriteParts)
-    {
-        partSprite.initTexture(renderer);
-        partSprite.renderScaled(renderer, m_actionName, m_direction, drawX, drawY, scale);
-    }
-}
-
-void Persona::rendererCurPersonaGameScaled(SDL_Renderer *renderer, int x, int y, float scale)
-{
-    // 游戏场景里统一以 64x64 人物基准盒的中心为锚点，避免不同动画帧 offset 改变时看起来整个人在漂移。
-    int drawX = static_cast<int>(x - 32.0f * scale);
-    int drawY = static_cast<int>(y - 32.0f * scale);
 
     for(PartBase& partSprite : m_spriteParts)
     {
@@ -341,30 +338,6 @@ void Persona::setPosition(int x, int y)
     m_preciseY = static_cast<float>(y);
 }
 
-void Persona::setState(const CharaAction& actionName, const CharaDirection& direction, int x, int y)
-{
-    const bool stateChanged = m_actionName != actionName || m_direction != direction;
-    m_actionName = actionName;
-    m_direction = direction;
-    m_x = x;
-    m_y = y;
-    m_preciseX = static_cast<float>(x);
-    m_preciseY = static_cast<float>(y);
-    m_idleAction = actionName == CharaAction::WALK ? CharaAction::STAND : actionName;
-    m_actionLocked = false;
-    m_actionRemainTime = 0;
-    m_moveUp = false;
-    m_moveDown = false;
-    m_moveLeft = false;
-    m_moveRight = false;
-
-    if (!stateChanged) {
-        return;
-    }
-
-    resetAnimationState();
-}
-
 int Persona::x() const
 {
     return m_x;
@@ -394,15 +367,6 @@ std::vector<PartSyncInfo> Persona::partSyncInfos() const
         partSyncInfos.emplace_back(partSprite.syncInfo());
     }
     return partSyncInfos;
-}
-
-void Persona::applyPartSyncInfos(const std::vector<PartSyncInfo>& partSyncInfos)
-{
-    const size_t partCount = std::min(m_spriteParts.size(), partSyncInfos.size());
-    for (size_t i = 0; i < partCount; ++i)
-    {
-        m_spriteParts[i].applySyncInfo(partSyncInfos[i]);
-    }
 }
 
 void Persona::resetAnimationState()

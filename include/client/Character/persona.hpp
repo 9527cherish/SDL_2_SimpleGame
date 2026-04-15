@@ -11,11 +11,12 @@ public:
     // 自定义拷贝构造，实现深拷贝
     Persona(const Persona& persona);
 
+    uint id() const;
     void setId(uint id);
+    const std::vector<PartBase>& spriteParts() const;
     void renderer(SDL_Renderer* renderer, int x, int y);
     void rendererCurPersona(SDL_Renderer* renderer, int x, int y);
     void rendererCurPersonaScaled(SDL_Renderer* renderer, int x, int y, float scale);
-    void rendererCurPersonaGameScaled(SDL_Renderer* renderer, int x, int y, float scale);
     void rendererCurPersonaFootScaled(SDL_Renderer* renderer, int footX, int footY, float scale);
     void rendererCurPersonaScaled(SDL_Renderer* renderer, float scale);
     void rendererCurPersona(SDL_Renderer* renderer);
@@ -26,13 +27,11 @@ public:
     // 更新人物状态
     bool tick(Uint32 deltaTime);
     void setPosition(int x, int y);
-    void setState(const CharaAction& actionName, const CharaDirection& direction, int x, int y);
     int x() const;
     int y() const;
     CharaAction action() const;
     CharaDirection direction() const;
     std::vector<PartSyncInfo> partSyncInfos() const;
-    void applyPartSyncInfos(const std::vector<PartSyncInfo>& partSyncInfos);
 
 private:
     SDL_Rect previewBounds(const CharaAction& actionName, const CharaDirection& direction) const;

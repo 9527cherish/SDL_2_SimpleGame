@@ -91,10 +91,11 @@ void DataManager::syncRemotePersona(const PlayerInfo& playerInfo)
         if (persona == nullptr) {
             return;
         }
+        std::shared_ptr<RemotePersona> remotePersona = std::make_shared<RemotePersona>(*persona);
 
         RemotePersonaData remoteData;
         remoteData.personaId = playerInfo.personaId;
-        remoteData.persona = persona;
+        remoteData.persona = remotePersona;
         remoteData.targetX = playerInfo.x;
         remoteData.targetY = playerInfo.y;
         remoteData.targetAction = nextAction;
@@ -133,7 +134,7 @@ void DataManager::advanceRemotePersonas(Uint32 deltaTime)
     (void)deltaTime;
 }
 
-void DataManager::getRemotePersonas(std::vector<std::shared_ptr<Persona>>& personas)
+void DataManager::getRemotePersonas(std::vector<std::shared_ptr<RemotePersona>>& personas)
 {
     std::lock_guard<std::mutex> lock(m_remotePersonasMutex);
     personas.clear();
@@ -143,7 +144,7 @@ void DataManager::getRemotePersonas(std::vector<std::shared_ptr<Persona>>& perso
         if (remoteData.persona == nullptr) {
             continue;
         }
-        personas.emplace_back(std::make_shared<Persona>(*(remoteData.persona)));
+        personas.emplace_back(std::make_shared<RemotePersona>(*(remoteData.persona)));
     }
 }
 

@@ -4,6 +4,7 @@
 #include "characterStruct.hpp"
 #include "messageInfo.hpp"
 #include "persona.hpp"
+#include "remotepersona.hpp"
 #include <future>
 #include <map>
 #include <mutex>
@@ -35,7 +36,7 @@ public:
     void deleteRemotePersona(const std::string& uuid);
     void clearRemotePersonas();
     void advanceRemotePersonas(Uint32 deltaTime);
-    void getRemotePersonas(std::vector<std::shared_ptr<Persona>>& personas);
+    void getRemotePersonas(std::vector<std::shared_ptr<RemotePersona>>& personas);
 
     // bool getPersonas(std::vector<Persona>& persons);
     // 单例将拷贝构造和赋值构造删除
@@ -58,7 +59,7 @@ private:
     struct RemotePersonaData
     {
         int personaId = -1;
-        std::shared_ptr<Persona> persona;
+        std::shared_ptr<RemotePersona> persona;
         int targetX = 0;
         int targetY = 0;
         CharaAction targetAction = CharaAction::STAND;
