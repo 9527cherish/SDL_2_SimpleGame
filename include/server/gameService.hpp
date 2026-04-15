@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <functional>
 #include "json.hpp"
+#include "messageInfo.hpp"
 #include <map>
 #include <set>
 #include <mutex>
@@ -32,6 +33,7 @@ public:
     void reset();
 
     void brodcastMsg(const std::string &msg);
+    void sendMsg(const TcpConnectionPtr &conn, ENUM_MSG_TYPE msgType, const json &js);
 
     // 处理玩家人物连接时，或者更新时发过来的消息
     void dealRegisterUpdatePlayer(const TcpConnectionPtr &conn, json js, Timestamp time);
@@ -41,12 +43,12 @@ public:
 
     // 处理玩家在公共频道发送的消息
     void dealSendMessage(const TcpConnectionPtr &conn, json js, Timestamp time);
+    void dealSyncPlayers(const TcpConnectionPtr &conn, json js, Timestamp time);
 
 private:
 
     std::map<int, MsgHander> m_mapMsgHander;
-    std::map<int, TcpConnectionPtr> m_mapUserConn;
-    std::mutex m_mutexUserConn;
+    std::map<std::string, std::string> m_mapConnPlayer;
 
     std::set<TcpConnectionPtr> m_connections;
     std::mutex m_csconnection;

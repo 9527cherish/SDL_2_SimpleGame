@@ -3,6 +3,7 @@
 #include "dataManager.hpp"
 #include "interfaceManager.hpp"
 #include "gameInterface.hpp"
+#include "netClient.hpp"
 
 int main() {  // int argc, char* argv[]
     ClientComonFunc::installCrashHandlers();
@@ -19,6 +20,8 @@ int main() {  // int argc, char* argv[]
         ClientComonFunc::showCrashDialog("崩溃", "程序发生了未知异常。");
         return 1;
     }
+
+    NetClient::getInstance().leaveGame();
     
     return 0;
 }

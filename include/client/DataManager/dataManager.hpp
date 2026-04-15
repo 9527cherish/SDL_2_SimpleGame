@@ -2,8 +2,11 @@
 
 
 #include "characterStruct.hpp"
+#include "messageInfo.hpp"
 #include "persona.hpp"
 #include <future>
+#include <map>
+#include <mutex>
 #include <memory>
 
 // 管理所有数据
@@ -25,6 +28,13 @@ public:
     void setCurrentPerson(std::shared_ptr<Persona> persona);
     void setCurrentPerson(int number);
     std::shared_ptr<Persona> currentPersona();
+    int currentPersonaIndex() const;
+    std::shared_ptr<Persona> createPersona(int number);
+
+    void syncRemotePersona(const PlayerInfo& playerInfo);
+    void deleteRemotePersona(const std::string& uuid);
+    void clearRemotePersonas();
+    void getRemotePersonas(std::vector<std::shared_ptr<Persona>>& personas);
 
     // bool getPersonas(std::vector<Persona>& persons);
     // 单例将拷贝构造和赋值构造删除
@@ -42,5 +52,15 @@ private:
 
     // 当前选中的人物形象
     std::shared_ptr<Persona> m_pCurrentPerson;
+    int m_iCurrentPersonIndex = -1;
+
+    struct RemotePersonaData
+    {
+        int personaId = -1;
+        std::shared_ptr<Persona> persona;
+    };
+
+    std::map<std::string, RemotePersonaData> m_remotePersonas;
+    mutable std::mutex m_remotePersonasMutex;
 
 };

@@ -35,22 +35,27 @@ void GameServer::onConnection(const TcpConnectionPtr &conn)
 
 void GameServer::onMessage(const TcpConnectionPtr &conn, Buffer *buffer, Timestamp time)
 {
-    std::string buf = buffer->retrieveAllAsString();
-    // spdlog::info("收到客户端消息：" + buf);
-    uint32_t msgId;
-    std::string payload;
-    // if(unpacker.unpack(buf, msgId, payload))
-    // {
-    //     MsgHander msgHandler =  GameService::getInstance().getMsgHander(msgId);
-    //     // spdlog::info("解包后消息" + payload);
-        
-    //     json js = json::parse(payload);
-    //     msgHandler(conn, js, time);
-    // }
-    // json js = json::parse(buf);
-    // MsgHander msgHandler =  GameService::getInstance().getMsgHander(msgId);
-    // msgHandler(conn, js, time);
+    const char* eol = buffer->findEOL();
+    while (eol != nullptr)
+    {
+        std::string line(buffer->peek(), eol);
+        buffer->retrieveUntil(eol + 1);
 
-    
+        if (!line.empty())
+        {
+            json packet = json::parse(line, nullptr, false);
+            if (packet.is_discarded())
+            {
+                spdlog::error("收到无法解析的客户端消息: {}", line);
+            }
+            else
+            {
+                const int msgId = packet.value("msgId", -1);
+                MsgHander msgHandler = GameService::getInstance().getMsgHander(msgId);
+                msgHandler(conn, packet.value("data", json::object()), time);
+            }
+        }
+
+        eol = buffer->findEOL();
+    }
 }
-

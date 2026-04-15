@@ -95,6 +95,7 @@ void Persona::printPersonaInfo()
 
 bool Persona::handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& deltaTime, bool move)
 {
+    bool handled = false;
     if(e.type == SDL_KEYDOWN) {
         switch (e.key.keysym.sym) {
             case SDLK_w:
@@ -104,6 +105,7 @@ bool Persona::handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& del
                 m_actionName = CharaAction::WALK;
                 if(move)
                     m_y -= 2;
+                handled = true;
 
                 break;
             case SDLK_s:
@@ -113,6 +115,7 @@ bool Persona::handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& del
                 m_actionName = CharaAction::WALK;
                 if(move)
                     m_y += 2;
+                handled = true;
 
                 break;
             case SDLK_a:
@@ -122,6 +125,7 @@ bool Persona::handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& del
                 m_actionName = CharaAction::WALK;
                 if(move)
                     m_x -= 2;
+                handled = true;
 
                 break;
             case SDLK_d:
@@ -131,28 +135,36 @@ bool Persona::handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& del
                 m_actionName = CharaAction::WALK;
                 if(move)
                     m_x += 2;
+                handled = true;
 
                 break;
             case SDLK_SPACE:
                 m_actionName = CharaAction::ATTACK;
+                handled = true;
                 break;
             case SDLK_1:
                 m_actionName = CharaAction::STAND;
+                handled = true;
                 break;
             case SDLK_2:
                 m_actionName = CharaAction::SIT;
+                handled = true;
                 break;
             case SDLK_3:
                 m_actionName = CharaAction::DEAD;
+                handled = true;
                 break;
             case SDLK_4:
                 m_actionName = CharaAction::ATTACK_SWORD_STAB;
+                handled = true;
                 break;
             case SDLK_5:
                 m_actionName = CharaAction::ATTACK_BOW;
+                handled = true;
                 break;
             case SDLK_6:
                 m_actionName = CharaAction::CAST;
+                handled = true;
                 break;
             default:
                 break;
@@ -168,11 +180,12 @@ bool Persona::handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& del
                 e.key.keysym.sym == SDLK_KP_4 || e.key.keysym.sym == SDLK_KP_6) &&
             m_actionName == CharaAction::WALK) {
                 m_actionName = CharaAction::STAND;
+                handled = true;
         }
     }
     (void)lastFrameTime;
     (void)deltaTime;
-    return true;
+    return handled;
 }
 
 SDL_Rect Persona::previewBounds(const CharaAction& actionName, const CharaDirection& direction) const
@@ -206,4 +219,48 @@ SDL_Rect Persona::previewBounds(const CharaAction& actionName, const CharaDirect
 void Persona::tick(Uint32 deltaTime)
 {
     update(m_actionName, m_direction, deltaTime);
+}
+
+void Persona::setPosition(int x, int y)
+{
+    m_x = x;
+    m_y = y;
+}
+
+void Persona::setState(const CharaAction& actionName, const CharaDirection& direction, int x, int y)
+{
+    const bool stateChanged = m_actionName != actionName || m_direction != direction;
+    m_actionName = actionName;
+    m_direction = direction;
+    m_x = x;
+    m_y = y;
+
+    if (!stateChanged) {
+        return;
+    }
+
+    for (PartBase& partSprite : m_spriteParts)
+    {
+        partSprite.reset(m_actionName, m_direction);
+    }
+}
+
+int Persona::x() const
+{
+    return m_x;
+}
+
+int Persona::y() const
+{
+    return m_y;
+}
+
+CharaAction Persona::action() const
+{
+    return m_actionName;
+}
+
+CharaDirection Persona::direction() const
+{
+    return m_direction;
 }

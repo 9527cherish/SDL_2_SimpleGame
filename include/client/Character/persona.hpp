@@ -1,6 +1,7 @@
 #pragma once 
 #include "partBase.hpp"
 #include "sceneStruct.hpp"
+#include <string>
 
 
 class Persona
@@ -22,6 +23,12 @@ public:
     bool handleEvent(const SDL_Event& e, Uint32& lastFrameTime, Uint32& deltaTime, bool move = true);
     // 更新人物状态
     void tick(Uint32 deltaTime);
+    void setPosition(int x, int y);
+    void setState(const CharaAction& actionName, const CharaDirection& direction, int x, int y);
+    int x() const;
+    int y() const;
+    CharaAction action() const;
+    CharaDirection direction() const;
 
 private:
     SDL_Rect previewBounds(const CharaAction& actionName, const CharaDirection& direction) const;

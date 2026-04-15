@@ -1,5 +1,7 @@
 #include "dataManager.hpp"
 #include "loadXml.hpp"
+#include "characterAction.hpp"
+#include "characterDirection.hpp"
 
 
 DataManager& DataManager::getInstance()
@@ -37,6 +39,7 @@ void DataManager::setCurrentPerson(std::shared_ptr<Persona> persona)
 {
     // 在这儿应该生成一份拷贝，拷贝CurrentPerson， 否则会影响从前的m_personas数据
     m_pCurrentPerson = persona;
+    m_iCurrentPersonIndex = -1;
 }
 
 void DataManager::setCurrentPerson(int number)
@@ -48,11 +51,84 @@ void DataManager::setCurrentPerson(int number)
     }
     spdlog::info("设置当前人物索引: {}", number);
     m_pCurrentPerson =  std::make_shared<Persona>(*(m_personas[number]));
+    m_iCurrentPersonIndex = number;
 }
 
 std::shared_ptr<Persona> DataManager::currentPersona()
 {
     return m_pCurrentPerson;
+}
+
+int DataManager::currentPersonaIndex() const
+{
+    return m_iCurrentPersonIndex;
+}
+
+std::shared_ptr<Persona> DataManager::createPersona(int number)
+{
+    if(!m_bLoadData){
+        getDataFromFuture();
+    }
+
+    if (number < 0 || number >= static_cast<int>(m_personas.size())) {
+        spdlog::error("创建人物失败，索引越界: {}", number);
+        return nullptr;
+    }
+
+    return std::make_shared<Persona>(*(m_personas[number]));
+}
+
+void DataManager::syncRemotePersona(const PlayerInfo& playerInfo)
+{
+    std::lock_guard<std::mutex> lock(m_remotePersonasMutex);
+    auto iter = m_remotePersonas.find(playerInfo.uuid);
+
+    if (iter == m_remotePersonas.end() || iter->second.personaId != playerInfo.personaId || iter->second.persona == nullptr)
+    {
+        std::shared_ptr<Persona> persona = createPersona(playerInfo.personaId);
+        if (persona == nullptr) {
+            return;
+        }
+
+        RemotePersonaData remoteData;
+        remoteData.personaId = playerInfo.personaId;
+        remoteData.persona = persona;
+        iter = m_remotePersonas.emplace(playerInfo.uuid, remoteData).first;
+    }
+
+    iter->second.persona->setState(ActionMapper::from_string(playerInfo.action),
+                                   DirectionMapper::from_string(playerInfo.direction),
+                                   playerInfo.x,
+                                   playerInfo.y);
+}
+
+void DataManager::deleteRemotePersona(const std::string& uuid)
+{
+    std::lock_guard<std::mutex> lock(m_remotePersonasMutex);
+    auto iter = m_remotePersonas.find(uuid);
+    if (iter != m_remotePersonas.end()) {
+        m_remotePersonas.erase(iter);
+    }
+}
+
+void DataManager::clearRemotePersonas()
+{
+    std::lock_guard<std::mutex> lock(m_remotePersonasMutex);
+    m_remotePersonas.clear();
+}
+
+void DataManager::getRemotePersonas(std::vector<std::shared_ptr<Persona>>& personas)
+{
+    std::lock_guard<std::mutex> lock(m_remotePersonasMutex);
+    personas.clear();
+    for (const auto& [uuid, remoteData] : m_remotePersonas)
+    {
+        (void)uuid;
+        if (remoteData.persona == nullptr) {
+            continue;
+        }
+        personas.emplace_back(std::make_shared<Persona>(*(remoteData.persona)));
+    }
 }
 
 void DataManager::getDataFromFuture()

@@ -1,6 +1,7 @@
 #pragma once 
 
 #include <unordered_map>
+#include <vector>
 #include "messageInfo.hpp"
 
 #include <mutex>
@@ -21,6 +22,7 @@ public:
     void addPlayer(PlayerInfo player);
     void deletePlayer(PlayerInfo palyer);
     PlayerInfo generatePlayer(json js);
+    std::vector<PlayerInfo> getAllPlayers();
 
 private:
 

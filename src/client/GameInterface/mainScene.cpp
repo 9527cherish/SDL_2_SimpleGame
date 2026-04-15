@@ -4,6 +4,7 @@
 #include "sceneStruct.hpp"
 #include "interfaceManager.hpp"
 #include "dataManager.hpp"
+#include "netClient.hpp"
 
 
 MainScene::MainScene()
@@ -125,6 +126,12 @@ void MainScene::handleStartEvent(const SDL_Event &e)
             m_number = 0;
             m_page = 0;
         }
+    }
+
+    if(!NetClient::getInstance().enterGame())
+    {
+        spdlog::error("进入游戏失败，无法连接到服务器");
+        return;
     }
 
     InterfaceManager::getInstance().setCurrentScene(Scene::GAME_SCENE);

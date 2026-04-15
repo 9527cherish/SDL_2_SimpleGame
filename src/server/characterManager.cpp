@@ -34,17 +34,18 @@ void CharacterManager::deletePlayer(PlayerInfo palyer)
 
 PlayerInfo CharacterManager::generatePlayer(json js)
 {
-    PlayerInfo playerInfo;
-    playerInfo.uuid = js["uuid"];
-    playerInfo.name = js["name"];
-    playerInfo.x = js["x"];
-    playerInfo.y = js["y"];
-    
-    playerInfo.texture.name = js["texture"]["name"] ;
-    playerInfo.texture.x = js["texture"]["x"];
-    playerInfo.texture.y = js["texture"]["y"];
-    playerInfo.texture.width = js["texture"]["width"];
-    playerInfo.texture.height = js["texture"]["height"];
-    
-    return playerInfo;
+    return js.get<PlayerInfo>();
+}
+
+std::vector<PlayerInfo> CharacterManager::getAllPlayers()
+{
+    std::lock_guard<std::mutex> lock(mutexPlayerInfo);
+    std::vector<PlayerInfo> players;
+    players.reserve(m_mapPlayerInfo.size());
+    for (const auto& [uuid, player] : m_mapPlayerInfo)
+    {
+        (void)uuid;
+        players.emplace_back(player);
+    }
+    return players;
 }

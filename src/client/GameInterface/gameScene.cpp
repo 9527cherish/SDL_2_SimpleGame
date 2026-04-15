@@ -2,6 +2,7 @@
 #include "persona.hpp"
 #include "interfaceManager.hpp"
 #include "dataManager.hpp"
+#include "netClient.hpp"
 
 void GameScene::renderScene()
 {
@@ -18,6 +19,17 @@ void GameScene::renderScene()
     std::shared_ptr<Persona> persona = DataManager::getInstance().currentPersona();
     if (persona != nullptr) {
         persona->tick(deltaTime);
+    }
+
+    std::vector<std::shared_ptr<Persona>> remotePersonas;
+    DataManager::getInstance().getRemotePersonas(remotePersonas);
+    for (const std::shared_ptr<Persona>& remotePersona : remotePersonas)
+    {
+        if (remotePersona == nullptr) {
+            continue;
+        }
+        remotePersona->tick(deltaTime);
+        remotePersona->rendererCurPersonaScaled(m_pRenderer, 1.5f);
     }
 
     renderCurrentPerson();
@@ -41,7 +53,9 @@ void GameScene::handleEvent(const SDL_Event &e)
     if(nullptr != persona)
     {
         Uint32 deltaTime = 0;
-        persona->handleEvent(e, m_lastFrameTime, deltaTime, true);
+        if (persona->handleEvent(e, m_lastFrameTime, deltaTime, true)) {
+            NetClient::getInstance().syncCurrentPlayer();
+        }
     }
 }
 
