@@ -5,6 +5,7 @@
 #include "remotepersona.hpp"
 #include "interfaceManager.hpp"
 #include "dataManager.hpp"
+#include "treeManager.hpp"
 #include "netClient.hpp"
 
 GameScene::GameScene()
@@ -43,6 +44,7 @@ void GameScene::renderScene()
     }
 
     renderBackground();
+    TreeManager::getInstance().renderTrees(m_pRenderer, m_camera);
     renderRemotePersons(deltaTime);
     renderCurrentPerson();
 }
@@ -102,6 +104,14 @@ void GameScene::handleEvent(const SDL_Event &e)
     std::shared_ptr<Persona> persona = DataManager::getInstance().currentPersona();
     if(nullptr != persona)
     {
+        if (e.type == SDL_KEYDOWN && !e.key.repeat && e.key.keysym.sym == SDLK_j)
+        {
+            const int treeId = TreeManager::getInstance().findNearestAliveTree(persona->x(), persona->y(), 140);
+            if (treeId > 0) {
+                NetClient::getInstance().hitTree(treeId, 1);
+            }
+        }
+
         Uint32 deltaTime = 0;
         if (persona->handleEvent(e, m_lastFrameTime, deltaTime, true)) {
             NetClient::getInstance().syncCurrentPlayer();

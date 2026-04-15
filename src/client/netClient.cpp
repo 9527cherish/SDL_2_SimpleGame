@@ -13,6 +13,7 @@
 #include "characterDirection.hpp"
 #include "dataManager.hpp"
 #include "persona.hpp"
+#include "treeManager.hpp"
 
 NetClient::NetClient()
     : m_socketFd(-1)
@@ -45,9 +46,11 @@ bool NetClient::enterGame()
     }
 
     DataManager::getInstance().clearRemotePersonas();
+    TreeManager::getInstance().clearTrees();
     m_enteredGame = true;
     // 先拉一份当前在线玩家快照，再发送自己的最新状态，后进入的客户端也能看到已有角色。
     sendMessage(ENUM_MSG_SYNC_PLAYERS_REQUEST, json{{"uuid", m_localUuid}});
+    sendMessage(ENUM_MSG_SYNC_TREES_REQUEST, json{{"uuid", m_localUuid}});
     syncCurrentPlayer();
     return true;
 }
@@ -64,6 +67,7 @@ void NetClient::leaveGame()
     m_enteredGame = false;
     closeConnection();
     DataManager::getInstance().clearRemotePersonas();
+    TreeManager::getInstance().clearTrees();
 }
 
 void NetClient::syncCurrentPlayer()
@@ -78,6 +82,19 @@ void NetClient::syncCurrentPlayer()
     }
 
     sendMessage(ENUM_MSG_REGISTER_UPDATE_PLAYER_REQUEST, playerInfo);
+}
+
+void NetClient::hitTree(int treeId, int damage)
+{
+    if (!m_enteredGame || m_socketFd < 0 || treeId <= 0) {
+        return;
+    }
+
+    TreeHitRequest request;
+    request.playerUuid = m_localUuid;
+    request.treeId = treeId;
+    request.damage = damage;
+    sendMessage(ENUM_MSG_HIT_TREE_REQUEST, request);
 }
 
 bool NetClient::connectServer()
@@ -202,6 +219,17 @@ void NetClient::handleMessage(int msgId, const json& data)
             }
             DataManager::getInstance().syncRemotePersona(playerInfo);
         }
+        break;
+    }
+    case ENUM_MSG_SYNC_TREES_RESPONSE:
+    {
+        TreeManager::getInstance().syncTrees(data.value("trees", std::vector<TreeInfo>()));
+        break;
+    }
+    case ENUM_MSG_HIT_TREE_RESPONSE:
+    case ENUM_MSG_UPDATE_TREE_PUSH:
+    {
+        TreeManager::getInstance().updateTree(data.get<TreeInfo>());
         break;
     }
     default:

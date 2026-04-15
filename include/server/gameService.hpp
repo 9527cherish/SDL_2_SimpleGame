@@ -44,6 +44,9 @@ public:
     // 处理玩家在公共频道发送的消息
     void dealSendMessage(const TcpConnectionPtr &conn, json js, Timestamp time);
     void dealSyncPlayers(const TcpConnectionPtr &conn, json js, Timestamp time);
+    void dealSyncTrees(const TcpConnectionPtr &conn, json js, Timestamp time);
+    void dealHitTree(const TcpConnectionPtr &conn, json js, Timestamp time);
+    void broadcastTrees(const std::vector<TreeInfo>& trees);
 
 private:
 

@@ -16,6 +16,7 @@ public:
     bool enterGame();
     void leaveGame();
     void syncCurrentPlayer();
+    void hitTree(int treeId, int damage = 1);
 
 private:
     NetClient();

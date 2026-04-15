@@ -4,12 +4,15 @@
 #include <spdlog/spdlog.h>
 #include "characterManager.hpp"
 #include "messageInfo.hpp"
+#include "serverTreeManager.hpp"
 
 GameService::GameService()
 {
     m_mapMsgHander[ENUM_MSG_REGISTER_UPDATE_PLAYER_REQUEST] = std::bind(&GameService::dealRegisterUpdatePlayer, this, _1, _2, _3);
     m_mapMsgHander[ENUM_MSG_DELETE_PLAYER_REQUEST] = std::bind(&GameService::dealDeletePlayer, this, _1, _2, _3);
     m_mapMsgHander[ENUM_MSG_SYNC_PLAYERS_REQUEST] = std::bind(&GameService::dealSyncPlayers, this, _1, _2, _3);
+    m_mapMsgHander[ENUM_MSG_SYNC_TREES_REQUEST] = std::bind(&GameService::dealSyncTrees, this, _1, _2, _3);
+    m_mapMsgHander[ENUM_MSG_HIT_TREE_REQUEST] = std::bind(&GameService::dealHitTree, this, _1, _2, _3);
     m_mapMsgHander[ENUM_MSG_SENDMESSAGE_REQUEST] = std::bind(&GameService::dealSendMessage, this, _1, _2, _3);
 }
 
@@ -92,6 +95,7 @@ void GameService::dealRegisterUpdatePlayer(const TcpConnectionPtr &conn, json js
 {
     (void)conn; 
     (void)time; 
+    broadcastTrees(ServerTreeManager::getInstance().refreshTrees());
     PlayerInfo player = CharacterManager::getInstanse().generatePlayer(js);
     CharacterManager::getInstanse().addPlayer(player);
     {
@@ -127,6 +131,39 @@ void GameService::dealSyncPlayers(const TcpConnectionPtr &conn, json js, Timesta
     json response;
     response["players"] = CharacterManager::getInstanse().getAllPlayers();
     sendMsg(conn, ENUM_MSG_SYNC_PLAYERS_RESPONSE, response);
+}
+
+void GameService::dealSyncTrees(const TcpConnectionPtr &conn, json js, Timestamp time)
+{
+    (void)js;
+    (void)time;
+    broadcastTrees(ServerTreeManager::getInstance().refreshTrees());
+    json response;
+    response["trees"] = ServerTreeManager::getInstance().getAllTrees();
+    sendMsg(conn, ENUM_MSG_SYNC_TREES_RESPONSE, response);
+}
+
+void GameService::dealHitTree(const TcpConnectionPtr &conn, json js, Timestamp time)
+{
+    (void)conn;
+    (void)time;
+    broadcastTrees(ServerTreeManager::getInstance().refreshTrees());
+
+    TreeHitRequest request = js.get<TreeHitRequest>();
+    TreeInfo treeInfo;
+    if (!ServerTreeManager::getInstance().hitTree(request, treeInfo)) {
+        return;
+    }
+
+    brodcastMsg(packMessage(ENUM_MSG_HIT_TREE_RESPONSE, treeInfo));
+}
+
+void GameService::broadcastTrees(const std::vector<TreeInfo>& trees)
+{
+    for (const TreeInfo& tree : trees)
+    {
+        brodcastMsg(packMessage(ENUM_MSG_UPDATE_TREE_PUSH, tree));
+    }
 }
 
 void GameService::dealSendMessage(const TcpConnectionPtr &conn, json js, Timestamp time)
