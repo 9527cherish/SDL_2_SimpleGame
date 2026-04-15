@@ -55,7 +55,7 @@ void GameScene::renderCurrentPerson()
         return;
     }
 
-    persona->rendererCurPersonaScaled(m_pRenderer, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 1.5f);
+    persona->rendererCurPersonaFootScaled(m_pRenderer, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 1.5f);
 }
 
 void GameScene::renderBackground(int cameraX, int cameraY)
@@ -88,6 +88,8 @@ void GameScene::renderBackground(int cameraX, int cameraY)
 
 void GameScene::renderRemotePersons(int cameraX, int cameraY, Uint32 deltaTime)
 {
+    DataManager::getInstance().advanceRemotePersonas(deltaTime);
+
     std::vector<std::shared_ptr<Persona>> remotePersonas;
     DataManager::getInstance().getRemotePersonas(remotePersonas);
     for (const std::shared_ptr<Persona>& remotePersona : remotePersonas)
@@ -96,11 +98,10 @@ void GameScene::renderRemotePersons(int cameraX, int cameraY, Uint32 deltaTime)
             continue;
         }
 
-        remotePersona->tick(deltaTime);
-        // 远端角色按“世界坐标 - 相机坐标”换算到屏幕坐标，本机角色因此始终停在中心。
+        // 远端角色按“世界坐标 - 相机坐标”换算到屏幕坐标，并统一按脚点锚定，避免动画帧切换时整体打滑。
         const int screenX = SCREEN_WIDTH / 2 + (remotePersona->x() - cameraX);
         const int screenY = SCREEN_HEIGHT / 2 + (remotePersona->y() - cameraY);
-        remotePersona->rendererCurPersonaScaled(m_pRenderer, screenX, screenY, 1.5f);
+        remotePersona->rendererCurPersonaFootScaled(m_pRenderer, screenX, screenY, 1.5f);
     }
 }
 

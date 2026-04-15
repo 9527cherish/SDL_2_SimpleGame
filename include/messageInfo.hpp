@@ -21,6 +21,35 @@ enum ENUM_MSG_TYPE
     ENUM_MSG_SENDMESSAGE_RESPONSE,    // 发送消息回复
 };
 
+struct PartSyncInfo
+{
+    int frameIndex = 0;
+    int frameValue = 0;
+    int offsetX = 0;
+    int offsetY = 0;
+    int delay = 0;
+};
+
+inline void to_json(json& js, const PartSyncInfo& part)
+{
+    js = json{
+        {"frameIndex", part.frameIndex},
+        {"frameValue", part.frameValue},
+        {"offsetX", part.offsetX},
+        {"offsetY", part.offsetY},
+        {"delay", part.delay}
+    };
+}
+
+inline void from_json(const json& js, PartSyncInfo& part)
+{
+    part.frameIndex = js.value("frameIndex", 0);
+    part.frameValue = js.value("frameValue", 0);
+    part.offsetX = js.value("offsetX", 0);
+    part.offsetY = js.value("offsetY", 0);
+    part.delay = js.value("delay", 0);
+}
+
 struct PlayerInfo
 {
     std::string uuid;         // 唯一标识
@@ -30,6 +59,7 @@ struct PlayerInfo
     int y;                    // 位置 y
     std::string action;       // 当前动作
     std::string direction;    // 当前方向
+    std::vector<PartSyncInfo> parts;  // 每个部件当前动画帧
 
     PlayerInfo()
     {
@@ -44,15 +74,15 @@ struct PlayerInfo
 
 inline void to_json(json& js, const PlayerInfo& player)
 {
-    js = json{
-        {"uuid", player.uuid},
-        {"name", player.name},
-        {"personaId", player.personaId},
-        {"x", player.x},
-        {"y", player.y},
-        {"action", player.action},
-        {"direction", player.direction}
-    };
+    js = json::object();
+    js["uuid"] = player.uuid;
+    js["name"] = player.name;
+    js["personaId"] = player.personaId;
+    js["x"] = player.x;
+    js["y"] = player.y;
+    js["action"] = player.action;
+    js["direction"] = player.direction;
+    js["parts"] = player.parts;
 }
 
 inline void from_json(const json& js, PlayerInfo& player)
@@ -64,6 +94,11 @@ inline void from_json(const json& js, PlayerInfo& player)
     player.y = js.value("y", 0);
     player.action = js.value("action", "stand");
     player.direction = js.value("direction", "down");
+    if (js.contains("parts") && js["parts"].is_array()) {
+        player.parts = js["parts"].get<std::vector<PartSyncInfo>>();
+    } else {
+        player.parts.clear();
+    }
 }
 
 inline std::string packMessage(const ENUM_MSG_TYPE msgType, const json& data)

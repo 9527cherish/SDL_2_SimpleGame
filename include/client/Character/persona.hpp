@@ -15,6 +15,8 @@ public:
     void renderer(SDL_Renderer* renderer, int x, int y);
     void rendererCurPersona(SDL_Renderer* renderer, int x, int y);
     void rendererCurPersonaScaled(SDL_Renderer* renderer, int x, int y, float scale);
+    void rendererCurPersonaGameScaled(SDL_Renderer* renderer, int x, int y, float scale);
+    void rendererCurPersonaFootScaled(SDL_Renderer* renderer, int footX, int footY, float scale);
     void rendererCurPersonaScaled(SDL_Renderer* renderer, float scale);
     void rendererCurPersona(SDL_Renderer* renderer);
     void update(const CharaAction& actionName, const CharaDirection& direction, int deltaTime);
@@ -29,6 +31,8 @@ public:
     int y() const;
     CharaAction action() const;
     CharaDirection direction() const;
+    std::vector<PartSyncInfo> partSyncInfos() const;
+    void applyPartSyncInfos(const std::vector<PartSyncInfo>& partSyncInfos);
 
 private:
     SDL_Rect previewBounds(const CharaAction& actionName, const CharaDirection& direction) const;

@@ -240,6 +240,7 @@ PlayerInfo NetClient::buildCurrentPlayerInfo()
     playerInfo.y = persona->y();
     playerInfo.action = ActionMapper::to_string(persona->action());
     playerInfo.direction = DirectionMapper::to_string(persona->direction());
+    playerInfo.parts = persona->partSyncInfos();
     return playerInfo;
 }
 

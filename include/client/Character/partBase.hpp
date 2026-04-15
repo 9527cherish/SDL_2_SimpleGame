@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "characterStruct.hpp"
+#include "messageInfo.hpp"
 
 class PartBase
 {
@@ -44,6 +45,8 @@ public:
 
     void setVariant(int variant);
     int variant() const;
+    PartSyncInfo syncInfo() const;
+    void applySyncInfo(const PartSyncInfo& syncInfo);
 
 private:
     ImageSet m_imageSet;

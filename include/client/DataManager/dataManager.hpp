@@ -34,6 +34,7 @@ public:
     void syncRemotePersona(const PlayerInfo& playerInfo);
     void deleteRemotePersona(const std::string& uuid);
     void clearRemotePersonas();
+    void advanceRemotePersonas(Uint32 deltaTime);
     void getRemotePersonas(std::vector<std::shared_ptr<Persona>>& personas);
 
     // bool getPersonas(std::vector<Persona>& persons);
@@ -58,6 +59,10 @@ private:
     {
         int personaId = -1;
         std::shared_ptr<Persona> persona;
+        int targetX = 0;
+        int targetY = 0;
+        CharaAction targetAction = CharaAction::STAND;
+        CharaDirection targetDirection = CharaDirection::DOWN;
     };
 
     std::map<std::string, RemotePersonaData> m_remotePersonas;

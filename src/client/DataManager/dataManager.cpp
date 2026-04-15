@@ -82,6 +82,8 @@ void DataManager::syncRemotePersona(const PlayerInfo& playerInfo)
 {
     std::lock_guard<std::mutex> lock(m_remotePersonasMutex);
     auto iter = m_remotePersonas.find(playerInfo.uuid);
+    const CharaAction nextAction = ActionMapper::from_string(playerInfo.action);
+    const CharaDirection nextDirection = DirectionMapper::from_string(playerInfo.direction);
 
     if (iter == m_remotePersonas.end() || iter->second.personaId != playerInfo.personaId || iter->second.persona == nullptr)
     {
@@ -93,13 +95,22 @@ void DataManager::syncRemotePersona(const PlayerInfo& playerInfo)
         RemotePersonaData remoteData;
         remoteData.personaId = playerInfo.personaId;
         remoteData.persona = persona;
+        remoteData.targetX = playerInfo.x;
+        remoteData.targetY = playerInfo.y;
+        remoteData.targetAction = nextAction;
+        remoteData.targetDirection = nextDirection;
         iter = m_remotePersonas.emplace(playerInfo.uuid, remoteData).first;
+        iter->second.persona->setState(nextAction, nextDirection, playerInfo.x, playerInfo.y);
+        iter->second.persona->applyPartSyncInfos(playerInfo.parts);
+        return;
     }
 
-    iter->second.persona->setState(ActionMapper::from_string(playerInfo.action),
-                                   DirectionMapper::from_string(playerInfo.direction),
-                                   playerInfo.x,
-                                   playerInfo.y);
+    iter->second.targetX = playerInfo.x;
+    iter->second.targetY = playerInfo.y;
+    iter->second.targetAction = nextAction;
+    iter->second.targetDirection = nextDirection;
+    iter->second.persona->setState(nextAction, nextDirection, playerInfo.x, playerInfo.y);
+    iter->second.persona->applyPartSyncInfos(playerInfo.parts);
 }
 
 void DataManager::deleteRemotePersona(const std::string& uuid)
@@ -115,6 +126,11 @@ void DataManager::clearRemotePersonas()
 {
     std::lock_guard<std::mutex> lock(m_remotePersonasMutex);
     m_remotePersonas.clear();
+}
+
+void DataManager::advanceRemotePersonas(Uint32 deltaTime)
+{
+    (void)deltaTime;
 }
 
 void DataManager::getRemotePersonas(std::vector<std::shared_ptr<Persona>>& personas)

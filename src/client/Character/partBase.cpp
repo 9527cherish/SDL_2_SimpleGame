@@ -426,3 +426,24 @@ int PartBase::variant() const
 {
     return m_variant;
 }
+
+PartSyncInfo PartBase::syncInfo() const
+{
+    PartSyncInfo syncInfo;
+    syncInfo.frameIndex = m_iFrameIndex;
+    syncInfo.frameValue = m_Frame.index;
+    syncInfo.offsetX = m_Frame.offsetX;
+    syncInfo.offsetY = m_Frame.offsetY;
+    syncInfo.delay = m_Frame.delay;
+    return syncInfo;
+}
+
+void PartBase::applySyncInfo(const PartSyncInfo& syncInfo)
+{
+    m_iFrameIndex = syncInfo.frameIndex;
+    m_Frame.index = syncInfo.frameValue;
+    m_Frame.offsetX = syncInfo.offsetX;
+    m_Frame.offsetY = syncInfo.offsetY;
+    m_Frame.delay = syncInfo.delay;
+    m_iDeltaTime = 0;
+}

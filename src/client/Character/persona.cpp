@@ -68,6 +68,33 @@ void Persona::rendererCurPersonaScaled(SDL_Renderer *renderer, int x, int y, flo
     }
 }
 
+void Persona::rendererCurPersonaGameScaled(SDL_Renderer *renderer, int x, int y, float scale)
+{
+    // 游戏场景里统一以 64x64 人物基准盒的中心为锚点，避免不同动画帧 offset 改变时看起来整个人在漂移。
+    int drawX = static_cast<int>(x - 32.0f * scale);
+    int drawY = static_cast<int>(y - 32.0f * scale);
+
+    for(PartBase& partSprite : m_spriteParts)
+    {
+        partSprite.initTexture(renderer);
+        partSprite.renderScaled(renderer, m_actionName, m_direction, drawX, drawY, scale);
+    }
+}
+
+void Persona::rendererCurPersonaFootScaled(SDL_Renderer *renderer, int footX, int footY, float scale)
+{
+    // TMWA 的人物部件最终都是围绕 64x64 基准盒底边来组织的；
+    // 游戏里按“脚下落点”锚定能消除 walk/attack 帧 offset 带来的整体左右滑动感。
+    int drawX = static_cast<int>(footX - 32.0f * scale);
+    int drawY = static_cast<int>(footY - 64.0f * scale);
+
+    for(PartBase& partSprite : m_spriteParts)
+    {
+        partSprite.initTexture(renderer);
+        partSprite.renderScaled(renderer, m_actionName, m_direction, drawX, drawY, scale);
+    }
+}
+
 void Persona::rendererCurPersonaScaled(SDL_Renderer *renderer, float scale)
 {
     rendererCurPersonaScaled(renderer, m_x, m_y, scale);
@@ -296,7 +323,10 @@ bool Persona::tick(Uint32 deltaTime)
     }
     else if (!m_actionLocked)
     {
-        updateBaseAction();
+        // 远端角色没有本地按键输入，收到网络同步的 WALK 状态时不应在 tick 中被立即回退成 STAND。
+        if (m_enableMoveByTick || m_actionName != CharaAction::WALK) {
+            updateBaseAction();
+        }
     }
 
     update(m_actionName, m_direction, deltaTime);
@@ -353,6 +383,26 @@ CharaAction Persona::action() const
 CharaDirection Persona::direction() const
 {
     return m_direction;
+}
+
+std::vector<PartSyncInfo> Persona::partSyncInfos() const
+{
+    std::vector<PartSyncInfo> partSyncInfos;
+    partSyncInfos.reserve(m_spriteParts.size());
+    for (const PartBase& partSprite : m_spriteParts)
+    {
+        partSyncInfos.emplace_back(partSprite.syncInfo());
+    }
+    return partSyncInfos;
+}
+
+void Persona::applyPartSyncInfos(const std::vector<PartSyncInfo>& partSyncInfos)
+{
+    const size_t partCount = std::min(m_spriteParts.size(), partSyncInfos.size());
+    for (size_t i = 0; i < partCount; ++i)
+    {
+        m_spriteParts[i].applySyncInfo(partSyncInfos[i]);
+    }
 }
 
 void Persona::resetAnimationState()
