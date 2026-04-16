@@ -12,6 +12,7 @@
 #include <exception>
 
 namespace {
+// 统一处理进程级信号并弹出崩溃提示。
 void signalHandler(int signum) {
     switch (signum) {
         case SIGSEGV:
@@ -36,6 +37,7 @@ void signalHandler(int signum) {
     std::_Exit(1);
 }
 
+// 统一处理未捕获异常终止场景。
 void terminateHandler() {
     try {
         std::rethrow_exception(std::current_exception());
@@ -65,6 +67,7 @@ ClientComonFunc &ClientComonFunc::getInstance()
     return instance;
 }
 
+// 初始化客户端日志目录和默认日志器。
 void ClientComonFunc::init_logger(const std::string &log_name)
 {
     // 自动创建日志目录
@@ -92,6 +95,7 @@ void ClientComonFunc::init_logger(const std::string &log_name)
     spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [%s:%#] %v");
 }
 
+// 生成当前时间的简短字符串表示。
 std::string ClientComonFunc::getCurrentTime()
 {
     std::time_t now = std::time(nullptr);
@@ -101,11 +105,13 @@ std::string ClientComonFunc::getCurrentTime()
     return time;
 }
 
+// 使用 SDL 弹出错误消息框。
 void ClientComonFunc::showCrashDialog(const char* title, const char* message)
 {
     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title, message, nullptr);
 }
 
+// 注册客户端使用的崩溃信号与终止处理器。
 void ClientComonFunc::installCrashHandlers()
 {
     spdlog::info("安装崩溃处理器");

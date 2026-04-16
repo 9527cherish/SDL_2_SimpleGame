@@ -7,12 +7,6 @@ constexpr int kTreeRespawnSeconds = 15;
 const char* kTreeSpritePath = "../images/tmwa/graphics/sprites/npcs/tree-large.png";
 }
 
-ServerTreeManager& ServerTreeManager::getInstance()
-{
-    static ServerTreeManager instance;
-    return instance;
-}
-
 ServerTreeManager::ServerTreeManager()
 {
     const std::vector<std::pair<int, int>> treePositions{

@@ -3,13 +3,12 @@
 #include <SDL2/SDL_image.h>
 #include "sceneStruct.hpp"
 #include "interfaceManager.hpp"
-#include "dataManager.hpp"
-#include "netClient.hpp"
+#include "assetRepository.hpp"
+#include "playerSession.hpp"
+#include "Network/netClient.hpp"
 
 
 MainScene::MainScene()
-    : m_page(0)
-    , m_number(-1)
 {
     if (TTF_Init() == -1) {
         spdlog::error("TTF_Init 初始化失败:" + std::string(TTF_GetError()));
@@ -31,6 +30,24 @@ MainScene::MainScene()
     }
 }
 
+MainScene::~MainScene()
+{
+    if (m_pTitleFont != nullptr) {
+        TTF_CloseFont(m_pTitleFont);
+        m_pTitleFont = nullptr;
+    }
+
+    if (m_pButtonFont != nullptr) {
+        TTF_CloseFont(m_pButtonFont);
+        m_pButtonFont = nullptr;
+    }
+
+    if (m_pLabelFont != nullptr) {
+        TTF_CloseFont(m_pLabelFont);
+        m_pLabelFont = nullptr;
+    }
+}
+
 void MainScene::renderScene()
 {
     if(nullptr == m_pRenderer)
@@ -48,11 +65,11 @@ void MainScene::renderScene()
     else
     {
         std::vector<std::shared_ptr<Persona>> personas;
-        DataManager::getInstance().getData(personas);
+        AssetRepository::getInstance().getPersonas(personas);
         if(!personas.empty())
         {
             spdlog::info("主菜单默认选择第一个人物");
-            DataManager::getInstance().setCurrentPerson(0);
+            PlayerSession::getInstance().selectPersona(0);
             m_number = 0;
             m_page = 0;
         }
@@ -89,22 +106,22 @@ void MainScene::handleEvent(const SDL_Event &e)
         if(value->handleEvent(e))
         {
             m_number = key;
-            DataManager::getInstance().setCurrentPerson(m_page*10 + m_number);
+            PlayerSession::getInstance().selectPersona(m_page*10 + m_number);
             spdlog::info("--------------------------------------------------");
             spdlog::info("选择人物: " + std::to_string(m_page*10 + m_number));
             
             // 打印太频繁，注释掉打印
-            // DataManager::getInstance().currentPersona()->printPersonaInfo();
+            // PlayerSession::getInstance().currentPersona()->printPersonaInfo();
         }   
     }
 
     if(-1 != m_number)
     {
-        std::shared_ptr<Persona> persona = DataManager::getInstance().currentPersona();
+        std::shared_ptr<Persona> persona = PlayerSession::getInstance().currentPersona();
         if(nullptr != persona)
         {
             Uint32 lastFrameTime = SDL_GetTicks();
-            Uint32 deltaTime; 
+            Uint32 deltaTime = 0;
             persona->handleEvent(e, lastFrameTime, deltaTime, false);
         }
 
@@ -116,13 +133,13 @@ void MainScene::handleStartEvent(const SDL_Event &e)
     if(!m_pStartButton->handleEvent(e))
         return;
 
-    if(nullptr == DataManager::getInstance().currentPersona())
+    if(nullptr == PlayerSession::getInstance().currentPersona())
     {
         std::vector<std::shared_ptr<Persona>> personas;
-        DataManager::getInstance().getData(personas);
+        AssetRepository::getInstance().getPersonas(personas);
         if(!personas.empty())
         {
-            DataManager::getInstance().setCurrentPerson(0);
+            PlayerSession::getInstance().selectPersona(0);
             m_number = 0;
             m_page = 0;
         }
@@ -276,7 +293,7 @@ void MainScene::renderButton()
 void MainScene::renderPersonas()
 {
     std::vector<std::shared_ptr<Persona>> personas;
-    DataManager::getInstance().getData(personas);
+    AssetRepository::getInstance().getPersonas(personas);
 
     constexpr int kCellSize = 100;
     constexpr int kVisualCenterXOffset = -6;
@@ -300,7 +317,7 @@ void MainScene::renderPersonas()
 
 void MainScene::renderCurrentPerson()
 {
-    std::shared_ptr<Persona> persona = DataManager::getInstance().currentPersona();
+    std::shared_ptr<Persona> persona = PlayerSession::getInstance().currentPersona();
 
     if(nullptr != persona)
     {
@@ -322,6 +339,7 @@ void MainScene::initScene()
 void MainScene::initPersonas()
 {
     std::vector<std::shared_ptr<Persona>> personas;
-    DataManager::getInstance().getData(personas);
-    m_maxPage = personas.size() / 10 + (personas.size() % 10 == 0 ? 0 : 1);
+    AssetRepository::getInstance().getPersonas(personas);
+    const int personaCount = static_cast<int>(personas.size());
+    m_maxPage = std::max(1, personaCount / 10 + (personaCount % 10 == 0 ? 0 : 1));
 }

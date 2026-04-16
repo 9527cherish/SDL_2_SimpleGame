@@ -32,15 +32,14 @@ enum class CharaAction {
 // 3. 自动生成转换工具类
 class ActionMapper {
 private:
-    // 自动生成 枚举->字符串 映射表
-    static const std::unordered_map<CharaAction, std::string> m_enumToStr;
-    // 自动生成 字符串->枚举 映射表
-    static const std::unordered_map<std::string, CharaAction> m_strToEnum;
+    static const std::unordered_map<CharaAction, std::string> m_enumToStr; // 动作枚举到字符串的映射表。
+    static const std::unordered_map<std::string, CharaAction> m_strToEnum; // 动作字符串到枚举的映射表。
 
 public:
+    // 把动作枚举转换为网络或配置可用的字符串。
     static std::string to_string(CharaAction action);
 
+    // 把动作字符串解析为内部动作枚举。
     static CharaAction from_string(const std::string& str);
 };
-
 

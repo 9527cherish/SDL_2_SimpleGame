@@ -1,8 +1,7 @@
 #include "gameServer.hpp"
 
 #include <functional>
-#include "json.hpp"
-#include "gameService.hpp"
+#include "messageInfo.hpp"
 #include "serverComonFunc.hpp"
 #include <spdlog/spdlog.h>
 
@@ -30,7 +29,7 @@ void GameServer::start()
 
 void GameServer::onConnection(const TcpConnectionPtr &conn)
 {
-    GameService::getInstance().clientConnection(conn);
+    m_gameService.clientConnection(conn);
 }
 
 void GameServer::onMessage(const TcpConnectionPtr &conn, Buffer *buffer, Timestamp time)
@@ -43,16 +42,15 @@ void GameServer::onMessage(const TcpConnectionPtr &conn, Buffer *buffer, Timesta
 
         if (!line.empty())
         {
-            json packet = json::parse(line, nullptr, false);
-            if (packet.is_discarded())
+            PacketEnvelope packet;
+            if (!parsePacketLine(line, packet))
             {
                 spdlog::error("收到无法解析的客户端消息: {}", line);
             }
             else
             {
-                const int msgId = packet.value("msgId", -1);
-                MsgHander msgHandler = GameService::getInstance().getMsgHander(msgId);
-                msgHandler(conn, packet.value("data", json::object()), time);
+                MsgHander msgHandler = m_gameService.getMsgHander(packet.msgId);
+                msgHandler(conn, packet.data, time);
             }
         }
 

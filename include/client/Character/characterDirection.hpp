@@ -23,14 +23,14 @@ enum class CharaDirection {
 // 3. 自动生成转换工具类
 class DirectionMapper {
 private:
-    // 自动生成 枚举->字符串 映射表
-    static const std::unordered_map<CharaDirection, std::string> m_enumToStr;
-    // 自动生成 字符串->枚举 映射表
-    static const std::unordered_map<std::string, CharaDirection> m_strToEnum;
+    static const std::unordered_map<CharaDirection, std::string> m_enumToStr; // 朝向枚举到字符串的映射表。
+    static const std::unordered_map<std::string, CharaDirection> m_strToEnum; // 朝向字符串到枚举的映射表。
 
 public:
+    // 把方向枚举转换为字符串表示。
     static std::string to_string(CharaDirection direction);
 
+    // 把方向字符串解析为内部方向枚举。
     static CharaDirection from_string(const std::string& str);
 
 };

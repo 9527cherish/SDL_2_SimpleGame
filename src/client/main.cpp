@@ -1,15 +1,16 @@
 #include "clientComonFunc.hpp"
 #include "characterStruct.hpp"
-#include "dataManager.hpp"
+#include "assetRepository.hpp"
 #include "interfaceManager.hpp"
 #include "gameInterface.hpp"
-#include "netClient.hpp"
+#include "Network/netClient.hpp"
 
+// 客户端程序入口：初始化公共资源并启动界面主循环。
 int main() {  // int argc, char* argv[]
     ClientComonFunc::installCrashHandlers();
 
     ClientComonFunc::getInstance();
-    DataManager::getInstance().initData();
+    AssetRepository::getInstance().init();
     
     try {
         InterfaceManager::getInstance().start();

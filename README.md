@@ -61,3 +61,57 @@
 - 增加完整地图与碰撞
 - 增加公共聊天与私聊
 - 增加怪物、NPC 与技能表现同步
+
+## 当前架构
+
+- `include/common/protocol/`
+  统一放消息号、玩家同步协议、树木同步协议、通用封包解析，client/server 共用。
+- `client`
+  资源、会话、远端玩家、树木状态分别拆到了 `DataManager/` 下的小模块中。
+  `NetClient` 现在只负责联机会话，底层收发由 `ClientTransport` 负责。
+  `GameScene` 只保留场景壳，世界渲染与 camera 跟随收敛到 `WorldScenePresenter`。
+- `server`
+  `GameServer` 负责 Muduo 入口与网络回调。
+  `GameService` 负责编排，但连接管理、消息路由、玩家存储、树木领域状态已经拆分为独立模块：
+  `ServerConnectionRegistry`、`ServerMessageRouter`、`ServerPlayerStore`、`ServerTreeManager`。
+
+## 重构说明
+
+- 旧的 `DataManager` 兼容门面已经移除，客户端直接依赖 `AssetRepository`、`PlayerSession`、`RemotePlayerStore`。
+- 旧的 `characterManager.cpp` / `characterManager.hpp` 已移除，玩家状态由 `ServerPlayerStore` 接管。
+- 当前工程已经完成“协议层拆分、客户端状态层拆分、客户端传输层拆分、世界渲染层拆分、服务端连接与领域层拆分”这几轮重构，可以继续在现有目录上扩展怪物、地图物件和更多同步消息。
+
+## 目录约束
+
+- 新的联机协议统一放在 `include/common/protocol/`，不要再回写到旧的聚合结构体文件中。
+- 客户端场景层只做界面切换和输入分发，世界更新与渲染优先下沉到独立 presenter / manager。
+- 服务端入口层只负责收包和转发到服务层，具体玩家、树木、后续怪物逻辑都按领域拆到独立 store / service。
+
+## 模块指南
+
+- `AssetRepository`
+  负责异步加载人物模板资源，只存“可复用模板”，不要在这里放当前玩家状态。
+- `PlayerSession`
+  只负责本机当前角色选择、当前 `Persona` 与会话内状态。
+- `RemotePlayerStore`
+  只负责远端玩家快照、远端 `RemotePersona` 生命周期与同步落地。
+- `TreeManager`
+  只负责客户端树木快照与渲染缓存，不负责服务器判定。
+- `ClientTransport`
+  只负责 socket 收发与拆包，不直接改游戏状态。
+- `NetClient`
+  作为联机会话门面，把传输层消息转成客户端状态变更。
+- `WorldScenePresenter`
+  负责游戏世界渲染、camera 跟随、本机角色与远端角色的场景组织。
+- `GameServer`
+  只负责 Muduo 接入点、连接回调和消息入口。
+- `GameService`
+  只负责服务端编排，不直接承担底层连接存储和所有领域状态。
+- `ServerConnectionRegistry` / `ServerPlayerStore` / `ServerTreeManager`
+  分别负责连接映射、玩家仓库、树木领域状态，新增怪物或掉落物时按同样模式扩展。
+
+## 单例约束
+
+- 只有“天然全局唯一”的模块才保留单例：资源仓库、当前会话、远端仓库、UI 管理器、联机会话门面。
+- 单例类不承载彼此重叠的职责，例如 `NetClient` 不直接持有远端人物容器，`PlayerSession` 不负责资源加载。
+- 新增功能如果只是一个独立领域对象，优先做普通成员或普通 service，不要默认继续做成单例。

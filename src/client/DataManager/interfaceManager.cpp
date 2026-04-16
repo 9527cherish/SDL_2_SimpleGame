@@ -4,14 +4,11 @@
 
 
 InterfaceManager::InterfaceManager()
-    : m_pWindow(nullptr)
-    , m_pRenderer(nullptr)
-    , m_pMainScene(std::make_unique<MainScene> ())
+    : m_pMainScene(std::make_unique<MainScene> ())
     , m_pSettingScene(std::make_unique<SettingScene>())
     , m_pGameScene(std::make_unique<GameScene>())
     , m_pCursor(std::make_unique<Cursor>())
 {
-    m_currentScene = Scene::MAIN_MENU;
     spdlog::info("InterfaceManager 初始化，当前场景: MAIN_MENU");
     initWindow();
     m_pCursor->initCursor();
@@ -19,7 +16,6 @@ InterfaceManager::InterfaceManager()
 
 InterfaceManager::~InterfaceManager()
 {
-    m_pCursor->freeCursor();
     closeWindow();
 }
 
@@ -32,7 +28,7 @@ InterfaceManager &InterfaceManager::getInstance()
 bool InterfaceManager::initWindow()
 {
     spdlog::info("初始化窗口与渲染器");
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) != 0) {
         spdlog::error("SDL初始化失败: " + std::string(SDL_GetError()));
         return false;
     }
@@ -55,14 +51,10 @@ bool InterfaceManager::initWindow()
     }
     m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, SDL_RENDERER_ACCELERATED);
 
-    if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
-        spdlog::error("SDL 初始化失败：%s\n", SDL_GetError());
-        return false;
-    }
-
     if (!m_pRenderer) {
         spdlog::error( "无法创建渲染器: " + std::string(SDL_GetError()) );
         SDL_DestroyWindow(m_pWindow);
+        m_pWindow = nullptr;
         IMG_Quit();
         SDL_Quit();
         return false;
@@ -74,9 +66,16 @@ bool InterfaceManager::initWindow()
 
 void InterfaceManager::closeWindow()
 {
-        // 清理资源
-    SDL_DestroyRenderer(m_pRenderer);
-    SDL_DestroyWindow(m_pWindow);
+    if (m_pRenderer != nullptr) {
+        SDL_DestroyRenderer(m_pRenderer);
+        m_pRenderer = nullptr;
+    }
+
+    if (m_pWindow != nullptr) {
+        SDL_DestroyWindow(m_pWindow);
+        m_pWindow = nullptr;
+    }
+
     IMG_Quit();
     SDL_Quit();
 }

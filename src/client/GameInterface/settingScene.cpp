@@ -6,6 +6,7 @@ void SettingScene::renderScene()
 
 void SettingScene::handleEvent(const SDL_Event &e)
 {
+    (void)e;
 }
 
 void SettingScene::initScene()

@@ -2,6 +2,7 @@
 #include "loadXml.hpp"
 
 namespace {
+// 按优先级查找一个动作在指定方向下可用的动画序列。
 const AnimationSequence* findAnimationSequence(const SpriteData& spriteData,
                                                const CharaAction& actionName,
                                                const CharaDirection& direction)
@@ -29,6 +30,7 @@ const AnimationSequence* findAnimationSequence(const SpriteData& spriteData,
     return nullptr;
 }
 
+// 根据当前变体偏移计算图集里的实际帧编号。
 int resolveFrameIndex(const PartBase& part, const Frame& frame)
 {
     int frameIndex = frame.index;
@@ -44,9 +46,6 @@ int resolveFrameIndex(const PartBase& part, const Frame& frame)
 }
 
 PartBase::PartBase()
-    : m_initTexture(false)
-    , m_iDeltaTime(0)
-    , m_iFrameIndex(0)
 {
 }
 
@@ -187,12 +186,13 @@ void PartBase::update(const CharaAction &actionName, const CharaDirection &direc
         m_iDeltaTime = 0;
     }
 
-    spdlog::info("file" + m_imageSet.file
-                + "  action:" +  ActionMapper::to_string(actionName) 
-                + "  direction:" + DirectionMapper::to_string(direction)
-                + "  deltaTime:"  + std::to_string(deltaTime)
-                + "  delay:" + std::to_string(m_Frame.delay)
-                + "  index:" + std::to_string(m_Frame.index));
+    spdlog::debug("part={} action={} direction={} deltaTime={} delay={} index={}",
+                  m_imageSet.file,
+                  ActionMapper::to_string(actionName),
+                  DirectionMapper::to_string(direction),
+                  deltaTime,
+                  m_Frame.delay,
+                  m_Frame.index);
 }
 
 void PartBase::reset(const CharaAction &actionName, const CharaDirection &direction)
@@ -210,9 +210,9 @@ void PartBase::render(SDL_Renderer *renderer, const CharaAction &actionName, Cha
     if(nullptr == m_pTexture)
         return;
 
-    int cols, rows;
-    cols = rows = 0;
-    SDL_QueryTexture(m_pTexture, NULL, NULL, &cols, &rows);
+    int cols = 0;
+    int textureHeight = 0;
+    SDL_QueryTexture(m_pTexture, NULL, NULL, &cols, &textureHeight);
 
     int frameWidth, frameHeight;
 
@@ -226,7 +226,6 @@ void PartBase::render(SDL_Renderer *renderer, const CharaAction &actionName, Cha
     }
 
     cols /= frameWidth;
-    rows /= frameHeight;
     
     const AnimationSequence* animationSequence = findAnimationSequence(m_spriteData, actionName, dir);
     Frame renderFrame = m_Frame;
@@ -262,8 +261,8 @@ void PartBase::renderScaled(SDL_Renderer* renderer, const CharaAction& actionNam
     }
 
     int cols = 0;
-    int rows = 0;
-    SDL_QueryTexture(m_pTexture, NULL, NULL, &cols, &rows);
+    int textureHeight = 0;
+    SDL_QueryTexture(m_pTexture, NULL, NULL, &cols, &textureHeight);
 
     int frameWidth = 0;
     int frameHeight = 0;
@@ -276,7 +275,6 @@ void PartBase::renderScaled(SDL_Renderer* renderer, const CharaAction& actionNam
     }
 
     cols /= frameWidth;
-    rows /= frameHeight;
 
     const AnimationSequence* animationSequence = findAnimationSequence(m_spriteData, actionName, dir);
     Frame renderFrame = m_Frame;
@@ -335,6 +333,9 @@ SDL_Rect PartBase::renderRect(const CharaAction& actionName, const CharaDirectio
 
 bool PartBase::handleEvent(const SDL_Event &e, const CharaAction &actionName, const CharaDirection &direction)
 {
+    (void)e;
+    (void)actionName;
+    (void)direction;
     return false;
 }
 

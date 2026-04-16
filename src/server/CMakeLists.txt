@@ -1,11 +1,18 @@
-#aux_source_directory() 是一个常用命令，用于将某个目录下的所有源文件添加到一个变量中。
-aux_source_directory(. SRC_LIST)
+add_executable(server)
+
+target_sources(server PRIVATE
+    main.cpp
+    gameServer.cpp
+    gameService.cpp
+    serverConnectionRegistry.cpp
+    serverMessageRouter.cpp
+    serverPlayerStore.cpp
+    serverComonFunc.cpp
+    serverTreeManager.cpp
+)
 
 link_directories(${CMAKE_SOURCE_DIR}/lib)
-# 编译动态库
-# add_library(MuduoSimplify SHARED ${SRC_LIST})
-add_executable(server ${SRC_LIST})
 
-# 动态库  链接 Muduo 库   target_link_libraries 是用来链接编译目标和
-target_link_libraries(server PRIVATE muduo_net muduo_base mysqlclient 
-            pthread spdlog::spdlog)      
+target_link_libraries(server PRIVATE
+    muduo_net muduo_base mysqlclient pthread spdlog::spdlog
+)

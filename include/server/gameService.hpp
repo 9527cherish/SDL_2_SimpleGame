@@ -1,58 +1,48 @@
-#pragma once 
+#pragma once
 
-#include <muduo/net/TcpConnection.h>
-#include <unordered_map>
-#include <functional>
-#include "json.hpp"
-#include "messageInfo.hpp"
-#include <map>
-#include <set>
-#include <mutex>
+#include "serverConnectionRegistry.hpp"
+#include "serverMessageRouter.hpp"
+#include "serverPlayerStore.hpp"
+#include "serverTreeManager.hpp"
 
-using namespace muduo;
-using namespace muduo::net;
-using json = nlohmann::json;
-
-
-using MsgHander = std::function<void(const TcpConnectionPtr &conn, json js, Timestamp)>;
-
-
+// GameService 负责服务端消息分发、玩家同步和树木同步编排
 class GameService
 {
-
 public:
-
     GameService();
-    // 获取单例模式
-    static GameService& getInstance();
-    // 获取消息队形的处理器
-    MsgHander getMsgHander(int MsgId);
-    // 处理客户端连接
-    void clientConnection(const TcpConnectionPtr &conn);
-    // 处理服务器异常退出
+
+    // 根据消息号解析对应的业务处理函数。
+    MsgHander getMsgHander(int msgId) const;
+    // 处理客户端连接生命周期事件。
+    void clientConnection(const TcpConnectionPtr& conn);
+    // 处理服务重置时的状态清理。
     void reset();
 
-    void brodcastMsg(const std::string &msg);
-    void sendMsg(const TcpConnectionPtr &conn, ENUM_MSG_TYPE msgType, const json &js);
-
-    // 处理玩家人物连接时，或者更新时发过来的消息
-    void dealRegisterUpdatePlayer(const TcpConnectionPtr &conn, json js, Timestamp time);
-
-    // 处理玩家人物断开连接时发送的消息
-    void dealDeletePlayer(const TcpConnectionPtr &conn, json js, Timestamp time);
-
-    // 处理玩家在公共频道发送的消息
-    void dealSendMessage(const TcpConnectionPtr &conn, json js, Timestamp time);
-    void dealSyncPlayers(const TcpConnectionPtr &conn, json js, Timestamp time);
-    void dealSyncTrees(const TcpConnectionPtr &conn, json js, Timestamp time);
-    void dealHitTree(const TcpConnectionPtr &conn, json js, Timestamp time);
+private:
+    // 注册所有支持的消息处理函数。
+    void registerHandlers();
+    // 处理玩家注册或状态更新请求。
+    void dealRegisterUpdatePlayer(const TcpConnectionPtr& conn, json js, Timestamp time);
+    // 处理玩家离线删除请求。
+    void dealDeletePlayer(const TcpConnectionPtr& conn, json js, Timestamp time);
+    // 处理聊天消息请求。
+    void dealSendMessage(const TcpConnectionPtr& conn, json js, Timestamp time);
+    // 处理玩家列表同步请求。
+    void dealSyncPlayers(const TcpConnectionPtr& conn, json js, Timestamp time);
+    // 处理树木列表同步请求。
+    void dealSyncTrees(const TcpConnectionPtr& conn, json js, Timestamp time);
+    // 处理砍树请求。
+    void dealHitTree(const TcpConnectionPtr& conn, json js, Timestamp time);
+    // 向所有客户端广播树木状态更新。
     void broadcastTrees(const std::vector<TreeInfo>& trees);
 
 private:
-
-    std::map<int, MsgHander> m_mapMsgHander;
-    std::map<std::string, std::string> m_mapConnPlayer;
-
-    std::set<TcpConnectionPtr> m_connections;
-    std::mutex m_csconnection;
+    // 服务端消息路由表
+    ServerMessageRouter m_router;
+    // 在线连接与玩家映射表
+    ServerConnectionRegistry m_connections;
+    // 在线玩家状态仓库
+    ServerPlayerStore m_players;
+    // 树木领域状态管理器
+    ServerTreeManager m_trees;
 };

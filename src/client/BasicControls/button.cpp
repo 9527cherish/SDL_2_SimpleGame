@@ -5,16 +5,10 @@ Button::Button(SDL_Renderer *renderer, TTF_Font *font, const std::string &text, 
                 : m_pRenderer(renderer), m_pFont(font), m_text(text) 
                 , m_rect({x, y, w, h})
                 , m_normalColor(normal), m_hoverColor(hover), m_pressedColor(pressed), m_textColor(textColor)
-                , m_state(ButtonState::NORMAL), m_visible(true), m_pTextTexture(nullptr), m_bRenderBorder(true)
-                
 {
-    if (TTF_Init() == -1) {
-        spdlog::error("TTF_Init 初始化失败:" + std::string(TTF_GetError()));
-    }
-
-    m_pFont = TTF_OpenFont("SourceHanSansCN-Regular.otf", 24);
-    if (!m_pFont) {
-        spdlog::error("Button 加载字体失败:"  + std::string(TTF_GetError()));
+    if (m_pFont == nullptr) {
+        spdlog::error("Button 初始化失败: 字体为空");
+        return;
     }
 
     updateTextTexture();
@@ -116,12 +110,16 @@ void Button::setText(const std::string &t)
 
 void Button::setTexture(SDL_Texture *texture)
 {
+    if (m_pTextTexture != nullptr && m_pTextTexture != texture) {
+        SDL_DestroyTexture(m_pTextTexture);
+    }
     m_pTextTexture = texture;
 }
 
 void Button::setFont(TTF_Font *font)
 {
     m_pFont = font;
+    updateTextTexture();
 }
 
 void Button::setBorder(bool flag)
@@ -131,8 +129,13 @@ void Button::setBorder(bool flag)
 
 void Button::updateTextTexture()
 {
+    if (m_pRenderer == nullptr || m_pFont == nullptr) {
+        return;
+    }
+
     if (m_pTextTexture) {
         SDL_DestroyTexture(m_pTextTexture);
+        m_pTextTexture = nullptr;
     }
 
     SDL_Surface* textSurface = TTF_RenderUTF8_Blended(m_pFont, m_text.c_str(), m_textColor);
