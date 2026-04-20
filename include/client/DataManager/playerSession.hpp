@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 #include "persona.hpp"
 
 // PlayerSession 保存本机当前选择的人物实例和索引
@@ -18,6 +19,10 @@ public:
     std::shared_ptr<Persona> currentPersona();
     // 返回当前本机人物索引。
     int currentPersonaIndex() const;
+    // 设置本机玩家 UUID。
+    void setPlayerUuid(const std::string& uuid);
+    // 返回本机玩家 UUID。
+    const std::string& playerUuid() const;
 
 private:
     PlayerSession() = default;
@@ -29,4 +34,6 @@ private:
     std::shared_ptr<Persona> m_currentPersona;
     // 当前本机选择的人物模板索引
     int m_currentPersonaIndex = -1;
+    // 当前本机玩家 UUID
+    std::string m_playerUuid;
 };

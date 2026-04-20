@@ -113,6 +113,21 @@ int TreeManager::findNearestAliveTree(int playerX, int playerY, int maxDistance)
     return nearestTreeId;
 }
 
+std::vector<SDL_Rect> TreeManager::collisionRects() const
+{
+    std::vector<SDL_Rect> rects;
+    rects.reserve(m_treeMap.size());
+    for (const auto& [treeId, tree] : m_treeMap)
+    {
+        (void)treeId;
+        if (tree.state != ENUM_TREE_STATE_ALIVE) {
+            continue;
+        }
+        rects.push_back(SDL_Rect{tree.x - 24, tree.y - 48, 48, 34});
+    }
+    return rects;
+}
+
 SDL_Texture* TreeManager::loadTexture(SDL_Renderer* renderer, const std::string& spritePath)
 {
     auto iter = m_textureCache.find(spritePath);

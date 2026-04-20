@@ -33,11 +33,16 @@ target_sources(rougeClient PRIVATE
     Character/persona.cpp
     Character/remotepersona.cpp
     DataManager/assetRepository.cpp
+    Inventory/inventoryManager.cpp
+    DataManager/dropManager.cpp
     DataManager/interfaceManager.cpp
     DataManager/loadXml.cpp
+    DataManager/monsterManager.cpp
     DataManager/playerSession.cpp
+    DataManager/projectileManager.cpp
     DataManager/remotePlayerStore.cpp
     DataManager/treeManager.cpp
+    Collision/worldCollisionManager.cpp
     GameInterface/gameInterface.cpp
     GameInterface/gameScene.cpp
     GameInterface/mainScene.cpp

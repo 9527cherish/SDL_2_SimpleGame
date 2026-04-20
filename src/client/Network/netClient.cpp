@@ -5,7 +5,11 @@
 
 #include "characterAction.hpp"
 #include "characterDirection.hpp"
+#include "dropManager.hpp"
+#include "Inventory/inventoryManager.hpp"
+#include "monsterManager.hpp"
 #include "playerSession.hpp"
+#include "projectileManager.hpp"
 #include "remotePlayerStore.hpp"
 #include "persona.hpp"
 #include "treeManager.hpp"
@@ -33,6 +37,7 @@ bool NetClient::enterGame()
     if (m_localUuid.empty()) {
         m_localUuid = generateUuid();
     }
+    PlayerSession::getInstance().setPlayerUuid(m_localUuid);
 
     if (!m_transport.connectTo(
             m_serverIp,
@@ -43,10 +48,17 @@ bool NetClient::enterGame()
 
     RemotePlayerStore::getInstance().clear();
     TreeManager::getInstance().clearTrees();
+    MonsterManager::getInstance().clearMonsters();
+    DropManager::getInstance().clearDrops();
+    ProjectileManager::getInstance().clear();
     m_enteredGame = true;
     // 先拉一份当前在线玩家快照，再发送自己的最新状态，后进入的客户端也能看到已有角色。
     sendMessage(ENUM_MSG_SYNC_PLAYERS_REQUEST, json{{"uuid", m_localUuid}});
     sendMessage(ENUM_MSG_SYNC_TREES_REQUEST, json{{"uuid", m_localUuid}});
+    sendMessage(ENUM_MSG_SYNC_MONSTERS_REQUEST, json{{"uuid", m_localUuid}});
+    sendMessage(ENUM_MSG_SYNC_DROPS_REQUEST, json{{"uuid", m_localUuid}});
+    sendMessage(ENUM_MSG_SYNC_INVENTORY_REQUEST, json{{"uuid", m_localUuid}});
+    sendMessage(ENUM_MSG_SYNC_PROJECTILES_REQUEST, json{{"uuid", m_localUuid}});
     syncCurrentPlayer();
     return true;
 }
@@ -64,6 +76,10 @@ void NetClient::leaveGame()
     m_transport.disconnect();
     RemotePlayerStore::getInstance().clear();
     TreeManager::getInstance().clearTrees();
+    MonsterManager::getInstance().clearMonsters();
+    DropManager::getInstance().clearDrops();
+    ProjectileManager::getInstance().clear();
+    InventoryManager::getInstance().clear();
 }
 
 void NetClient::syncCurrentPlayer()
@@ -91,6 +107,50 @@ void NetClient::hitTree(int treeId, int damage)
     request.treeId = treeId;
     request.damage = damage;
     sendMessage(ENUM_MSG_HIT_TREE_REQUEST, request);
+}
+
+void NetClient::hitMonster(int monsterId, int damage, const std::string& weaponType)
+{
+    if (!m_enteredGame || !m_transport.isConnected() || monsterId <= 0) {
+        return;
+    }
+
+    MonsterHitRequest request;
+    request.playerUuid = m_localUuid;
+    request.monsterId = monsterId;
+    request.damage = damage;
+    request.weaponType = weaponType;
+    sendMessage(ENUM_MSG_HIT_MONSTER_REQUEST, request);
+}
+
+void NetClient::pickDrop(int dropId)
+{
+    if (!m_enteredGame || !m_transport.isConnected() || dropId <= 0) {
+        return;
+    }
+
+    DropPickupRequest request;
+    request.playerUuid = m_localUuid;
+    request.dropId = dropId;
+    sendMessage(ENUM_MSG_PICK_DROP_REQUEST, request);
+}
+
+void NetClient::syncInventory()
+{
+    if (!m_enteredGame || !m_transport.isConnected() || m_localUuid.empty()) {
+        return;
+    }
+
+    sendMessage(ENUM_MSG_SYNC_INVENTORY_REQUEST, json{{"uuid", m_localUuid}});
+}
+
+void NetClient::syncProjectiles()
+{
+    if (!m_enteredGame || !m_transport.isConnected() || m_localUuid.empty()) {
+        return;
+    }
+
+    sendMessage(ENUM_MSG_SYNC_PROJECTILES_REQUEST, json{{"uuid", m_localUuid}});
 }
 
 void NetClient::handleMessage(int msgId, const json& data)
@@ -137,6 +197,47 @@ void NetClient::handleMessage(int msgId, const json& data)
     case ENUM_MSG_UPDATE_TREE_PUSH:
     {
         TreeManager::getInstance().updateTree(data.get<TreeInfo>());
+        break;
+    }
+    case ENUM_MSG_SYNC_MONSTERS_RESPONSE:
+    {
+        MonsterManager::getInstance().syncMonsters(data.value("monsters", std::vector<MonsterInfo>()));
+        break;
+    }
+    case ENUM_MSG_HIT_MONSTER_RESPONSE:
+    case ENUM_MSG_UPDATE_MONSTER_PUSH:
+    {
+        MonsterManager::getInstance().updateMonster(data.get<MonsterInfo>());
+        break;
+    }
+    case ENUM_MSG_SYNC_DROPS_RESPONSE:
+    {
+        DropManager::getInstance().syncDrops(data.value("drops", std::vector<DropInfo>()));
+        break;
+    }
+    case ENUM_MSG_PICK_DROP_RESPONSE:
+    case ENUM_MSG_UPDATE_DROP_PUSH:
+    {
+        DropManager::getInstance().updateDrop(data.get<DropInfo>());
+        break;
+    }
+    case ENUM_MSG_SYNC_INVENTORY_RESPONSE:
+    case ENUM_MSG_UPDATE_INVENTORY_PUSH:
+    {
+        InventorySnapshot snapshot = data.get<InventorySnapshot>();
+        if (snapshot.playerUuid == m_localUuid) {
+            InventoryManager::getInstance().syncInventory(snapshot);
+        }
+        break;
+    }
+    case ENUM_MSG_SYNC_PROJECTILES_RESPONSE:
+    {
+        ProjectileManager::getInstance().syncProjectiles(data.value("projectiles", std::vector<ProjectileInfo>()));
+        break;
+    }
+    case ENUM_MSG_UPDATE_PROJECTILE_PUSH:
+    {
+        ProjectileManager::getInstance().updateProjectile(data.get<ProjectileInfo>());
         break;
     }
     default:

@@ -5,6 +5,10 @@
 // 这里仅保留统一入口，不再继续新增业务结构。
 
 #include "common/protocol/msg_types.hpp"
+#include "common/protocol/monster_protocol.hpp"
+#include "common/protocol/drop_protocol.hpp"
+#include "common/protocol/inventory_protocol.hpp"
+#include "common/protocol/projectile_protocol.hpp"
 #include "common/protocol/player_protocol.hpp"
 #include "common/protocol/tree_protocol.hpp"
 #include "common/protocol/packet_protocol.hpp"

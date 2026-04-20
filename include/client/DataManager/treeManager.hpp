@@ -26,6 +26,8 @@ public:
     void renderTrees(SDL_Renderer* renderer, const Camera& camera);
     // 查找距离玩家最近的存活树木。
     int findNearestAliveTree(int playerX, int playerY, int maxDistance) const;
+    // 返回树木阻挡盒。
+    std::vector<SDL_Rect> collisionRects() const;
 
 private:
     TreeManager() = default;

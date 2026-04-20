@@ -23,6 +23,8 @@ public:
     void rendererCurPersona(SDL_Renderer* renderer, int x, int y);
     // 按指定缩放比例渲染当前角色。
     void rendererCurPersonaScaled(SDL_Renderer* renderer, int x, int y, float scale);
+    // 在游戏场景中按固定基准盒渲染当前角色。
+    void rendererCurPersonaGameScaled(SDL_Renderer* renderer, int x, int y, float scale);
     // 以脚点为锚点按比例渲染当前角色。
     void rendererCurPersonaFootScaled(SDL_Renderer* renderer, int footX, int footY, float scale);
     // 以默认位置按比例渲染当前角色。
@@ -41,6 +43,8 @@ public:
     bool tick(Uint32 deltaTime);
     // 直接设置角色世界坐标。
     void setPosition(int x, int y);
+    // 直接覆盖角色的动作、方向和位置状态。
+    void setState(const CharaAction& actionName, const CharaDirection& direction, int x, int y);
     // 返回角色世界坐标 X。
     int x() const;
     // 返回角色世界坐标 Y。
@@ -49,6 +53,8 @@ public:
     CharaAction action() const;
     // 返回角色当前方向。
     CharaDirection direction() const;
+    // 触发一次本地动作播放。
+    void playAction(const CharaAction& actionName);
     // 导出角色所有部件的同步信息
     std::vector<PartSyncInfo> partSyncInfos() const;
 

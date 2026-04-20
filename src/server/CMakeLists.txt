@@ -5,6 +5,7 @@ target_sources(server PRIVATE
     gameServer.cpp
     gameService.cpp
     serverConnectionRegistry.cpp
+    serverMonsterManager.cpp
     serverMessageRouter.cpp
     serverPlayerStore.cpp
     serverComonFunc.cpp

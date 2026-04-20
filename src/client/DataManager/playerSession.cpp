@@ -34,3 +34,13 @@ int PlayerSession::currentPersonaIndex() const
 {
     return m_currentPersonaIndex;
 }
+
+void PlayerSession::setPlayerUuid(const std::string& uuid)
+{
+    m_playerUuid = uuid;
+}
+
+const std::string& PlayerSession::playerUuid() const
+{
+    return m_playerUuid;
+}

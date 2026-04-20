@@ -1,6 +1,7 @@
 #include "persona.hpp"
 #include "characterStruct.hpp"
 #include "loadXml.hpp"
+#include "Collision/worldCollisionManager.hpp"
 #include <algorithm>
 #include <cmath>
 
@@ -30,14 +31,14 @@ uint Persona::id() const
     return m_id;
 }
 
-void Persona::setId(uint id)
-{
-    m_id = id;
-}
-
 const std::vector<PartBase>& Persona::spriteParts() const
 {
     return m_spriteParts;
+}
+
+void Persona::setId(uint id)
+{
+    m_id = id;
 }
 
 void Persona::renderer(SDL_Renderer *renderer, int x, int y)
@@ -78,12 +79,23 @@ void Persona::rendererCurPersonaScaled(SDL_Renderer *renderer, int x, int y, flo
     }
 }
 
-void Persona::rendererCurPersonaFootScaled(SDL_Renderer *renderer, int footX, int footY, float scale)
+void Persona::rendererCurPersonaFootScaled(SDL_Renderer* renderer, int footX, int footY, float scale)
 {
-    // TMWA 的人物部件最终都是围绕 64x64 基准盒底边来组织的；
-    // 游戏里按“脚下落点”锚定能消除 walk/attack 帧 offset 带来的整体左右滑动感。
     int drawX = static_cast<int>(footX - 32.0f * scale);
     int drawY = static_cast<int>(footY - 64.0f * scale);
+
+    for (PartBase& partSprite : m_spriteParts)
+    {
+        partSprite.initTexture(renderer);
+        partSprite.renderScaled(renderer, m_actionName, m_direction, drawX, drawY, scale);
+    }
+}
+
+void Persona::rendererCurPersonaGameScaled(SDL_Renderer *renderer, int x, int y, float scale)
+{
+    // 游戏场景里统一以 64x64 人物基准盒的中心为锚点，避免不同动画帧 offset 改变时看起来整个人在漂移。
+    int drawX = static_cast<int>(x - 32.0f * scale);
+    int drawY = static_cast<int>(y - 32.0f * scale);
 
     for(PartBase& partSprite : m_spriteParts)
     {
@@ -309,10 +321,17 @@ bool Persona::tick(Uint32 deltaTime)
         }
 
         const CharaAction previousAction = m_actionName;
-        m_preciseX += offsetX;
-        m_preciseY += offsetY;
-        m_x = static_cast<int>(std::lround(m_preciseX));
-        m_y = static_cast<int>(std::lround(m_preciseY));
+        const float nextPreciseX = m_preciseX + offsetX;
+        const float nextPreciseY = m_preciseY + offsetY;
+        const int nextX = static_cast<int>(std::lround(nextPreciseX));
+        const int nextY = static_cast<int>(std::lround(nextPreciseY));
+        if (WorldCollisionManager::getInstance().canOccupyPlayerFootbox(nextX, nextY))
+        {
+            m_preciseX = nextPreciseX;
+            m_preciseY = nextPreciseY;
+            m_x = nextX;
+            m_y = nextY;
+        }
         m_actionName = CharaAction::WALK;
         if (previousAction != m_actionName) {
             resetAnimationState();
@@ -320,10 +339,7 @@ bool Persona::tick(Uint32 deltaTime)
     }
     else if (!m_actionLocked)
     {
-        // 远端角色没有本地按键输入，收到网络同步的 WALK 状态时不应在 tick 中被立即回退成 STAND。
-        if (m_enableMoveByTick || m_actionName != CharaAction::WALK) {
-            updateBaseAction();
-        }
+        updateBaseAction();
     }
 
     update(m_actionName, m_direction, deltaTime);
@@ -336,6 +352,30 @@ void Persona::setPosition(int x, int y)
     m_y = y;
     m_preciseX = static_cast<float>(x);
     m_preciseY = static_cast<float>(y);
+}
+
+void Persona::setState(const CharaAction& actionName, const CharaDirection& direction, int x, int y)
+{
+    const bool stateChanged = m_actionName != actionName || m_direction != direction;
+    m_actionName = actionName;
+    m_direction = direction;
+    m_x = x;
+    m_y = y;
+    m_preciseX = static_cast<float>(x);
+    m_preciseY = static_cast<float>(y);
+    m_idleAction = actionName == CharaAction::WALK ? CharaAction::STAND : actionName;
+    m_actionLocked = false;
+    m_actionRemainTime = 0;
+    m_moveUp = false;
+    m_moveDown = false;
+    m_moveLeft = false;
+    m_moveRight = false;
+
+    if (!stateChanged) {
+        return;
+    }
+
+    resetAnimationState();
 }
 
 int Persona::x() const
@@ -358,15 +398,20 @@ CharaDirection Persona::direction() const
     return m_direction;
 }
 
+void Persona::playAction(const CharaAction& actionName)
+{
+    triggerAction(actionName);
+}
+
 std::vector<PartSyncInfo> Persona::partSyncInfos() const
 {
-    std::vector<PartSyncInfo> partSyncInfos;
-    partSyncInfos.reserve(m_spriteParts.size());
+    std::vector<PartSyncInfo> infos;
+    infos.reserve(m_spriteParts.size());
     for (const PartBase& partSprite : m_spriteParts)
     {
-        partSyncInfos.emplace_back(partSprite.syncInfo());
+        infos.emplace_back(partSprite.syncInfo());
     }
-    return partSyncInfos;
+    return infos;
 }
 
 void Persona::resetAnimationState()

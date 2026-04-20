@@ -2,13 +2,18 @@
 
 #include <SDL2/SDL_image.h>
 #include <spdlog/spdlog.h>
+#include "dropManager.hpp"
+#include "Inventory/inventoryManager.hpp"
 #include "interfaceManager.hpp"
+#include "monsterManager.hpp"
 #include "Network/netClient.hpp"
+#include "projectileManager.hpp"
 #include "persona.hpp"
 #include "playerSession.hpp"
 #include "remotepersona.hpp"
 #include "remotePlayerStore.hpp"
 #include "treeManager.hpp"
+#include "Collision/worldCollisionManager.hpp"
 
 WorldScenePresenter::WorldScenePresenter()
 {
@@ -40,6 +45,8 @@ void WorldScenePresenter::init(SDL_Renderer* renderer)
         else
         {
             SDL_QueryTexture(m_backgroundTexture, nullptr, nullptr, &m_backgroundWidth, &m_backgroundHeight);
+            m_camera.setWorldBounds(m_backgroundWidth, m_backgroundHeight);
+            WorldCollisionManager::getInstance().setWorldBounds(m_backgroundWidth, m_backgroundHeight);
         }
     }
 
@@ -57,6 +64,12 @@ void WorldScenePresenter::render()
     const Uint32 deltaTime = now - m_lastFrameTime;
     m_lastFrameTime = now;
 
+    if (m_lastProjectileSyncTime == 0 || now - m_lastProjectileSyncTime >= 50)
+    {
+        NetClient::getInstance().syncProjectiles();
+        m_lastProjectileSyncTime = now;
+    }
+
     std::shared_ptr<Persona> persona = PlayerSession::getInstance().currentPersona();
     if (persona != nullptr)
     {
@@ -73,8 +86,12 @@ void WorldScenePresenter::render()
 
     renderBackground();
     TreeManager::getInstance().renderTrees(m_renderer, m_camera);
+    MonsterManager::getInstance().renderMonsters(m_renderer, m_camera, now);
+    DropManager::getInstance().renderDrops(m_renderer, m_camera, now);
+    ProjectileManager::getInstance().renderProjectiles(m_renderer, m_camera);
     renderRemotePersons(deltaTime);
     renderCurrentPerson();
+    renderHud();
 }
 
 void WorldScenePresenter::handleEvent(const SDL_Event& e)
@@ -84,12 +101,35 @@ void WorldScenePresenter::handleEvent(const SDL_Event& e)
         return;
     }
 
+    if (InventoryManager::getInstance().handleEvent(e)) {
+        return;
+    }
+
     if (e.type == SDL_KEYDOWN && !e.key.repeat && e.key.keysym.sym == SDLK_j)
     {
         const int treeId = TreeManager::getInstance().findNearestAliveTree(persona->x(), persona->y(), 140);
         if (treeId > 0) {
+            persona->playAction(CharaAction::ATTACK_CHOP);
             NetClient::getInstance().hitTree(treeId, 1);
         }
+    }
+
+    if (e.type == SDL_KEYDOWN && !e.key.repeat && e.key.keysym.sym == SDLK_k)
+    {
+        tryUseWeaponOnMonster();
+    }
+
+    if (e.type == SDL_KEYDOWN && !e.key.repeat && e.key.keysym.sym == SDLK_g)
+    {
+        const int dropId = DropManager::getInstance().findNearestAvailableDrop(persona->x(), persona->y(), 120);
+        if (dropId > 0) {
+            NetClient::getInstance().pickDrop(dropId);
+        }
+    }
+
+    if (e.type == SDL_KEYDOWN && !e.key.repeat && e.key.keysym.sym == SDLK_b)
+    {
+        InventoryManager::getInstance().togglePanel();
     }
 
     Uint32 deltaTime = 0;
@@ -107,7 +147,8 @@ void WorldScenePresenter::renderCurrentPerson()
         return;
     }
 
-    persona->rendererCurPersonaFootScaled(m_renderer, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 1.5f);
+    const SDL_Point screenPoint = m_camera.worldToScreen(persona->x(), persona->y());
+    persona->rendererCurPersonaFootScaled(m_renderer, screenPoint.x, screenPoint.y, 1.5f);
 }
 
 void WorldScenePresenter::renderBackground()
@@ -146,4 +187,62 @@ void WorldScenePresenter::renderRemotePersons(Uint32 deltaTime)
         const SDL_Point screenPoint = m_camera.worldToScreen(remotePersona->x(), remotePersona->y());
         remotePersona->rendererCurPersonaFootScaled(m_renderer, screenPoint.x, screenPoint.y, 1.5f);
     }
+}
+
+void WorldScenePresenter::renderHud()
+{
+    InventoryManager::getInstance().renderPanel(m_renderer);
+}
+
+void WorldScenePresenter::tryUseWeaponOnMonster()
+{
+    std::shared_ptr<Persona> persona = PlayerSession::getInstance().currentPersona();
+    if (persona == nullptr) {
+        return;
+    }
+
+    const int monsterId = MonsterManager::getInstance().findNearestAliveMonster(persona->x(), persona->y(), 220);
+    if (monsterId <= 0) {
+        return;
+    }
+
+    MonsterInfo monster;
+    if (!MonsterManager::getInstance().getMonster(monsterId, monster)) {
+        return;
+    }
+
+    int damage = 1;
+    CharaAction action = CharaAction::ATTACK;
+    std::string weaponType;
+
+    if (std::optional<InventoryItem> weapon = InventoryManager::getInstance().equippedWeapon())
+    {
+        damage += std::max(1, weapon->power);
+        weaponType = weapon->weaponType;
+        if (weapon->weaponType == "bow")
+        {
+            action = CharaAction::ATTACK_BOW;
+        }
+        else if (weapon->weaponType == "wand")
+        {
+            action = CharaAction::CAST;
+            damage += 1;
+        }
+        else if (weapon->weaponType == "spear")
+        {
+            action = CharaAction::ATTACK_SPEAR;
+        }
+        else if (weapon->weaponType == "axe")
+        {
+            action = CharaAction::ATTACK_CHOP;
+            damage += 1;
+        }
+        else if (weapon->weaponType == "sword")
+        {
+            action = CharaAction::ATTACK_SWORD_STAB;
+        }
+    }
+
+    persona->playAction(action);
+    NetClient::getInstance().hitMonster(monsterId, damage, weaponType);
 }

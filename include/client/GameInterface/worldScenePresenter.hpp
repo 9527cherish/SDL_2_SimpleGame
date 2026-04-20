@@ -1,6 +1,8 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <string>
+#include <vector>
 #include "camera.hpp"
 
 // WorldScenePresenter 负责游戏世界的渲染组织、相机跟随与联机交互驱动
@@ -24,6 +26,9 @@ private:
     void renderBackground();
     // 渲染所有远端角色。
     void renderRemotePersons(Uint32 deltaTime);
+    // 渲染背包等 HUD。
+    void renderHud();
+    void tryUseWeaponOnMonster();
 
 private:
     // 世界渲染使用的渲染器
@@ -38,4 +43,6 @@ private:
     Camera m_camera;
     // 上一帧的时间戳
     Uint32 m_lastFrameTime = 0;
+    // 上次同步投射物的时间
+    Uint32 m_lastProjectileSyncTime = 0;
 };

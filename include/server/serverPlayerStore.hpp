@@ -18,10 +18,20 @@ public:
     PlayerInfo parsePlayer(const json& js) const;
     // 返回所有在线玩家的快照。
     std::vector<PlayerInfo> allPlayers() const;
+    // 查询指定玩家快照。
+    bool getByUuid(const std::string& uuid, PlayerInfo& player) const;
+    // 给玩家背包添加物品。
+    InventorySnapshot addInventoryItem(const std::string& uuid, const InventoryItem& item);
+    // 返回玩家背包快照。
+    InventorySnapshot inventoryOf(const std::string& uuid) const;
+    // 清空玩家背包。
+    void clearInventory(const std::string& uuid);
 
 private:
     // 保护玩家表的互斥锁
     mutable std::mutex m_mutex;
     // 以 UUID 为键的在线玩家表
     std::unordered_map<std::string, PlayerInfo> m_players;
+    // 以 UUID 为键的背包表
+    std::unordered_map<std::string, std::vector<InventoryItem>> m_inventories;
 };

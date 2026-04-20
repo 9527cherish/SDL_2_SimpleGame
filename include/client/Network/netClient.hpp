@@ -21,6 +21,14 @@ public:
     void syncCurrentPlayer();
     // 向服务端发送一次砍树请求。
     void hitTree(int treeId, int damage = 1);
+    // 向服务端发送一次攻击怪物请求。
+    void hitMonster(int monsterId, int damage = 1, const std::string& weaponType = "");
+    // 向服务端发送一次拾取掉落物请求。
+    void pickDrop(int dropId);
+    // 向服务端请求同步当前背包。
+    void syncInventory();
+    // 向服务端请求同步当前投射物。
+    void syncProjectiles();
 
 private:
     NetClient();
