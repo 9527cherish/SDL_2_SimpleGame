@@ -19,6 +19,7 @@ std::string ActionMapper::to_string(CharaAction action)
     auto it = m_enumToStr.find(action);
     if (it == m_enumToStr.end()) {
         spdlog::error("无效的动作枚举值");
+        return "unknown";
     }
     return it->second;
 }
@@ -28,6 +29,7 @@ CharaAction ActionMapper::from_string(const std::string &str)
     auto it = m_strToEnum.find(str);
     if (it == m_strToEnum.end()) {
         spdlog::error("无效的动作字符串: " + str);
+        return CharaAction::UNKNOWN;
     }
     return it->second;
 }

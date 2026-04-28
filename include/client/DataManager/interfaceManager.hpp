@@ -8,6 +8,7 @@
 #include "settingScene.hpp"
 #include "gameScene.hpp"
 #include "gameInterface.hpp"
+#include "cursor.hpp"
 
 class InterfaceManager
 {
@@ -23,6 +24,7 @@ public:
 
     //处理事件
     void handleEvent(const SDL_Event &e);
+    void renderCurrentScene();
 
     Scene currentScene();
     void  setCurrentScene(const Scene& scene);
@@ -38,6 +40,7 @@ private:
     std::unique_ptr<MainScene> m_pMainScene;
     std::unique_ptr<SettingScene> m_pSettingScene;
     std::unique_ptr<GameScene> m_pGameScene;
+    std::unique_ptr<Cursor> m_pCursor;
 
     InterfaceManager();
     // 刪除左值和右值  拷貝构造和赋值

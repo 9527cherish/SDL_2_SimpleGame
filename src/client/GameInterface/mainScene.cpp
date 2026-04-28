@@ -4,6 +4,7 @@
 #include "sceneStruct.hpp"
 #include "interfaceManager.hpp"
 #include "dataManager.hpp"
+#include "netClient.hpp"
 
 
 MainScene::MainScene()
@@ -41,8 +42,20 @@ void MainScene::renderScene()
     renderPersonas();
 
     if(-1 != m_number)
-    {
+    {   
         renderCurrentPerson();
+    }
+    else
+    {
+        std::vector<std::shared_ptr<Persona>> personas;
+        DataManager::getInstance().getData(personas);
+        if(!personas.empty())
+        {
+            spdlog::info("主菜单默认选择第一个人物");
+            DataManager::getInstance().setCurrentPerson(0);
+            m_number = 0;
+            m_page = 0;
+        }
     }
 }
 
@@ -79,7 +92,9 @@ void MainScene::handleEvent(const SDL_Event &e)
             DataManager::getInstance().setCurrentPerson(m_page*10 + m_number);
             spdlog::info("--------------------------------------------------");
             spdlog::info("选择人物: " + std::to_string(m_page*10 + m_number));
-            DataManager::getInstance().currentPersona()->printPersonaInfo();
+            
+            // 打印太频繁，注释掉打印
+            // DataManager::getInstance().currentPersona()->printPersonaInfo();
         }   
     }
 
@@ -100,6 +115,24 @@ void MainScene::handleStartEvent(const SDL_Event &e)
 {
     if(!m_pStartButton->handleEvent(e))
         return;
+
+    if(nullptr == DataManager::getInstance().currentPersona())
+    {
+        std::vector<std::shared_ptr<Persona>> personas;
+        DataManager::getInstance().getData(personas);
+        if(!personas.empty())
+        {
+            DataManager::getInstance().setCurrentPerson(0);
+            m_number = 0;
+            m_page = 0;
+        }
+    }
+
+    if(!NetClient::getInstance().enterGame())
+    {
+        spdlog::error("进入游戏失败，无法连接到服务器");
+        return;
+    }
 
     InterfaceManager::getInstance().setCurrentScene(Scene::GAME_SCENE);
 }
@@ -245,13 +278,17 @@ void MainScene::renderPersonas()
     std::vector<std::shared_ptr<Persona>> personas;
     DataManager::getInstance().getData(personas);
 
+    constexpr int kCellSize = 100;
+    constexpr int kVisualCenterXOffset = -6;
+    constexpr int kVisualCenterYOffset = -20;
+
     int x, y;
     for(int i = 0; i < 5; i++)
     {
         for(int j = 0; j < 2; j++)
         {
-            x = 100*i + 450;
-            y = 100*j + 350;
+            x = 100*i + 450 + kCellSize / 2 + kVisualCenterXOffset - 8;
+            y = 100*j + 350 + kCellSize / 2 + kVisualCenterYOffset;
             int currentIndex = m_page*10 + j*5 + i;
             if(currentIndex < 0 || currentIndex >= int(personas.size()))
                 continue;
@@ -269,7 +306,7 @@ void MainScene::renderCurrentPerson()
     {
         int x = 600;
         int y = 200;
-        persona->rendererCurPersona(m_pRenderer, x, y);
+        persona->rendererCurPersonaScaled(m_pRenderer, x, y, 1.5f);
     }
 }
 

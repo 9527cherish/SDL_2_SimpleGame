@@ -5,6 +5,7 @@ std::string DirectionMapper::to_string(CharaDirection direction)
     auto it = m_enumToStr.find(direction);
     if (it == m_enumToStr.end()) {
         spdlog::error("无效的方向枚举值");
+        return "unknown";
     }
     return it->second;
 }
@@ -14,6 +15,7 @@ CharaDirection DirectionMapper::from_string(const std::string &str)
     auto it = m_strToEnum.find(str);
     if (it == m_strToEnum.end()) {
         spdlog::error("无效的动作字符串: " + str);
+        return CharaDirection::DOWN;
     }
     return it->second;
 }

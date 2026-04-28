@@ -87,12 +87,14 @@ SpriteData LoadXml::parseSpriteXML(const std::string &path)
 {
     pugi::xml_document doc;
     if (!doc.load_file(path.c_str())) {
+        spdlog::error("解析Sprite失败，无法读取文件: {}", path);
         return SpriteData();
     }
 
         // 获取根节点
     pugi::xml_node spriteNode = doc.child("sprite");
     if (!spriteNode) {
+        spdlog::error("解析Sprite失败，缺少 <sprite> 根节点: {}", path);
         return SpriteData();
     }
     
@@ -120,10 +122,9 @@ SpriteData LoadXml::parseSpriteXML(const std::string &path)
         // 解析每个方向的动画
         for (pugi::xml_node animNode : actionNode.children("animation")) {
             pugi::xml_attribute dirAttr = animNode.attribute("direction");
-            if(!dirAttr)
-                continue;
-
-            action.direction = DirectionMapper::from_string(animNode.attribute("direction").as_string());
+            action.direction = dirAttr
+                ? DirectionMapper::from_string(dirAttr.as_string())
+                : CharaDirection::DEFAULT;
             
             AnimationSequence sequence;
             
@@ -146,11 +147,15 @@ SpriteData LoadXml::parseSpriteXML(const std::string &path)
                     int start = frameNode.attribute("start").as_int();
                     int end = frameNode.attribute("end").as_int();
                     int delay = frameNode.attribute("delay").as_int();
+                    int offsetX = frameNode.attribute("offsetX").as_int(0);
+                    int offsetY = frameNode.attribute("offsetY").as_int(0);
                     
                     for (int i = start; i <= end; i++) {
                         Frame frame;
                         frame.index = i;
                         frame.delay = delay;
+                        frame.offsetX = offsetX;
+                        frame.offsetY = offsetY;
                         sequence.frames.push_back(frame);
                     }
                 }
@@ -205,12 +210,14 @@ void LoadXml::parsePersonaXml(const std::string &path, std::shared_ptr<Persona> 
 {
     pugi::xml_document doc;
     if (!doc.load_file(path.c_str())) {
+        spdlog::error("解析NPC失败，无法读取文件: {}", path);
         return;
     }
 
     // 获取根节点
     pugi::xml_node npcsNode = doc.child("npcs");
     if (!npcsNode) {
+        spdlog::error("解析NPC失败，缺少 <npcs> 根节点: {}", path);
         return;
     }
     // 遍历所有 <npc> 节点
@@ -228,15 +235,23 @@ void LoadXml::parsePersonaXml(const std::string &path, std::shared_ptr<Persona> 
         for (pugi::xml_node spriteNode : npcNode.children("sprite")) {
             std::string spriteData = spriteNode.text().get();
             
-            // 分割路径和颜色数据
+            // sprite 可能是 "path|palette"，也可能只有 "path"
             size_t pos = spriteData.find('|');
-            if (pos == std::string::npos) {
-                spdlog::error("警告: 无效的 sprite 数据格式，跳过: " + spriteData);
+            std::string spritePath = (pos == std::string::npos)
+                ? spriteData
+                : spriteData.substr(0, pos);
+
+            if (spritePath.empty()) {
+                spdlog::error("警告: 空的 sprite 路径，跳过");
                 continue;
             }
-            std::string partPath = m_graphicsPath + spriteData.substr(0, pos);
+
+            std::string partPath = m_graphicsPath + spritePath;
             PartBase partBase;
             parsePartBaseXml(partPath, partBase);
+            if (spriteNode.attribute("variant")) {
+                partBase.setVariant(spriteNode.attribute("variant").as_int());
+            }
             persona->addPartBase(partBase);
         }
     }

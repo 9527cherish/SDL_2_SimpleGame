@@ -1,14 +1,16 @@
 cmake_minimum_required(VERSION 3.10)
 project(rougeClient VERSION 1.0.0 LANGUAGES CXX)
 
+
 # Use our modified FindSDL2* modules
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${client_SOURCE_DIR}/cmake")
-set(BIN_DIR ${client_SOURCE_DIR}/bin)
+message("CMAKE_CURRENT_SOURCE_DIR is ${CMAKE_CURRENT_SOURCE_DIR}")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set(BIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 
 
 find_package(SDL2 REQUIRED)
-find_package(SDL2_Image REQUIRED)
+find_package(SDL2_image REQUIRED)
 find_package(SDL2_Mixer REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 # find_package(PugiXML REQUIRED)

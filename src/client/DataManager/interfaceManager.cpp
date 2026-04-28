@@ -9,13 +9,17 @@ InterfaceManager::InterfaceManager()
     , m_pMainScene(std::make_unique<MainScene> ())
     , m_pSettingScene(std::make_unique<SettingScene>())
     , m_pGameScene(std::make_unique<GameScene>())
+    , m_pCursor(std::make_unique<Cursor>())
 {
     m_currentScene = Scene::MAIN_MENU;
+    spdlog::info("InterfaceManager 初始化，当前场景: MAIN_MENU");
     initWindow();
+    m_pCursor->initCursor();
 }
 
 InterfaceManager::~InterfaceManager()
 {
+    m_pCursor->freeCursor();
     closeWindow();
 }
 
@@ -27,6 +31,7 @@ InterfaceManager &InterfaceManager::getInstance()
 
 bool InterfaceManager::initWindow()
 {
+    spdlog::info("初始化窗口与渲染器");
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         spdlog::error("SDL初始化失败: " + std::string(SDL_GetError()));
         return false;
@@ -50,6 +55,11 @@ bool InterfaceManager::initWindow()
     }
     m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, SDL_RENDERER_ACCELERATED);
 
+    if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
+        spdlog::error("SDL 初始化失败：%s\n", SDL_GetError());
+        return false;
+    }
+
     if (!m_pRenderer) {
         spdlog::error( "无法创建渲染器: " + std::string(SDL_GetError()) );
         SDL_DestroyWindow(m_pWindow);
@@ -58,6 +68,7 @@ bool InterfaceManager::initWindow()
         return false;
     }
 
+    spdlog::info("窗口与渲染器初始化成功");
     return true;
 }
 
@@ -72,6 +83,7 @@ void InterfaceManager::closeWindow()
 
 void InterfaceManager::start()
 {
+    spdlog::info("进入主循环");
     bool quit = false;
     SDL_Event e;
     
@@ -83,33 +95,55 @@ void InterfaceManager::start()
             }
             handleEvent(e);
         }
+
+        renderCurrentScene();
         SDL_Delay(30); // 约30FPS
-            // 更新屏幕
         SDL_RenderPresent(m_pRenderer);
     }
 }
 
 void InterfaceManager::handleEvent(const SDL_Event &e)
 {
+    m_pCursor->handleEvent(e);
     switch (m_currentScene)
     {
     case Scene::MAIN_MENU:
         m_pMainScene->init();
         m_pMainScene->handleEvent(e);
-        m_pMainScene->renderScene();
         break;
         
     case Scene::GAME_SCENE:
-        m_pGameScene->initScene();
-        m_pGameScene->renderScene();
         m_pGameScene->handleEvent(e);
         break;
 
     case Scene::SETTINGS:
-        m_pSettingScene->renderScene();
         m_pSettingScene->handleEvent(e);
         break;
     
+    default:
+        break;
+    }
+}
+
+void InterfaceManager::renderCurrentScene()
+{
+    switch (m_currentScene)
+    {
+    case Scene::MAIN_MENU:
+        m_pMainScene->init();
+        m_pMainScene->renderScene();
+        break;
+
+    case Scene::GAME_SCENE:
+        m_pGameScene->init();
+        m_pGameScene->renderScene();
+        break;
+
+    case Scene::SETTINGS:
+        m_pSettingScene->init();
+        m_pSettingScene->renderScene();
+        break;
+
     default:
         break;
     }
@@ -122,6 +156,7 @@ Scene InterfaceManager::currentScene()
 
 void InterfaceManager::setCurrentScene(const Scene &scene)
 {
+    spdlog::info("切换场景到: {}", static_cast<int>(scene));
     m_currentScene = scene;
 }
 
